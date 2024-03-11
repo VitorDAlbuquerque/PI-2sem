@@ -23,7 +23,30 @@ module.exports = {
       },
     },
     fontFamily:{
-      poppins: "Poppins, sans-serif"
+      playfair: "Playfair Display, sans-serif",
+      montserrat: "Montserrat, sans-serif",
+      montserrat2: "Montserrat Alternates, sans-serif"
+    },
+
+    screens: {
+      'test': {'min': '629px', 'max': '639px'},
+
+      'xs': {'min': '725px'},
+
+      'sm': {'min': '640px'},
+      // => @media (min-width: 640px and max-width: 767px) { ... }
+
+      'md': {'min': '768px'},
+      // => @media (min-width: 768px and max-width: 1023px) { ... }
+
+      'lg': {'min': '1024px'},
+      // => @media (min-width: 1024px and max-width: 1279px) { ... }
+
+      'xl': {'min': '1280px'},
+      // => @media (min-width: 1280px and max-width: 1535px) { ... }
+
+      '2xl': {'min': '1536px'},
+      // => @media (min-width: 1536px) { ... }
     },
     
     extend: {
@@ -33,25 +56,40 @@ module.exports = {
 
       height:{
         '90vh': '90vh',
-        
+        '10vh': '10vh'
+      },
+
+      width:{
+        '94vw': '94vw',
+        '6vw': '6vw'
+
       },
 
       spacing: {
         '420px': '420px',
-        '377px': '377px'
+        '377px': '377px',
+        '700px': '700px'
       },
 
       lineClamp: {
         12: '12',
       },
+
+      backgroundImage: {
+        'kiwi-bg': "url('../images/882219_stack of kiwi fruits _xl-1024-v1-0.png')",
+      },
       
       colors: {
         //mainBg: "#2C2B3C",
-        mainBg: "#212738",
+        mainBg: "#200D2F",
+        mainBgOpacity75: "#200D2FBF",
 
+        bgAside: "#150926",
+        darkGreen: "#2F4115",
+        lightGreen: "#8CC33F",
         mainFontColor: "#F2EFEB",
-        selectColor: "#403F4C",
-        
+        constrastColor: "#8BC13E",
+        bgWathcList: "#FFEAD8",
 
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
