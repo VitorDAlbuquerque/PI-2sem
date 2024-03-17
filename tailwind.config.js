@@ -29,29 +29,42 @@ module.exports = {
     },
 
     screens: {
-      'test': {'min': '629px', 'max': '639px'},
+      'mobile': {'min': '0', 'max': '469px'},
 
-      'xs': {'min': '725px'},
+      'tablet': {'min': '470px', 'max': '550px'},
 
-      'sm': {'min': '640px'},
+      'xs': {'min': '551px','max': '745px'},
+
+      'sm': {'min': '744px','max': '884px'},
       // => @media (min-width: 640px and max-width: 767px) { ... }
 
-      'md': {'min': '768px'},
+      'md': {'min': '885px','max': '1010px'},
       // => @media (min-width: 768px and max-width: 1023px) { ... }
 
-      'lg': {'min': '1024px'},
+      'lg': {'min': '1011px', 'max': '1115px'},
       // => @media (min-width: 1024px and max-width: 1279px) { ... }
 
-      'xl': {'min': '1280px'},
+      'xl': {'min': '1116px','max': '1337px'},
       // => @media (min-width: 1280px and max-width: 1535px) { ... }
 
-      '2xl': {'min': '1536px'},
+      '2xl': {'min': '1338px','max': '1536px'},
       // => @media (min-width: 1536px) { ... }
+
+      'max': {'min': '1537px'}
     },
     
     extend: {
       transitionProperty: {
         'height': 'height',
+      },
+
+      flexBasis: {
+        '1/7': '14.2857143%',
+        '2/7': '28.5714286%',
+        '3/7': '42.8571429%',
+        '4/7': '57.1428571%',
+        '5/7': '71.4285714%',
+        '6/7': '85.7142857%',
       },
 
       height:{
@@ -82,7 +95,8 @@ module.exports = {
       colors: {
         //mainBg: "#2C2B3C",
         mainBg: "#200D2F",
-        mainBgOpacity75: "#200D2FBF",
+        mainBgOpacity75: "#200D2FD9",
+        blackDefaultColor: '#252525',
 
         bgAside: "#150926",
         darkGreen: "#2F4115",
