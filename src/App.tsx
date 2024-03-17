@@ -3,6 +3,8 @@ import { Home } from "./pages/Home"
 import { Profile } from "./pages/Profile"
 import { Login } from "./pages/Login"
 import { AuthProvider } from "./context/AuthContext"
+import { Settings } from "./pages/Settings"
+
 
 function App() {
   return(
@@ -12,6 +14,7 @@ function App() {
           <Route path="/" element={<Home/>}/>
           <Route path="/Login" element={<Login/>}/>
           <Route path="/Profile" element={<Profile/>}/>
+          <Route path="/Settings" element={<Settings/>}/>
         </Routes>
       </AuthProvider>
 

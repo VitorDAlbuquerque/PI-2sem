@@ -11,7 +11,6 @@ import { Carousel,
 import { Skeleton } from "@/components/ui/skeleton"
 
 
-import { CiSearch } from "react-icons/ci";
 import { IoIosArrowForward, IoIosArrowBack  } from "react-icons/io";
 
 import { useContext, useEffect, useState } from 'react';
@@ -20,6 +19,7 @@ import { SideBar } from '../components/sidebar';
 import { useNavigate } from 'react-router-dom';
 import Autoplay from "embla-carousel-autoplay"
 import { LoginContext } from '@/context/AuthContext';
+import { Header } from '@/components/header';
 
 interface topMoviesProps {
   id: number,
@@ -118,19 +118,12 @@ export function Home(){
       
       <SideBar/>
       <div className='bg-mainBg flex-initial w-full min-h-screen'>
+        <Header/>
       
-        <div className='flex justify-around items-center h-20 bg-bgAside w-full'>
-          <h1 className='font-semibold text-5xl text-constrastColor font-playfair'>Kiwi</h1>
-          <div className='items-center relative flex'>
-            <input className='bg-darkGreen h-8 w-52 rounded-full pl-3 outline-none font-montserrat text-white' type="text" placeholder='...'/>
-            <p className='text-3xl absolute right-2 text-lightGreen'><CiSearch/></p>
-          </div>
-        </div>
-        
         <div className='w-full pt-8 flex flex-wrap justify-center gap-5 bg-bgAside'>
           <div className='max-w-96 text-mainFontColor text-center flex flex-col gap-7 items-center'>
             <h1 className='font-medium text-4xl mt-6 font-montserrat2'>Seja bem vindo ao Kiwi</h1>
-            <p className='font-montserrat2 font-light'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores, similique.</p>
+            <p className='font-montserrat font-light'>Explore catálogos, crie watchlists e compartilhe suas opiniões e ideias com a comunidade.</p>
             {authContext.user?
             null
             :<button onClick={()=>navigate('Login')} className='bg-constrastColor text-darkGreen p-4 rounded-lg font-semibold max-w-72 font-montserrat hover:brightness-75 transition-all ease-in-out duration-200 '>Faça login ou cadastre-se</button>}
@@ -174,7 +167,7 @@ export function Home(){
             </CarouselContent>
           </Carousel>
         </div>
-        <div className='w-full font-montserrat py-5 px-3'>
+        <div className='w-full font-montserrat py-6 px-12'>
           <h1 className='text-constrastColor text-2xl font-semibold'>AS MELHORES AVALIAÇÕES</h1>
           <Carousel className='w-full flex gap-3 mt-5 group' opts={{dragFree: true}} setApi={setCarouselTopRated}>
             <CarouselContent className='flex '>
@@ -206,7 +199,7 @@ export function Home(){
             <button className='text-gray-300 text-5xl hidden absolute right-0 hover:bg-mainBgOpacity75 h-full transition-all ease-in-out duration-200 group-hover:block' onClick={()=>dotCarousel(3)}><IoIosArrowForward/></button>
           </Carousel>
         </div>
-        <div className='w-full font-montserrat py-5 p-3'>
+        <div className='w-full font-montserrat py-6 p-12'>
           <h1 className='text-constrastColor text-2xl font-semibold'>FILMES EM CARTAZ</h1>
           <Carousel className='w-full flex gap-3 mt-5 group' opts={{dragFree: true}} setApi={setCarouselNowPlaying}>
             <CarouselContent className='flex'>
