@@ -23,7 +23,34 @@ module.exports = {
       },
     },
     fontFamily:{
-      poppins: "Poppins, sans-serif"
+      playfair: "Playfair Display, sans-serif",
+      montserrat: "Montserrat, sans-serif",
+      montserrat2: "Montserrat Alternates, sans-serif"
+    },
+
+    screens: {
+      'mobile': {'min': '0', 'max': '469px'},
+
+      'tablet': {'min': '470px', 'max': '550px'},
+
+      'xs': {'min': '551px','max': '745px'},
+
+      'sm': {'min': '744px','max': '884px'},
+      // => @media (min-width: 640px and max-width: 767px) { ... }
+
+      'md': {'min': '885px','max': '1010px'},
+      // => @media (min-width: 768px and max-width: 1023px) { ... }
+
+      'lg': {'min': '1011px', 'max': '1115px'},
+      // => @media (min-width: 1024px and max-width: 1279px) { ... }
+
+      'xl': {'min': '1116px','max': '1337px'},
+      // => @media (min-width: 1280px and max-width: 1535px) { ... }
+
+      '2xl': {'min': '1338px','max': '1536px'},
+      // => @media (min-width: 1536px) { ... }
+
+      'max': {'min': '1537px'}
     },
     
     extend: {
@@ -31,27 +58,52 @@ module.exports = {
         'height': 'height',
       },
 
+      flexBasis: {
+        '1/7': '14.2857143%',
+        '2/7': '28.5714286%',
+        '3/7': '42.8571429%',
+        '4/7': '57.1428571%',
+        '5/7': '71.4285714%',
+        '6/7': '85.7142857%',
+      },
+
       height:{
         '90vh': '90vh',
-        
+        '10vh': '10vh'
+      },
+
+      width:{
+        '94vw': '94vw',
+        '6vw': '6vw'
+
       },
 
       spacing: {
         '420px': '420px',
-        '377px': '377px'
+        '377px': '377px',
+        '700px': '700px'
       },
 
       lineClamp: {
         12: '12',
       },
+
+      backgroundImage: {
+        'kiwi-bg': "url('../images/882219_stack of kiwi fruits _xl-1024-v1-0.png')",
+      },
       
       colors: {
         //mainBg: "#2C2B3C",
-        mainBg: "#212738",
+        mainBg: "#200D2F",
+        mainBgOpacity75: "#200D2FD9",
+        blackDefaultColor: '#252525',
 
+        bgAside: "#150926",
+        darkGreen: "#2F4115",
+        lightGreen: "#8CC33F",
         mainFontColor: "#F2EFEB",
-        selectColor: "#403F4C",
-        
+        constrastColor: "#8BC13E",
+        bgWathcList: "#FFEAD8",
 
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
