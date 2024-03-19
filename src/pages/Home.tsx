@@ -10,7 +10,6 @@ import { Carousel,
 
 import { Skeleton } from "@/components/ui/skeleton"
 
-
 import { IoIosArrowForward, IoIosArrowBack  } from "react-icons/io";
 
 import { useContext, useEffect, useState } from 'react';
@@ -21,7 +20,7 @@ import Autoplay from "embla-carousel-autoplay"
 import { LoginContext } from '@/context/AuthContext';
 import { Header } from '@/components/header';
 
-interface topMoviesProps {
+interface moviesProps {
   id: number,
   title: string,
   overview: string,
@@ -29,14 +28,19 @@ interface topMoviesProps {
   backdrop_path: string
 }
 
+interface genresProps {
+  id: number,
+  name: string
+}
 
 export function Home(){
   const api = useTMDBApi()
   const navigate = useNavigate()
 
-  const [popularMovies, setPopularMovies] = useState<topMoviesProps[]>([])
-  const [topRatedMovies, setTopRatedMovies] = useState<topMoviesProps[]>([])
-  const [nowPlayingMovies, setNowPlayingMovies] = useState<topMoviesProps[]>([])
+  const [popularMovies, setPopularMovies] = useState<moviesProps[]>([])
+  const [topRatedMovies, setTopRatedMovies] = useState<moviesProps[]>([])
+  const [nowPlayingMovies, setNowPlayingMovies] = useState<moviesProps[]>([])
+  const [genres, setGenres] = useState<genresProps[]>([])
 
   const [carouselApi, setCarouselApi] = useState<CarouselApi>()
   const [carouselTopRated, setCarouselTopRated] = useState<CarouselApi>()
@@ -49,6 +53,8 @@ export function Home(){
   const authContext = useContext(LoginContext)
 
   useEffect(()=>{
+
+    //CHAMADA API DE FILME
     async function getPopularMovies(){
       const data = await api.getPopularMovies()
       if(data){
@@ -69,9 +75,19 @@ export function Home(){
         setNowPlayingMovies(data.movies)
       } 
     }
+
+    async function getGenres(){
+      const data = await api.getAllGenres()
+      if(data){
+        setGenres(data.genres)
+      } 
+    }
+
+    getGenres()
     getNowPlaying()
     getTopRatedMovies()
     getPopularMovies()
+    ////////////////////////////////
 
     if (!carouselApi) {
       return
@@ -120,13 +136,13 @@ export function Home(){
       <div className='bg-mainBg flex-initial w-full min-h-screen'>
         <Header/>
       
-        <div className='w-full pt-8 flex flex-wrap justify-center gap-5 bg-bgAside'>
+        <div className='w-full pt-8 flex flex-wrap justify-around gap-5 bg-bgAside'>
           <div className='max-w-96 text-mainFontColor text-center flex flex-col gap-7 items-center'>
             <h1 className='font-medium text-4xl mt-6 font-montserrat2'>Seja bem vindo ao Kiwi</h1>
-            <p className='font-montserrat font-light'>Explore catálogos, crie watchlists e compartilhe suas opiniões e ideias com a comunidade.</p>
+            <p className='font-montserrat font-light mobile:mb-10'>Explore catálogos, crie watchlists e compartilhe suas opiniões e ideias com a comunidade.</p>
             {authContext.user?
             null
-            :<button onClick={()=>navigate('Login')} className='bg-constrastColor text-darkGreen p-4 rounded-lg font-semibold max-w-72 font-montserrat hover:brightness-75 transition-all ease-in-out duration-200 '>Faça login ou cadastre-se</button>}
+            :<button onClick={()=>navigate('Login')} className='bg-constrastColor text-darkGreen p-4 rounded-lg font-semibold max-w-72 font-montserrat hover:brightness-75 transition-all ease-in-out duration-200 shadow-sm shadow-constrastColor '>Faça login ou cadastre-se</button>}
             
           </div>
           <Carousel opts={{
@@ -168,17 +184,17 @@ export function Home(){
           </Carousel>
         </div>
         <div className='w-full font-montserrat py-6 px-12'>
-          <h1 className='text-constrastColor text-2xl font-semibold'>AS MELHORES AVALIAÇÕES</h1>
+          <h1 className='text-constrastColor text-2xl font-semibold'>MELHORES AVALIAÇÕES</h1>
           <Carousel className='w-full flex gap-3 mt-5 group' opts={{dragFree: true}} setApi={setCarouselTopRated}>
             <CarouselContent className='flex '>
               {
               topRatedMovies.length>0?
                 topRatedMovies.map(movie =>{
                   return(
-                    <CarouselItem key={movie.id} className='max:basis-1/7 lx:basis-1/6 2xl:basis-1/6 lg:basis-1/5 md:basis-1/4 sm:basis-1/4 xs:basis-1/3 tablet:basis-1/3 mobile:basis-1/2'>
+                    <CarouselItem key={movie.id} className='max:basis-1/7 xl:basis-1/6 2xl:basis-1/6 lg:basis-1/5 md:basis-1/4 sm:basis-1/4 xs:basis-1/3 tablet:basis-1/3 mobile:basis-1/2'>
                       <div className='cursor-pointer hover:brightness-50 transition-all ease-in-out duration-200'>
                         {topRatedMovies.length>0?
-                          <img className='max:h-80 2xl:h-80 xl:h-80 lg:h-72 sm:h-64 xs:h-64 tablet:h-64 mobile:h-56 object-cover' src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} alt={movie.title} />
+                          <img className='max:h-96 2xl:h-72 xl:h-64 lg:h-64 sm:h-64 xs:h-64 tablet:h-64 mobile:h-64 object-cover' src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} alt={movie.title} />
                         : <Skeleton className='h-6 w-10'/>}
                       </div>
                     </CarouselItem>
@@ -207,9 +223,9 @@ export function Home(){
               
               nowPlayingMovies.map(movie =>{
                 return(
-                  <CarouselItem key={movie.id} className='max:basis-1/7 lx:basis-1/6 2xl:basis-1/6 lg:basis-1/5 md:basis-1/4 sm:basis-1/4 xs:basis-1/3 tablet:basis-1/3 mobile:basis-1/2'>
+                  <CarouselItem key={movie.id} className='max:basis-1/7 xl:basis-1/6 2xl:basis-1/6 lg:basis-1/5 md:basis-1/4 sm:basis-1/4 xs:basis-1/3 tablet:basis-1/3 mobile:basis-1/2'>
                     <div className='cursor-pointer hover:brightness-50 transition-all ease-in-out duration-200'>
-                      <img className='max:h-80 2xl:h-80 xl:h-80 lg:h-72 sm:h-64 xs:h-64 tablet:h-64 mobile:h-56 object-cover' src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} alt={movie.title} />
+                      <img className='max:h-96 2xl:h-72 xl:h-64 lg:h-64 sm:h-64 xs:h-64 tablet:h-64 mobile:h-64 object-cover' src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} alt={movie.title} />
                     </div>
                   </CarouselItem>
                 )
@@ -229,6 +245,8 @@ export function Home(){
             <button className='text-gray-300 text-5xl hidden absolute right-0 hover:bg-mainBgOpacity75 h-full transition-all ease-in-out duration-200 group-hover:block' onClick={()=>dotCarouselNowPlaying(3)}><IoIosArrowForward/></button>
           </Carousel>
         </div>
+
+        
       </div>
 
       

@@ -137,25 +137,25 @@ export function Profile(){
                             </div>
                         </div>
                     </div>
-                    <div className='relative -top-16'>
-                        <div>
+                    <div className='relative -top-28'>
+                        {/*<div>
                             <h1 className='flex justify-center text-constrastColor text-2xl font-semibold mb-10'>TOP 3 FILMES DE {authContext.user?.name.toLocaleUpperCase()}</h1>
                             <div className='flex justify-center gap-5 flex-wrap'>
                                 <img className='h-96' src="https://image.tmdb.org/t/p/original/umX3lBhHoTV7Lsci140Yr8VpXyN.jpg" alt="" />
                                 <img className='h-96' src="https://image.tmdb.org/t/p/original/umX3lBhHoTV7Lsci140Yr8VpXyN.jpg" alt="" />
                                 <img className='h-96' src="https://image.tmdb.org/t/p/original/umX3lBhHoTV7Lsci140Yr8VpXyN.jpg" alt="" />
                             </div>
-                        </div> 
+                        </div>*/} 
                         
-                        <div className='flex items-center mb-5 justify-between mt-20'>
+                        <div className='flex items-center mb-5 justify-between mt-20 mobile:justify-center'>
                             <h1 className='text-constrastColor text-2xl font-semibold'>FILMES FAVORITOS</h1>
                         </div>
-                        <div className='flex flex-wrap gap-7'>
+                        <div className='flex flex-wrap gap-7 mobile:justify-center'>
                             {popularMovies.length>0?
                                 popularMovies.slice(0, 10).map(movie =>{
                                     return(
                                         <div>
-                                            <img className='h-80' src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} alt="" />
+                                            <img className='h-80 max:h-[480px] 2xl:h-80 xl:h-[295px] lg:h-56 mobile:h-60' src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} alt="" />
                                         </div>
                                     )
                                 })
@@ -176,15 +176,15 @@ export function Profile(){
                         </div>
                         <div className='flex justify-center mt-5 text-lg '><p className='hover:underline cursor-pointer'>Ver todos</p></div>
 
-                        <div className='flex items-center mb-5 justify-between mt-20'>
+                        <div className='flex items-center mb-5 justify-between mt-20 mobile:justify-center'>
                             <h1 className='text-constrastColor text-2xl font-semibold'>FILMES AVALIADOS</h1>
                         </div>
-                        <div className='flex flex-wrap gap-7'>
+                        <div className='flex flex-wrap gap-7 mobile:justify-center'>
                             {topRatedMovies.length>0?
                                 topRatedMovies.slice(0, 10).map(movie =>{
                                     return(
                                         <div>
-                                            <img className='h-80' src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} alt="" />
+                                            <img className='h-80 max:h-[480px] 2xl:h-80 xl:h-[295px] lg:h-56 mobile:h-60' src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} alt="" />
                                         </div>
                                     )
                                 })

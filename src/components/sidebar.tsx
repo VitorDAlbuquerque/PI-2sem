@@ -17,7 +17,7 @@ import {
     DialogTitle,
     DialogTrigger,
     DialogClose
-  } from "@/components/ui/dialog"
+} from "@/components/ui/dialog"
 
 export function SideBar(){
 
@@ -43,7 +43,7 @@ export function SideBar(){
                 <p onClick={()=>goTo('/')} className={path=='/'?'bg-darkGreen p-2 rounded-md':'p-2 hover:brightness-50 transition-all ease-in-out duration-300 cursor-pointer'}><GoHome/></p>
                 <p className='p-2 hover:brightness-50 transition-all ease-in-out duration-300 cursor-pointer'><LiaSlidersHSolid/></p>
                 <p className='p-2 hover:brightness-50 transition-all ease-in-out duration-300 cursor-pointer'><FaRegStar/></p>
-                <p className='p-2 hover:brightness-50 transition-all ease-in-out duration-200 cursor-pointer'><IoSettingsOutline/></p>
+                <p onClick={()=>goTo('/Settings')} className={path=='/Settings'?'bg-darkGreen p-2 rounded-md':'p-2 hover:brightness-50 transition-all ease-in-out duration-300 cursor-pointer'}><IoSettingsOutline/></p>
                 {authContext.user?
                     <Dialog>
                         <DialogTrigger className='w-full'>

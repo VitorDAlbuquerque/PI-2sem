@@ -51,7 +51,6 @@ export function Login(){
         navigate('/')
     }
 
-
     useEffect(()=>{
         async function getCountries(){
             const data = await apiCountries.getCountries();
@@ -136,10 +135,10 @@ export function Login(){
             <div className='bg-kiwi-bg h-screen w-screen bg-cover'></div>
             <div className='absolute top-0 left-0 w-full bg-gradient-to-l from-mainBg from-30% to-mainBgOpacity75'>
                 <div className="flex items-center pl-10 h-10vh">
-                    <h1 className="font-playfair text-constrastColor text-4xl">Kiwi</h1>
+                    <h1 className="font-playfair text-constrastColor text-4xl" onClick={()=>navigate('/')}>Kiwi</h1>
                 </div>
                 <div className='flex h-90vh '>
-                    <div className='flex-1 flex justify-center items-center'>
+                    <div className='flex-1 flex justify-center items-center lg:hidden md:hidden sm:hidden xs:hidden tablet:hidden mobile:hidden'>
                     
                     </div>
                     <div className='flex-1 flex justify-center items-center '>

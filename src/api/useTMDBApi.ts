@@ -14,24 +14,29 @@ fetch('https://api.themoviedb.org/3/authentication', options)
 .catch(err => console.error(err));
 
 export const useTMDBApi = () => ({
-    getPopularMovies: async() =>{
-      const response = await axios.get(`https://api.themoviedb.org/3/movie/popular?language=pt-BR?api_key=794202efde8ce7a78d65e6f431811b5e`, options)
-      return {
-        movies: response.data.results
-      }
-    },
-    getTopRatedMovies: async() =>{
-      const response = await axios.get(`https://api.themoviedb.org/3/movie/top_rated?language=pt-BR?api_key=794202efde8ce7a78d65e6f431811b5e`, options)
-      console.log(response.data)
-      return {
-        movies: response.data.results
-      }
-    },
-    getNowPlaying: async() =>{
-      const response = await axios.get(`https://api.themoviedb.org/3/movie/now_playing?language=pt-BR?api_key=794202efde8ce7a78d65e6f431811b5e`, options)
-      console.log(response.data)
-      return {
-        movies: response.data.results
-      }
-    },
+  getPopularMovies: async() =>{
+    const response = await axios.get(`https://api.themoviedb.org/3/movie/popular?language=pt-BR?api_key=794202efde8ce7a78d65e6f431811b5e`, options)
+    return {
+      movies: response.data.results
+    }
+  },
+  getTopRatedMovies: async() =>{
+    const response = await axios.get(`https://api.themoviedb.org/3/movie/top_rated?language=pt-BR?api_key=794202efde8ce7a78d65e6f431811b5e`, options)
+    return {
+      movies: response.data.results
+    }
+  },
+  getNowPlaying: async() =>{
+    const response = await axios.get(`https://api.themoviedb.org/3/movie/now_playing?language=pt-BR?api_key=794202efde8ce7a78d65e6f431811b5e`, options)
+    return {
+      movies: response.data.results
+    }
+  },
+  getAllGenres: async() =>{
+    const response = await axios.get('https://api.themoviedb.org/3/genre/movie/list?language=pt', options)
+    console.log(response.data.genres)
+    return{
+      genres: response.data.genres
+    }
+  }
 })
