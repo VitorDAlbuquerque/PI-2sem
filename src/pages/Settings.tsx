@@ -2,11 +2,50 @@ import { useState } from "react";
 import { SideBar } from "../components/sidebar";
 import { Header } from "../components/header";
 import Faq from "../components/ui/faq";
-import ConfirmChanges from "../components/ui/confirmChanges";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useBackendApi } from "@/api/useBackendApi";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../components/ui/dialog";
+
 import "../styles/global.css";
 
 export function Settings() {
   const [pageTitle, setPageTitle] = useState("Configurações");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState("Perfil");
+  const [expandedItem, setExpandedItem] = useState("");
+
+  const showToastDeleted = () => {
+    toast.success("Conta deletada com sucesso.", {
+      position: "top-right",
+      autoClose: 9000,
+    });
+  };
+
+  const apiBackend = useBackendApi();
+  const confirmDeleteAccount = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        console.error('Token não encontrado no localStorage');
+        return;
+      }
+      await apiBackend.deleteUsers(token);
+      showToastDeleted();
+      setIsDeleteDialogOpen(false);
+    } catch (error) {
+      console.error("Erro ao excluir conta:", error);
+    }
+  };
 
   const handleItemClick = (item: string) => {
     setSelectedItem(item);
@@ -18,42 +57,58 @@ export function Settings() {
     }
   };
 
-  const [selectedItem, setSelectedItem] = useState("Perfil");
-  const [expandedItem, setExpandedItem] = useState("");
-
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-
-  const [checkboxChecked, setCheckboxChecked] = useState(false);
-
   const handleItemExpand = (item: string) => {
     setExpandedItem(item === expandedItem ? "" : item);
   };
 
-  const handleSaveChanges = () => {
-    console.log("Alterações salvas!");
-    setShowConfirmModal(false);
+  const showToastMessage = () => {
+    toast.success("Alterações efetuadas com sucesso.", {
+      position: "top-right",
+      autoClose: 5000,
+    });
   };
+
+  const confirmChanges = () => {
+    showToastMessage();
+    setIsDialogOpen(false);
+  }
+
   const renderInformation = () => {
     switch (selectedItem) {
       case "Perfil":
         return (
-          <div className="text-mainFontColor font-montserrat">
+          
+          
+          <div className="text-mainFontColor font-montserrat ">
+           
+            
             <ul className="">
               <li>
-                <p className="mt-5 mb-3">Alterar nome de usuário</p>
+                <p className="mt-5 mb-3 ">Alterar nome de usuário</p>
                 <div className="w-full md:w-1/2">
                   <input
-                    className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    className="appearance-none block w-5/6 bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                     id="grid-username"
                     type="text"
                     placeholder="Novo nome de usuário"
                   />
                 </div>
               </li>
-              <li className="mt-8 mb-3">
+              <li>
+                <p className="mt-5 mb-3 ">Alterar biografia do perfil</p>
+                <div className="w-full md:w-1/2">
+                  <input
+                    className="appearance-none block w-5/6 bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    id="grid-username"
+                    type="text"
+                    placeholder="Nova biografia"
+                  />
+                </div>
+              </li>
+              <li className="mt-8 mb-3 w-5/6">
                 <p>Alterar foto de perfil</p>
                 <div className="flex justify-between">
-                  <div className="w-1/4 bg-blue-200 rounded-md shadow-md border-2 border-transparent hover:border-lightGreen cursor-pointer h-32"></div>
+                  <div className=" w-1/4 bg-blue-200 rounded-md shadow-md border-2 border-transparent hover:border-lightGreen cursor-pointer h-32"></div>
                   <div className="w-1/4 bg-red-200 rounded-md shadow-md border-2 border-transparent hover:border-lightGreen cursor-pointer h-32"></div>
                   <div className="w-1/4 bg-yellow-200 rounded-md shadow-md border-2 border-transparent hover:border-lightGreen cursor-pointer h-32"></div>
                   <div className="w-1/4 bg-green-200 rounded-md shadow-md border-2 border-transparent hover:border-lightGreen cursor-pointer h-32"></div>
@@ -87,9 +142,9 @@ export function Settings() {
       case "Privacidade e segurança":
         return (
           <div className="text-mainFontColor font-montserrat ">
-            <ul className="">
+            <ul className="w-5/6">
               <li>
-                <p className="mt-8 mb-3 ">Alterar email</p>
+                <p className=" mt-8 mb-3 ">Alterar email</p>
                 <div className="w-full md:w-1/2 ">
                   <input
                     className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
@@ -110,10 +165,44 @@ export function Settings() {
                   />
                 </div>
               </li>
+             
+               
+              <li>
+              
+                  <Dialog open={isDeleteDialogOpen}>
+        <DialogTrigger className="w-full"></DialogTrigger>
+        <DialogContent className="max-w-96 rounded-lg">
+          <DialogHeader>
+            <DialogTitle>Deletar conta</DialogTitle>
+            <DialogDescription>
+              Tem certeza de que deseja deletar sua conta? Esta ação é irreversível.
+            <p className="font-bold"> Observação: todos seus filmes favoritados e/ou comentados, listas e qualquer outra criação de sua conta serão deletados, e seu perfil não será mais acessível para outros usuários.</p>
+            </DialogDescription>
+          </DialogHeader>
+          <div>
+          <div className="flex justify-center">
+  <button
+      onClick={confirmDeleteAccount} 
+    className="bg-red-700 text-black p-4 rounded-lg font-semibold max-w-72 font-montserrat hover:brightness-75 transition-all ease-in-out duration-200 shadow-sm shadow-red-800"
+  >
+    Confirmar exclusão da conta
+  </button>
+</div>
+
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      
+      <button onClick={() => setIsDeleteDialogOpen(true)} className=" mt-8 mb-3 bg-red-700 text-black p-4 rounded-lg font-semibold max-w-72 font-montserrat hover:brightness-75 transition-all ease-in-out duration-200 shadow-sm shadow-red-800">
+        Deletar minha conta do Kiwi
+      </button>
+              </li>
             </ul>
           </div>
         );
 
+        
       case "Acessibilidade":
         return (
           <div className="text-mainFontColor font-montserrat">
@@ -152,11 +241,13 @@ export function Settings() {
   const showButtons = selectedItem !== "Ajuda";
 
   return (
-    <div className="flex">
+    
+    <div className="flex ">
+      
       <SideBar />
       <div className="bg-mainBg flex-initial w-full min-h-screen ">
         <Header />
-        <div className="py-7 px-10">
+        <div className="py-14 px-20">
           <div className="flex">
             <ul className="options max-h-56 text-darkGreen font-montserrat font-medium px-6 py-3 bg-bgAside rounded-lg border-none">
               <li
@@ -196,30 +287,40 @@ export function Settings() {
               </h1>
               {renderInformation()}
               {showButtons && (
-                <div className="flex justify-end mt-6">
+                <div className="flex  mt-6 w-2/3">
                   <button
-                    onClick={() => setShowConfirmModal(true)}
-                    className="transition ease-in-out delay-150 bg-darkGreen hover:-translate-y-1 hover:scale-110 hover:bg-lightGreen duration-300 p-3 rounded-lg m-5"
+                    onClick={() => setIsDialogOpen(true)} 
+                    className="bg-constrastColor text-darkGreen p-4 m-1 rounded-lg font-semibold max-w-72 font-montserrat hover:brightness-75 transition-all ease-in-out duration-200 shadow-sm shadow-constrastColor"
                   >
                     Salvar mudanças
                   </button>
-                  <button className="transition ease-in-out delay-150 bg-darkGreen hover:-translate-y-1 hover:scale-110 hover:bg-lightGreen duration-300 p-3 rounded-lg m-5">
-                    Descartar mudanças
-                  </button>
+               
+                 
+
                 </div>
               )}
             </div>
           </div>
         </div>
+        <Dialog open={isDialogOpen}>
+        <DialogTrigger className="w-full"></DialogTrigger>
+        <DialogContent className="max-w-96 rounded-lg">
+          <DialogHeader>
+            <DialogTitle>Confirmar alterações</DialogTitle>
+          
+            <DialogDescription>
+              Certeza de que deseja alterar as informações? Essa ação não poderá ser revertida.
+            </DialogDescription>
+          </DialogHeader>
+          <div>
+            <button onClick={confirmChanges} className="bg-white w-full border-2 rounded-lg h-11 mt-4 border-constrastColor hover:brightness-75 transition-all duration-5000">
+              Confirmar
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
       </div>
-
-      <ConfirmChanges
-        showModal={showConfirmModal}
-        setShowModal={setShowConfirmModal}
-        checkboxChecked={checkboxChecked}
-        setCheckboxChecked={setCheckboxChecked}
-        handleSaveChanges={handleSaveChanges}
-      />
-    </div>
-  );
-}
+      
+      <ToastContainer position="top-right" autoClose={5000} />
+</div>
+  )}

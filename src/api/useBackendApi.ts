@@ -50,4 +50,15 @@ export const useBackendApi = () => ({
       token: response.data.token,
     };
   },
-});
+
+  deleteUsers: async (token: string) => {
+    await axios.post(
+      `http://localhost:3333/deleteUsers`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+  },})
