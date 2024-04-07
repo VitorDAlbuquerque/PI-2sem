@@ -136,7 +136,6 @@ export function Login() {
     );
 
     if (data) {
-      console.log(email, password)
       authContext.signin(email, password);
     }
   };

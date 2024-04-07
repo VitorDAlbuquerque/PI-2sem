@@ -15,7 +15,7 @@ const Faq: React.FC<FaqProps> = ({ question, answer }) => {
   };
 
   return (
-    <div className=" w-2/3 border border-t-0 bg-mainFontColor dark:border-neutral-600 dark:bg-body-dark">
+    <div className="border border-t-0 bg-mainFontColor dark:border-neutral-600 dark:bg-body-dark">
       <h2 className="accordion-header mb-0" id={question}>
         <button
           className="group relative flex w-full items-center border-0 bg-mainFontColor px-5 py-4 text-left text-base text-neutral-800 transition [overflow-anchor:none] hover:z-[2] focus:z-[3] focus:outline-none dark:bg-body-dark dark:text-white [&:not([data-twe-collapse-collapsed])]:bg-mainFontColor [&:not([data-twe-collapse-collapsed])]:text-primary [&:not([data-twe-collapse-collapsed])]:shadow-border-b dark:[&:not([data-twe-collapse-collapsed])]:bg-surface-dark dark:[&:not([data-twe-collapse-collapsed])]:text-primary dark:[&:not([data-twe-collapse-collapsed])]:shadow-white/10"

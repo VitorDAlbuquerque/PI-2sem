@@ -38,6 +38,7 @@ export const useTMDBApi = () => ({
       `https://api.themoviedb.org/3/movie/now_playing?language=pt-BR?api_key=794202efde8ce7a78d65e6f431811b5e`,
       options,
     );
+
     return {
       movies: response.data.results,
     };
@@ -51,4 +52,10 @@ export const useTMDBApi = () => ({
       genres: response.data.genres,
     };
   },
+  getMoviesByName: async(query: string)=>{
+    const response = await axios.get(`https://api.themoviedb.org/3/search/movie?query=${query}&include_adult=false&language=pt-BR&page=1`, options)
+    return {
+      movies: response.data.results,
+    };
+  }
 });

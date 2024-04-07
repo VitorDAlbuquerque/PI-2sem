@@ -322,5 +322,5 @@ export function Settings() {
       </div>
       
       <ToastContainer position="top-right" autoClose={5000} />
-</div>
-  )}
+  </div>
+)}
