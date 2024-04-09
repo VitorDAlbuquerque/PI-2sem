@@ -1,5 +1,6 @@
-import homelander from "../assets/homelander-1-1.jpg";
+import homelander from "../images/homelander-1-1.jpg";
 
+import { FaRegStar } from "react-icons/fa";
 import { GoHome } from "react-icons/go";
 import { LiaSlidersHSolid } from "react-icons/lia";
 import { IoSettingsOutline } from "react-icons/io5";
@@ -7,8 +8,6 @@ import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { LoginContext } from "@/context/AuthContext";
 import { MdExitToApp } from "react-icons/md";
-
-import { BsListCheck } from "react-icons/bs";
 
 import {
   Dialog,
@@ -37,11 +36,11 @@ export function SideBar() {
       {authContext.user ? (
         <div
           className="w-16 h-16 rounded-full bg-slate-800 cursor-pointer hover:brightness-75 transition-all ease-in-out duration-200 my-10"
-          onClick={() => goTo(`/Profile/${authContext.user?.id}`)}
+          onClick={() => goTo("/Profile")}
         >
           <img
             className={
-              path == `/Profile/${authContext.user.id}`
+              path == "/Profile"
                 ? "h-full w-full rounded-full object-cover border-2 border-constrastColor"
                 : "h-full w-full rounded-full object-cover"
             }
@@ -71,12 +70,8 @@ export function SideBar() {
         >
           <LiaSlidersHSolid />
         </p>
-        <p className={
-            path == "/PopularWatchLists"
-              ? "bg-darkGreen p-2 rounded-md"
-              : "p-2 hover:brightness-50 transition-all ease-in-out duration-300 cursor-pointer"
-          } onClick={() => goTo("/PopularWatchLists")}>
-          <BsListCheck />
+        <p className="p-2 hover:brightness-50 transition-all ease-in-out duration-300 cursor-pointer">
+          <FaRegStar />
         </p>
         <p
           onClick={() => goTo("/Settings")}

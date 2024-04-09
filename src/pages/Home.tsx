@@ -134,8 +134,8 @@ export function Home() {
       <div className="bg-mainBg flex-initial w-full min-h-screen">
         <Header />
 
-        <div className="w-full pt-8 flex flex-wrap justify-around gap-5 bg-bgAside">
-          <div className="max-w-96 text-mainFontColor text-center flex flex-col gap-7 items-center">
+        <div className="w-full pt-8 flex flex-wrap justify-around gap-5 bg-bgAside bg-opacity-60">
+          <div className="ml-10 max-w-96 text-mainFontColor text-center flex flex-col gap-7 items-center">
             <h1 className="font-medium text-4xl mt-6 font-montserrat2">
               Seja bem vindo ao Kiwi
             </h1>

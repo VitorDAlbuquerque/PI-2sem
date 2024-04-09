@@ -1,11 +1,10 @@
 import { useTMDBApi } from "@/api/useTMDBApi";
 import { SideBar } from "../components/sidebar";
-import homelander from "../assets/homelander-1-1.jpg";
+import homelander from "../images/homelander-1-1.jpg";
 import { FormEvent, useContext, useEffect, useState } from "react";
 
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -13,17 +12,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { BsFillPlusSquareFill } from "react-icons/bs";
-
-import { FaHeart } from "react-icons/fa";
-import { FaMessage } from "react-icons/fa6";
-
 import { LoginContext } from "@/context/AuthContext";
 
 import { Skeleton } from "@/components/ui/skeleton";
 
-import { useNavigate, useParams } from "react-router-dom";
-import { useBackendApi } from "@/api/useBackendApi";
+import { useNavigate } from "react-router-dom";
 
 interface topMoviesProps {
   id: number;
@@ -33,52 +26,13 @@ interface topMoviesProps {
   backdrop_path: string;
 }
 
-interface watchListProps{
-  id: string,
-  name: string,
-  description: string,
-  privacy: boolean,
-  numberLikes: number,
-  banner: string
-  user: {
-    name: string
-  }
-}
-
-interface profileUserProps{
-  id: string,
-  name: string,
-}
-
-const wait = () => new Promise((resolve) => setTimeout(resolve, 15));
-
 export function Profile() {
   const [popularMovies, setPopularMovies] = useState<topMoviesProps[]>([]);
   const [topRatedMovies, setTopRatedMovies] = useState<topMoviesProps[]>([]);
-  const [openDialogNewList, setOpenDialogNewList] = useState(false);
-  const [watchLists, setWatchLists] = useState<watchListProps[]>([]);
-
-  const [newListMovieValueText, setNewListMovieValueText] = useState('')
-  const [newListMovieValueId, setNewListMovieValueId] = useState(Number)
-  const [resultNewListMovies, setResultNewListMovies] = useState<topMoviesProps[]>([]);
-  const [newListMovieName, setNewListMovieName] = useState('')
-  const [newListMovieURL, setNewListMovieURL] = useState('')
-
 
   const [profileColor, setProfileColor] = useState("");
-  
-  const [listName, setListName] = useState("")
-  const [listDescription, setListDescription] = useState("")
-  const [listPrivacy, setListPrivacy] = useState(Boolean)
-  const [movieBanner, setMovieBanner] = useState("")
 
-
-  const [profileUser, setProfileUser] = useState<profileUserProps>()
-
-  const apiTMDB = useTMDBApi();
-  const apiBackend = useBackendApi();
-  const {id} = useParams()
-
+  const api = useTMDBApi();
   const authContext = useContext(LoginContext);
   const navigate = useNavigate();
 
@@ -105,43 +59,22 @@ export function Profile() {
     }
 
     async function getPopularMovies() {
-      const data = await apiTMDB.getPopularMovies();
+      const data = await api.getPopularMovies();
       if (data) {
         setPopularMovies(data.movies);
       }
     }
 
     async function getTopRatedMovies() {
-      const data = await apiTMDB.getTopRatedMovies();
+      const data = await api.getTopRatedMovies();
       if (data) {
         setTopRatedMovies(data.movies);
       }
     }
-
-    async function getWatchLists(id: string) {
-      if(profileUser){
-        const data = await apiBackend.listWatchListByUser(id);
-        if (data) {
-          setWatchLists(data.watchList);
-        }
-      }
-    }
-
-    async function getUserById(){
-      if(id){
-        const data = await apiBackend.getUserById(id);
-        if (data) {
-          setProfileUser(data.user);
-          if(id) getWatchLists(id)
-        }
-      }
-    }
-
-    getUserById()
     getTopRatedMovies();
     getPopularMovies();
     loadProfileColor();
-  }, [profileColor, openDialogNewList, profileUser?.id, id]);
+  }, [profileColor]);
 
   function selectColor() {
     const labelColor = document.getElementById("labelColor");
@@ -159,33 +92,6 @@ export function Profile() {
     if (!formColor) return;
     const color = formColor.value;
     setProfileColor(color);
-  }
-
-  async function createWatchList(e: FormEvent){
-    e.preventDefault();
-    wait().then(() => setOpenDialogNewList(false));
-    const storageData = localStorage.getItem("authToken");
-    if (storageData) {
-      await apiBackend.createNewWatchList(storageData, listName, listDescription, listPrivacy, newListMovieValueId, newListMovieName, newListMovieURL, movieBanner)
-    }
-  }
-
-  async function getMoviesByName(){
-    const data = await apiTMDB.getMoviesByName(newListMovieValueText)
-    const divResult = document.getElementById('result')
-    if(data){
-      setResultNewListMovies(data.movies)
-      if(divResult){
-        divResult.style.display = 'block'
-      }
-    }
-  }
-
-  function onBlurInputList(){
-    const divResult = document.getElementById('result')
-    if(divResult){
-      divResult.style.display = 'none'
-    }
   }
 
   return (
@@ -241,7 +147,7 @@ export function Profile() {
                   id="username"
                   className="invert xs:invert-0 tablet:invert-0 mobile:invert-0 text-4xl"
                 >
-                  {profileUser?.name.toLocaleUpperCase()}
+                  {authContext.user?.name.toLocaleUpperCase()}
                 </h1>
                 <p
                   id="followers"
@@ -340,112 +246,157 @@ export function Profile() {
               <p className="hover:underline cursor-pointer">Ver todos</p>
             </div>
 
-            <div className="mt-20">
-            {profileUser?.id == authContext.user?.id?
-              <h1 className="text-constrastColor font-semibold text-2xl flex gap-10 items-center">
-                MINHAS LISTAS
-                <Dialog open={openDialogNewList} onOpenChange={setOpenDialogNewList}>
-                  <DialogTrigger>
-                      <b className="hover:brightness-75 transition-all ease-in-out duration-200 cursor-pointer"><BsFillPlusSquareFill/></b>
-                    
-                  </DialogTrigger>
-                  <DialogContent onClick={onBlurInputList} className="max-w-96 rounded-lg text-left">
-                    <DialogHeader>
-                      <DialogTitle>Crie uma nova lista de filmes</DialogTitle>
-                      <DialogDescription>
-                        Crie listas de filmes à assistir e para indicar ao público!
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div>
-                      <form onSubmit={createWatchList} className="text-sm text-slate-500 flex flex-col gap-4">
-                        <div>
-                          <p className="">Título</p>
-                          <input value={listName} onChange={(e)=>{setListName(e.target.value)}} className="w-full h-10 border-[1px] outline-none border-slate-500 rounded-md px-2" type="text" />
-                        </div>
-                        <div>
-                          <p>Descrição</p>
-                          <textarea value={listDescription} onChange={(e)=>{setListDescription(e.target.value)}} className="w-full min-h-10 border-[1px] outline-none border-slate-500 rounded-md px-2 py-2" rows={5}></textarea>
-                        </div>
-                        <div>
-                          <p>Escolha o primeiro filme para sua lista</p>
-                          <input value={newListMovieValueText} onChange={(e)=>{
-                            setNewListMovieValueText(e.target.value)
-                            getMoviesByName()
-                          }}
-                        
-                          className="group w-full h-10 border-[1px] outline-none border-slate-500 rounded-md px-2" type="text" />
-                          <div id="result" className="bg-white hidden w-[87.5%] border-[1px] outline-none border-slate-500 rounded-md absolute">
-                            {resultNewListMovies.slice(0, 5).map(result =>{
-                              return(
-                                <p key={result.id} onClick={()=>{
-                                  setNewListMovieValueText(result.title)
-                                  setNewListMovieValueId(result.id)
-                                  setNewListMovieName(result.title)
-                                  setNewListMovieURL(result.poster_path) 
-                                  setMovieBanner(result.backdrop_path)   
-                                }} className="py-1 px-2 hover:bg-slate-400 hover:text-white cursor-pointer transition-all ease-in-out duration-200">{result.title}</p>
-                              )
-                            })}
-                            
-                          </div>
-                        </div>
-                        <div className="flex gap-2">
-                          <input onChange={()=>{setListPrivacy(!listPrivacy)}} type="checkbox" />
-                          <p>Lista privada</p>
-                        </div>
-
-                        <div className="flex items-center justify-end gap-5 ">
-                          <DialogClose onClick={()=>{
-                            setNewListMovieValueText("")
-                            setListName("")
-                            setListDescription("")
-                            setListPrivacy(false)
-                            setMovieBanner("")
-                          }} className="bg-gray-300 w-20 p-2 rounded-lg hover:brightness-75 transition-all duration-200">
-                            Cancelar
-                          </DialogClose>
-
-                          <button className="border-2 w-20 bg-white border-constrastColor p-2 rounded-lg hover:brightness-90 transition-all duration-200">
-                            Criar
-                          </button>
-                        </div>
-                      </form>
-                    </div>
-                  </DialogContent>
-                </Dialog>
-                </h1>
-                :
-                <h1 className="text-constrastColor font-semibold text-2xl flex gap-10 items-center">LISTAS DE {profileUser?.name.toLocaleUpperCase()}</h1>
-              }
-              <div className="flex flex-wrap gap-3">
-                {watchLists.length>0?
-                  watchLists.map(watchList =>{
-                    return(
-                      <div key={watchList.id} className="py-6 px-5 flex flex-col flex-wrap bg-mainBg hover:brightness-75 transition-all ease-in-out duration-200 rounded-lg cursor-pointer" onClick={()=>navigate(`/WatchList/${watchList.id}`)}>
-                        <img className="h-48 rounded-lg object-cover" src={`https://image.tmdb.org/t/p/original/${watchList.banner}`} alt="" />
-                            
-                        <div className="relative py-5 text-gray-400">
-                          <h1 className="text-constrastColor text-xl mb-3">{watchList.name}</h1>
-                          <div className="flex gap-7 mb-5">
-                            <p className="flex gap-2 items-center"><img className="h-7 w-7 object-cover rounded-full" src={homelander} alt="" />{watchList.user.name}</p>
-                            <p className="flex items-center gap-2"><b className="text-constrastColor"><FaHeart/></b> {watchList.numberLikes}</p>
-                            <p className="flex items-center gap-2"><b className="text-constrastColor"><FaMessage/></b> 672</p>
-                          </div>
-                          <div className="max-w-[350px] break-words text-gray-400 font-light">
-                            <p className="line-clamp-3">{watchList.description}</p>
-                          </div>
-                        </div>
-                    </div>
-                    )
-                  })
-                :
-                <div className="flex min-h-52 w-full items-center justify-center ">
-                  <h1>VOCÊ AINDA NÃO POSSUI NENHUMA LISTA</h1>
-
-                </div> 
-                }
+            {/** <div className="mt-20">
+              <h1 className="text-constrastColor text-2xl font-semibold">
+                LISTAS DE FILMES A ASSISTIR
+              </h1>
+            </div>
+            <div className="flex gap-10 mt-5 flex-wrap">
+              
+              <div className="w-64">
+                <div className="h-10 p-2 text-darkGreen bg-constrastColor flex items-center gap-3">
+                  <FaLock />
+                  <h2 className="font-semibold">Terror</h2>
+                </div>
+                <div className="bg-bgWathcList">
+                  <ul className="text-blackDefaultColor">
+                    <li className="p-2 flex items-center gap-2">
+                      <input
+                        className="accent-darkGreen h-5 w-5 checked:bg-slate-950"
+                        type="checkbox"
+                        name=""
+                        id=""
+                      />{" "}
+                      a
+                    </li>
+                    <li className="p-2 flex items-center gap-2">
+                      <input
+                        className="accent-slate-500 h-5 w-5 "
+                        type="checkbox"
+                        name=""
+                        id=""
+                      />{" "}
+                      aaa
+                    </li>
+                    <li className="p-2">
+                      {" "}
+                      <input type="checkbox" name="" id="" /> aaaaa
+                    </li>
+                    <li className="p-2">
+                      <input type="checkbox" name="" id="" /> ss
+                    </li>
+                    <li className="p-2">
+                      <input type="checkbox" name="" id="" /> a
+                    </li>
+                    <li className="p-2">
+                      <input type="checkbox" name="" id="" /> a
+                    </li>
+                    <li className="p-2">
+                      <input type="checkbox" name="" id="" /> a
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div className="w-64">
+                <div className="h-10 p-2 bg-darkGreen text-constrastColor flex items-center gap-3">
+                  <FaLock />
+                  <h2 className="font-semibold">Terror</h2>
+                </div>
+                <div className="bg-bgWathcList">
+                  <ul className="text-blackDefaultColor">
+                    <li className="p-2">
+                      <input type="checkbox" name="" id="" /> a
+                    </li>
+                    <li className="p-2">
+                      <input type="checkbox" name="" id="" /> aaa
+                    </li>
+                    <li className="p-2">
+                      {" "}
+                      <input type="checkbox" name="" id="" /> aaaaa
+                    </li>
+                    <li className="p-2">
+                      <input type="checkbox" name="" id="" /> ss
+                    </li>
+                    <li className="p-2">
+                      <input type="checkbox" name="" id="" /> a
+                    </li>
+                    <li className="p-2">
+                      <input type="checkbox" name="" id="" /> a
+                    </li>
+                    <li className="p-2">
+                      <input type="checkbox" name="" id="" /> a
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div className="w-64">
+                <div className="h-10 p-2 bg-darkGreen text-constrastColor flex items-center">
+                  <FaLock />
+                </div>
+                <div className="bg-bgWathcList">
+                  <ul className="text-blackDefaultColor">
+                    <li className="p-2">
+                      <input type="checkbox" name="" id="" /> a
+                    </li>
+                    <li className="p-2">
+                      <input type="checkbox" name="" id="" /> aaa
+                    </li>
+                    <li className="p-2">
+                      {" "}
+                      <input type="checkbox" name="" id="" /> aaaaa
+                    </li>
+                    <li className="p-2">
+                      <input type="checkbox" name="" id="" /> ss
+                    </li>
+                    <li className="p-2">
+                      <input type="checkbox" name="" id="" /> a
+                    </li>
+                    <li className="p-2">
+                      <input type="checkbox" name="" id="" /> a
+                    </li>
+                    <li className="p-2">
+                      <input type="checkbox" name="" id="" /> a
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div className="w-64">
+                <div className="h-10 p-2 bg-darkGreen text-constrastColor flex items-center">
+                  <p className="cursor-pointer">
+                    <FaLock />
+                  </p>
+                </div>
+                <div className="bg-bgWathcList">
+                  <ul className="text-blackDefaultColor">
+                    <li className="p-2">
+                      <input type="checkbox" name="" id="" /> a
+                    </li>
+                    <li className="p-2">
+                      <input type="checkbox" name="" id="" /> aaa
+                    </li>
+                    <li className="p-2">
+                      {" "}
+                      <input type="checkbox" name="" id="" /> aaaaa
+                    </li>
+                    <li className="p-2">
+                      <input type="checkbox" name="" id="" /> ss
+                    </li>
+                    <li className="p-2">
+                      <input type="checkbox" name="" id="" /> a
+                    </li>
+                    <li className="p-2">
+                      <input type="checkbox" name="" id="" /> a
+                    </li>
+                    <li className="p-2">
+                      <input type="checkbox" name="" id="" /> a
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
+            <div className="flex justify-center mt-5 text-lg ">
+              <p className="hover:underline cursor-pointer">Ver todos</p>
+            </div>*/}
           </div>
         </div>
       </div>
