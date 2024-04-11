@@ -13,7 +13,7 @@ export function Header() {
       </h1>
       <div className="items-center relative flex right-12">
         <input
-          className="bg-darkGreen h-8 w-52 rounded-full pl-3 text-sm outline-none font-montserrat text-mainFontColor whitespace-normal "
+          className="bg-darkGreen h-8 w-52 rounded-full pl-3 text-sm outline-none font-montserrat text-mainFontColor whitespace-normal pr-10"
           type="text"
           placeholder="..."
         />

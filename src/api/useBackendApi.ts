@@ -51,63 +51,87 @@ export const useBackendApi = () => ({
     };
   },
 
+  createNewWatchList: async(token: string, name: string, description: string, privacy: boolean, firstMovieId: number, movieName: string, movieURLImg: string, movieBanner: string)=>{
+    const response = await axios.post("http://localhost:3333/createNewWatchList", {name, description, privacy, firstMovieId, movieName, movieURLImg, movieBanner},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return {
+      watchlist: response.data,
+    };
+  },
+  listWatchListByUser: async(id: string)=>{
+    const response = await axios.get(`http://localhost:3333/listWatchListByUser/${id}`)
+    return{
+      watchList: response.data
+    }
+  },
+  getPopularWatchLists: async()=>{
+    const response = await axios.get("http://localhost:3333/ListPopularWacthList")
+    return{
+      watchList: response.data
+    }
+  },
+  getWatchListById: async(id: string)=>{
+    const response = await axios.get(`http://localhost:3333/listWatchListById/${id}`,)
+    return{
+      watchList: response.data
+    }
+  },
+  getMoviesOnWatchList: async(watchListId: string)=>{
+    const response = await axios.post("http://localhost:3333/MoviesOnLists", {watchListId})
+    return{
+      moviesOnWatchList: response.data
+    }
+  },
+  addMoviesWatchList: async(token: string, watchListId: string, movieId: number, movieName: string,  movieURLImg: string)=>{
+    const response = await axios.post("http://localhost:3333/addMovie", {movieName, watchListId, movieId, movieURLImg}, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    return{
+      moviesOnWatchList: response.data
+    }
+  },
+  getUserById: async(id: string)=>{
+    const response = await axios.get(`http://localhost:3333/userById/${id}`)
+    console.log(response.data)
+    return{
+      user: response.data
+    }
+  },
   deleteUsers: async (token: string) => {
-    try {
-      await axios.post(
-        `http://localhost:3333/deleteUsers`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
+    await axios.post(
+      `http://localhost:3333/deleteUsers`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
         }
-      );
-      
-      console.log('Conta excluída com sucesso');
-    } catch (error) {
-      console.error('Erro ao excluir conta:', error);
-     
-    }
+      }
+    );
   },
-
-
-  editUserInfo: async (
-    token: string,
-    newName: string,
-    newEmail: string,
-    newPassword: string,
-    newBirthDate: string,
-    newGender: string,
-    newCountry: string
-  ) => {
-    try {
-      const response = await axios.post(
-        "http://localhost:3333/editUserInfo",
-        {
-          newName,
-          newEmail,
-          newPassword,
-          newBirthDate,
-          newGender,
-          newCountry,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+  editWatchList: async (token: string, idwl: string, name: string, description: string, privacy: boolean) => {
+    await axios.put(
+      `http://localhost:3333/updateWatchlist`,
+      {idwl, name, description, privacy},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
         }
-      );
-      if (response.status === 200) {
-        return true; 
-      } else {
-        throw new Error("Erro ao editar informações do usuário");
       }
-    } catch (error: any) {
-      if (error.response && error.response.data && error.response.data.message) {
-        throw new Error(error.response.data.message);
-      } else {
-        throw new Error("Erro desconhecido ao editar informações do usuário");
-      }
-    }
+    );
   },
+  newLike: async(token: string, watchlistId: string) =>{
+    console.log(watchlistId)
+    await axios.post("http://localhost:3333/newLike", {watchlistId},
+    {
+      headers:{
+        Authorization: `Bearer ${token}`
+      }
+    })
+  }
 });
