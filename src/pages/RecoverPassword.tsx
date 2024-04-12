@@ -131,7 +131,7 @@ export function RecoverPassowrd() {
                       />
                   </div>
                   <div>
-                    <p className="text-bgWathcList">confrime a nova senha:</p>
+                    <p className="text-bgWathcList">Confirme a nova senha:</p>
                     <input
                       name="username"
                       className="w-full h-10 rounded-sm outline-none pl-3"

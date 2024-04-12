@@ -32,6 +32,8 @@ type MenuItem = "Perfil" | "Notificações" | "Privacidade e segurança" | "Aces
 
 export function Settings() {
 
+  
+
   const [countries, setCountries] = useState<countriesProps[]>([]);
 
   const apiCountries = useCountriesApi();
@@ -82,9 +84,73 @@ export function Settings() {
     const [country, setcountry] = useState("");
     const [bio, setBio] = useState("");
 
+    const [nameChanged, setnameChanged] = useState(false);
+    const [emailChanged, setemailChanged] = useState(false);
+    const [passwordChanged, setpasswordChanged] = useState(false);
+    const [birthDateChanged, setbirthDateChanged] = useState(false);
+    const [GenderChanged, {/* setGenderChanged*/}] = useState(false);
+    const [countryChanged, setcountryChanged] = useState(false);
+    const [{/*bioChanged*/}, setBioChanged] = useState(false);
 
+
+    const validateEmail = (email: string) => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    };
     
+  
+    const validatePassword = (password: string | any[]) => {
+      return password.length >= 8;
+    };
     
+
+    const validateName = (name: string | any[]) => {
+      return name.length >= 5;
+    };
+
+    const validateGender = (gender: string) => {
+      return !!gender; 
+    };
+    
+   
+    const validateCountry = (country: string) => {
+      return !!country;
+    };
+    
+   
+    const validateSubmit = () => {
+      if (emailChanged && !validateEmail(email)) {
+        toast.error("Por favor, insira um e-mail válido.");
+        return;
+      }
+    
+      if (passwordChanged && !validatePassword(password)) {
+        toast.error("A senha deve ter no mínimo 8 caracteres.");
+        return;
+      }
+    
+      if (nameChanged && !validateName(name)) {
+        toast.error("O nome de usuário deve ter no mínimo 5 caracteres.");
+        return;
+      }
+    
+      if (GenderChanged && !validateGender(Gender)) {
+        toast.error("Por favor, selecione um gênero.");
+        return;
+      }
+    
+      if (countryChanged && !validateCountry(country)) {
+        toast.error("Por favor, selecione um país.");
+        return;
+      }
+    
+      setIsValid(true);
+    };
+    
+
+    const [isValid, setIsValid] = useState(false);
+
+
   const saveChanges = async () => {
     try {
       const token = localStorage.getItem('authToken');
@@ -135,6 +201,8 @@ export function Settings() {
     toast.success("Alterações efetuadas com sucesso.", {
       position: "top-right",
       autoClose: 5000,
+
+
     });
   };
 
@@ -142,6 +210,14 @@ export function Settings() {
     toast.error("As alterações não foram efetuadas.", {
       position: "top-right",
       autoClose: 5000,})
+ 
+  };
+
+  const showToastMessageInfo = () => {
+    toast.info("Nenhuma alteração foi feita.", {
+      position: "top-right",
+      autoClose: 5000,
+    });
   };
 
   const confirmChanges = () => {
@@ -149,9 +225,19 @@ export function Settings() {
   };
 
   const confirmAndSaveChanges = () => {
-    saveChanges(); 
-    confirmChanges ();
-  }
+    if (nameChanged || emailChanged || passwordChanged || birthDateChanged || GenderChanged || countryChanged) {
+      validateSubmit();
+      confirmChanges();
+      if (isValid) {
+        saveChanges();
+        confirmChanges();
+      }
+    } else {
+      showToastMessageInfo();
+      confirmChanges();
+    }
+  };
+  
 
 
   const renderSettings = () => {
@@ -169,14 +255,21 @@ export function Settings() {
                     type="text"
                     placeholder="Novo nome de usuário"
                     value={name}
-  onChange={(e) => setname(e.target.value)}
+                    onChange={(e) => {
+                      setname(e.target.value);
+                      setnameChanged(true); 
+                    }}
                   />
                 </div>
               </li>
 
               <li>
               <p className="mt-5 mb-3">Alterar sua bio</p>
-                <textarea value={bio} onChange={(e) => setBio(e.target.value)} rows={5} className="block w-5/6 bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" placeholder="Escreva sua bio aqui"></textarea>
+                <textarea value={bio} 
+                  onChange={(e) => {
+                    setBio(e.target.value);
+                    setBioChanged(true);
+                  }}rows={5} className="block w-5/6 bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" placeholder="Escreva sua bio aqui"></textarea>
               </li>
            
             </ul>
@@ -216,7 +309,8 @@ export function Settings() {
                     id="grid-email"
                     type="email"
                     placeholder="Novo email"
-                    value={email} onChange={(e) =>setemail(e.target.value)}
+                    value={email} onChange={(e) =>{
+                      setemail(e.target.value);  setemailChanged(true);}}
                   />
                 </div>
               </li>
@@ -228,7 +322,7 @@ export function Settings() {
                     id="grid-senha"
                     type="password"
                     placeholder="Nova senha"
-                    value={password} onChange={(e) =>setpassword(e.target.value)}
+                    value={password} onChange={(e) =>{setpassword(e.target.value); setpasswordChanged(true);}}
                   />
                 </div>
                
@@ -242,7 +336,7 @@ export function Settings() {
                     type="date"
                     placeholder="Nova data de nascimento"
                     value={birthDate}
-  onChange={(e) => setbirthDate(e.target.value)}
+  onChange={(e) => {setbirthDate(e.target.value); setbirthDateChanged(true);} }
                   />
                 </div>
               </li>
@@ -254,7 +348,7 @@ export function Settings() {
                           name="gender"
                           id="gender"
                           value={Gender}
-                          onChange={(e) => setGender(e.target.value)}
+                          onChange={(e) => {setGender(e.target.value); setbirthDateChanged(true);}}
                         >
                           <option value="" disabled hidden>
                             Gênero{" "}
@@ -277,7 +371,9 @@ export function Settings() {
                           name="country"
                           id="country"
                           value={country}
-                          onChange={(e) => setcountry(e.target.value)}
+                          onChange={(e) => {setcountry(e.target.value);
+                            setcountryChanged(true)
+                          }}
                         >
                           <option value="" disabled hidden>
                             País

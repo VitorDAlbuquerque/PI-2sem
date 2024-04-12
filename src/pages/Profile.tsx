@@ -254,7 +254,7 @@ export function Profile() {
           <div className="relative -top-40 flex items-center justify-between ">
             <div className="flex items-center flex-wrap gap-5 ">
               <img
-                className="h-56 w-48 object-cover border-4 border-mainBg border-b-0"
+                className="mx-6 h-56 w-48 object-cover border-2 border-mainBg rounded-sm border-b-0"
                 src={homelander}
                 alt=""
               />
