@@ -19,7 +19,11 @@ interface watchListProps{
     user: {
       name: string,
       id: string
-    }
+    },
+    isLiked: [{
+        userId: string,
+        watchListId: string
+    }]
 }
 
 export function PopularWatchLists() {
@@ -55,7 +59,7 @@ export function PopularWatchLists() {
                                         <h1 className="text-constrastColor text-xl mb-3">{watchList.name}</h1>
                                         <div className="flex gap-7 mb-5">
                                             <div className="flex gap-2 items-center"><img className="h-7 w-7 object-cover rounded-full" src={homelander} alt="" /><p className="hover:text-constrastColor hover:underline">{watchList.user.name}</p></div>
-                                            <p className="flex items-center gap-2"><b className="text-constrastColor"><FaHeart/></b> {watchList.numberLikes}</p>
+                                            <p className="flex items-center gap-2"><b className="text-constrastColor"><FaHeart/></b> {watchList.isLiked.length}</p>
                                             <p className="flex items-center gap-2"><b className="text-constrastColor"><FaMessage/></b> 672</p>
                                         </div>
                                         <div className="max-w-[350px] break-words text-gray-400 font-light">

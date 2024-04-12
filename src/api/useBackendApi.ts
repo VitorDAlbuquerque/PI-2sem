@@ -71,23 +71,25 @@ export const useBackendApi = () => ({
 
   editUserInfo: async (
     token: string,
-    newName: string,
-    newEmail: string,
-    newPassword: string,
-    newBirthDate: string,
-    newGender: string,
-    newCountry: string
+    name: string,
+    email: string,
+    password: string,
+    birthDate: string,
+    gender: string,
+    country: string,
+    bio: string
   ) => {
     try {
       const response = await axios.post(
         "http://localhost:3333/updateUser",
         {
-          newName,
-          newEmail,
-          newPassword,
-          newBirthDate,
-          newGender,
-          newCountry,
+          name,
+          email,
+          password,
+          birthDate,
+          gender,
+          country,
+          bio
         },
         {
           headers: {
@@ -107,5 +109,105 @@ export const useBackendApi = () => ({
         throw new Error("Erro desconhecido ao editar informações do usuário");
       }
     }
+  },
+  newLike: async(token: string, watchlistId: string) =>{
+    console.log(watchlistId)
+    await axios.post("http://localhost:3333/newLike", {watchlistId},
+    {
+      headers:{
+        Authorization: `Bearer ${token}`
+      }
+    })
+  },
+  editWatchList: async (token: string, idwl: string, name: string, description: string, privacy: boolean) => {
+    await axios.put(
+      `http://localhost:3333/updateWatchlist`,
+      {idwl, name, description, privacy},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+  },
+  getPopularWatchLists: async()=>{
+    const response = await axios.get("http://localhost:3333/ListPopularWacthList")
+    return{
+      watchList: response.data
+    }
+  },
+  getWatchListById: async(id: string)=>{
+    const response = await axios.get(`http://localhost:3333/listWatchListById/${id}`,)
+    return{
+      watchList: response.data
+    }
+  },
+  getMoviesOnWatchList: async(watchListId: string)=>{
+    const response = await axios.post("http://localhost:3333/MoviesOnLists", {watchListId})
+    return{
+      moviesOnWatchList: response.data
+    }
+  },
+  addMoviesWatchList: async(token: string, watchListId: string, movieId: number, movieName: string,  movieURLImg: string)=>{
+    const response = await axios.post("http://localhost:3333/addMovie", {movieName, watchListId, movieId, movieURLImg}, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    return{
+      moviesOnWatchList: response.data
+    }
+  },
+  getUserById: async(id: string)=>{
+    const response = await axios.get(`http://localhost:3333/userById/${id}`)
+    return{
+      user: response.data
+    }
+  },
+  createNewWatchList: async(token: string, name: string, description: string, privacy: boolean, firstMovieId: number, movieName: string, movieURLImg: string, movieBanner: string)=>{
+    const response = await axios.post("http://localhost:3333/createNewWatchList", {name, description, privacy, firstMovieId, movieName, movieURLImg, movieBanner},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return {
+      watchlist: response.data,
+    };
+  },
+  listWatchListByUser: async(id: string)=>{
+    const response = await axios.get(`http://localhost:3333/listWatchListByUser/${id}`)
+    return{
+      watchList: response.data
+    }
+  },
+  deleteWatchlist: async(token: string, idwl: string)=>{
+    const response = await axios.delete(`http://localhost:3333/deleteWatchList/${idwl}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return {
+      watchList: response.data
+    }
+  },
+  updateUserTheme: async (token: string, theme:string) => {
+    await axios.put(
+      `http://localhost:3333/updateUserTheme`,
+      {theme},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+  },
+  updatePassword: async (email: string, password:string) => {
+    await axios.put(
+      `http://localhost:3333/updatePassword`,
+      {email, password},
+    )
   },
 });

@@ -42,12 +42,18 @@ interface watchListProps{
   banner: string
   user: {
     name: string
-  }
+  },
+  isLiked: [{
+    userId: string,
+    watchListId: string
+  }]
 }
 
 interface profileUserProps{
   id: string,
   name: string,
+  bio: string,
+  theme: string
 }
 
 const wait = () => new Promise((resolve) => setTimeout(resolve, 15));
@@ -64,14 +70,13 @@ export function Profile() {
   const [newListMovieName, setNewListMovieName] = useState('')
   const [newListMovieURL, setNewListMovieURL] = useState('')
 
-
   const [profileColor, setProfileColor] = useState("");
-  
+  const [profileColorDialog, setProfileColorDialog] = useState(false);
+
   const [listName, setListName] = useState("")
   const [listDescription, setListDescription] = useState("")
   const [listPrivacy, setListPrivacy] = useState(Boolean)
   const [movieBanner, setMovieBanner] = useState("")
-
 
   const [profileUser, setProfileUser] = useState<profileUserProps>()
 
@@ -94,14 +99,16 @@ export function Profile() {
   isLoged();
 
   useEffect(() => {
-    function loadProfileColor() {
-      const profileColorDiv = document.getElementById("profileColor");
+    function getTheme(){
+      const labelColor = document.getElementById("profileColor");
       const username = document.getElementById("username");
       const followers = document.getElementById("followers");
 
-      if (profileColorDiv) profileColorDiv.style.backgroundColor = profileColor;
-      if (username) username.style.color = profileColor;
-      if (followers) followers.style.color = profileColor;
+      if(profileUser && !profileColor){{
+        if(labelColor) labelColor.style.backgroundColor = profileUser.theme
+        if(username) username.style.color = profileUser.theme
+        if(followers) followers.style.color = profileUser.theme
+      }}
     }
 
     async function getPopularMovies() {
@@ -136,29 +143,43 @@ export function Profile() {
         }
       }
     }
-
+    getTheme()
     getUserById()
     getTopRatedMovies();
     getPopularMovies();
-    loadProfileColor();
-  }, [profileColor, openDialogNewList, profileUser?.id, id]);
+  }, [profileColor, openDialogNewList, profileUser?.id, id, profileColorDialog, authContext.user]);
 
   function selectColor() {
     const labelColor = document.getElementById("labelColor");
+    const profileColor = document.getElementById("profileColor");
+    const username = document.getElementById("username");
+    const followers = document.getElementById("followers");
     const formColor = document.getElementById("formColor") as HTMLInputElement;
     if (!formColor) return;
     const color = formColor.value;
 
     if (!labelColor) return;
     labelColor.style.background = color;
+    if(profileColor) profileColor.style.backgroundColor = color
+    if(username) username.style.color = color
+    if(followers) followers.style.color = color
   }
 
-  function updateProfileColor(e: FormEvent) {
+  async function updateProfileColor(e: FormEvent) {
     e.preventDefault();
+    wait().then(() => setProfileColorDialog(false));
+
     const formColor = document.getElementById("formColor") as HTMLInputElement;
     if (!formColor) return;
     const color = formColor.value;
-    setProfileColor(color);
+    setProfileColor(color)
+
+    const storageData = localStorage.getItem("authToken");
+    
+    if (storageData) {
+      await apiBackend.updateUserTheme(storageData, color)
+      
+    }
   }
 
   async function createWatchList(e: FormEvent){
@@ -192,7 +213,7 @@ export function Profile() {
     <div className="flex">
       <SideBar />
       <div className="bg-mainBg text-emerald-50 w-full min-h-screen font-montserrat">
-        <Dialog>
+        <Dialog open={profileColorDialog} onOpenChange={setProfileColorDialog}>
           <DialogTrigger className="w-full">
             <div
               className="bg-slate-200 h-80 xs:h-72 tablet:h-72 mobile:h-72
@@ -214,7 +235,8 @@ export function Profile() {
                   <p className="w-full h-20 rounded-lg" id="labelColor"></p>
                 </label>
                 <input
-                  className="w-full h-20 border-0 rounded-lg hidden"
+                  defaultValue={authContext.user?.theme}
+                  className="w-full h-20 border-0 rounded-lg hidden shadow-xl"
                   onChange={selectColor}
                   type="color"
                   name="formColor"
@@ -249,9 +271,8 @@ export function Profile() {
                 >
                   123 Followers
                 </p>
-                <p className="font-light max-w-80 mt-3">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Et
-                  commodi quam fugiat ipsa neque ad facere. Alias enim animi et.
+                <p className="font-light max-w-80 mt-3 min-h-28 ">
+                  {profileUser?.bio}
                 </p>
               </div>
             </div>
@@ -428,7 +449,7 @@ export function Profile() {
                           <h1 className="text-constrastColor text-xl mb-3">{watchList.name}</h1>
                           <div className="flex gap-7 mb-5">
                             <p className="flex gap-2 items-center"><img className="h-7 w-7 object-cover rounded-full" src={homelander} alt="" />{watchList.user.name}</p>
-                            <p className="flex items-center gap-2"><b className="text-constrastColor"><FaHeart/></b> {watchList.numberLikes}</p>
+                            <p className="flex items-center gap-2"><b className="text-constrastColor"><FaHeart/></b> {watchList.isLiked.length}</p>
                             <p className="flex items-center gap-2"><b className="text-constrastColor"><FaMessage/></b> 672</p>
                           </div>
                           <div className="max-w-[350px] break-words text-gray-400 font-light">

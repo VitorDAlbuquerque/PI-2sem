@@ -72,6 +72,7 @@ export function WatchList(){
 
     const [newMovieAtListDialog, setNewMovieAtListDialog] = useState(false)
     const [editListDialog, setEditListDialog] = useState(false)
+    const [deleteListDialog, setDeleteListDialog] = useState(false)
 
     const [newListMovieValueText, setNewListMovieValueText] = useState('')
     const [newListMovieValueId, setNewListMovieValueId] = useState(Number)
@@ -99,7 +100,7 @@ export function WatchList(){
             }
         }
         getMoviesOnWatchList()
-    }, [newMovieAtListDialog, editListDialog, watchList])
+    }, [newMovieAtListDialog, editListDialog, watchList, deleteListDialog])
 
     if(!watchList){
         return <Page404Error/>
@@ -141,6 +142,13 @@ export function WatchList(){
         const storageData = localStorage.getItem("authToken");
         if (storageData ) {
             await apiBackend.editWatchList(storageData, data.id as string, data.name as string, data.description as string, Boolean(data.privacy));
+        }
+    }
+
+    async function deleteWatchList(idwl: string){
+        const storageData = localStorage.getItem("authToken");
+        if(storageData){
+            await apiBackend.deleteWatchlist(storageData, idwl)
         }
     }
 
@@ -203,7 +211,7 @@ export function WatchList(){
                                                     Cancelar
                                                     </DialogClose>
                             
-                                                    <button className="border-2 w-20 bg-white border-constrastColor p-2 rounded-lg hover:brightness-90 transition-all duration-200">
+                                                    <button onClick={()=>setNewListMovieValueText("")} className="border-2 w-20 bg-white border-constrastColor p-2 rounded-lg hover:brightness-90 transition-all duration-200">
                                                         Adicionar
                                                     </button>
                                                 </div>
@@ -269,22 +277,22 @@ export function WatchList(){
                                 watchList.isLiked.filter((like) => like.watchListId == id).slice(watchList.isLiked.length-1, watchList.isLiked.length).map(like=>{
                                     if(like.watchListId == id && like.userId == authContext.user?.id){
                                         return(
-                                            <p key={like.watchListId+like.userId} onClick={newLike} className="flex items-center gap-2 text-xl  cursor-pointer hover:brightness-75 transition-all duration-200"><b className="text-constrastColor"><FaHeart/></b>{watchList.numberLikes}</p>
+                                            <p key={like.watchListId+like.userId} onClick={newLike} className="flex items-center gap-2 text-xl  cursor-pointer hover:brightness-75 transition-all duration-200"><b className="text-constrastColor"><FaHeart/></b>{watchList.isLiked.length}</p>
                                         )
                                     } else {
                                         return(
-                                            <p key={like.watchListId+like.userId} onClick={newLike} className="flex items-center gap-2 text-xl hover:text-darkGreen transition-all duration-200 cursor-pointer"><FaRegHeart/>{watchList.numberLikes}</p>
+                                            <p key={like.watchListId+like.userId} onClick={newLike} className="flex items-center gap-2 text-xl hover:text-darkGreen transition-all duration-200 cursor-pointer"><FaRegHeart/>{watchList.isLiked.length}</p>
                                         )
                                     }
                                 })
                             :
-                                <p onClick={newLike} className="flex items-center gap-2 text-xl cursor-pointer hover:text-darkGreen"><FaRegHeart/>{watchList.numberLikes}</p>
+                                <p onClick={newLike} className="flex items-center gap-2 text-xl cursor-pointer hover:text-darkGreen"><FaRegHeart/>{watchList.isLiked.length}</p>
                             }
                             <p className="flex items-center gap-2 text-xl"><b className="text-constrastColor"><FaMessage/></b> 672</p>
                         </div>
                         <div className="mb-5">
                             {watchList.authorId == authContext.user?.id?
-                            <Dialog >
+                            <Dialog open={deleteListDialog} onOpenChange={setDeleteListDialog}>
                                 <DialogTrigger>
                                 <p className="text-gray-400 hover:text-red-600 transition-all duration-200 cursor-pointer"><FaTrashCan/></p>
 
@@ -297,7 +305,10 @@ export function WatchList(){
                                         </DialogDescription>
                                     </DialogHeader>
                                     <div>
-                                        <button className="bg-white w-full border-2 rounded-lg h-11 mt-4 border-constrastColor hover:border-red-600 transition-all duration-200">
+                                        <button onClick={()=>{
+                                            deleteWatchList(watchList.id)
+                                            window.location.href = "/PopularWatchLists";
+                                            }} className="bg-white w-full border-2 rounded-lg h-11 mt-4 border-constrastColor hover:border-red-600 transition-all duration-200">
                                             Deletar
                                         </button>
                                     </div>

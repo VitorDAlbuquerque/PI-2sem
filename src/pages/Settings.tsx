@@ -80,24 +80,25 @@ export function Settings() {
     const [birthDate, setbirthDate] = useState("");
     const [Gender, setGender] = useState("");
     const [country, setcountry] = useState("");
+    const [bio, setBio] = useState("");
+
+
     
-    const saveChanges = async () => {
-      try {
-        const token = localStorage.getItem('authToken');
-        if (!token) {
-          console.error('Token não encontrado no localStorage');
-          return;
-        }
-        await apiBackend.editUserInfo(token, name, email, password, birthDate, Gender, country);
-        showToastMessage();
-      } catch (error) {
-        console.error("Erro ao salvar alterações:", error);
-        showToastMessageError();
+    
+  const saveChanges = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        console.error('Token não encontrado no localStorage');
+        return;
       }
-    };
-    
-
-
+      await apiBackend.editUserInfo(token, name, email, password, birthDate, Gender, country, bio);
+      showToastMessage();
+    } catch (error) {
+      console.error("Erro ao salvar alterações:", error);
+      showToastMessageError();
+    }
+  };
 
   const apiBackend = useBackendApi();
   const confirmDeleteAccount = async () => {
@@ -152,6 +153,7 @@ export function Settings() {
     confirmChanges ();
   }
 
+
   const renderSettings = () => {
     switch (selectedItem) {
       case "Perfil":
@@ -163,7 +165,6 @@ export function Settings() {
                 <div className="w-full md:w-1/2">
                   <input
                     className="block w-5/6 bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    defaultValue={name} 
                     id="grid-username"
                     type="text"
                     placeholder="Novo nome de usuário"
@@ -175,7 +176,7 @@ export function Settings() {
 
               <li>
               <p className="mt-5 mb-3">Alterar sua bio</p>
-<textarea  className="block w-5/6 bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" placeholder="Escreva sua bio aqui"></textarea>
+                <textarea value={bio} onChange={(e) => setBio(e.target.value)} rows={5} className="block w-5/6 bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" placeholder="Escreva sua bio aqui"></textarea>
               </li>
            
             </ul>
@@ -212,7 +213,6 @@ export function Settings() {
                 <div className="w-full md:w-1/2 ">
                   <input
                     className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    defaultValue={email} 
                     id="grid-email"
                     type="email"
                     placeholder="Novo email"
@@ -225,7 +225,6 @@ export function Settings() {
                 <div className=" w-full md:w-1/2 ">
                   <input
                     className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    defaultValue={password} 
                     id="grid-senha"
                     type="password"
                     placeholder="Nova senha"
@@ -240,7 +239,6 @@ export function Settings() {
                   <input
                     className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                     id="grid-birthDate"
-                    defaultValue={birthDate} 
                     type="date"
                     placeholder="Nova data de nascimento"
                     value={birthDate}
@@ -253,7 +251,6 @@ export function Settings() {
                 <p className="mt-5 mb-3 ">Alterar gênero</p>
                 <select
                           className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                          defaultValue={Gender} 
                           name="gender"
                           id="gender"
                           value={Gender}
@@ -277,7 +274,6 @@ export function Settings() {
               <p className="mt-5 mb-3 "> Alterar país:</p>
                         <select
                           className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                          defaultValue={country}
                           name="country"
                           id="country"
                           value={country}
