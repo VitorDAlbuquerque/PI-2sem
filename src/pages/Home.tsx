@@ -56,7 +56,7 @@ export function Home() {
   useEffect(() => {
     //CHAMADA API DE FILME
     async function getPopularMovies() {
-      const data = await api.getPopularMovies();
+      const data = await api.getPopularMovies("1");
       if (data) {
         setPopularMovies(data.movies);
       }

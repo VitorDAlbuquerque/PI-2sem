@@ -88,7 +88,7 @@ module.exports = {
 
       backgroundImage: {
         "kiwi-bg":
-          "url('../images/882219_stack of kiwi fruits _xl-1024-v1-0.png')",
+          "url('../assets/882219_stack of kiwi fruits _xl-1024-v1-0.png')",
       },
 
       colors: {

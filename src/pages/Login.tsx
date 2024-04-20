@@ -136,7 +136,6 @@ export function Login() {
     );
 
     if (data) {
-      console.log(email, password)
       authContext.signin(email, password);
     }
   };
@@ -158,7 +157,7 @@ export function Login() {
           <div className="flex-1 flex justify-center items-center ">
             <Tabs defaultValue="login">
               <TabsContent value="login">
-                <div className="bg-bgAside h-420px w-96 rounded-lg p-5 flex items-center flex-col">
+                <div className="bg-bgAside w-96 rounded-lg p-5 flex items-center flex-col">
                   <h1 className="text-constrastColor font-montserrat font-semibold text-3xl">
                     Seja bem-vindo
                   </h1>
@@ -189,6 +188,7 @@ export function Login() {
                       Entrar
                     </button>
                   </form>
+                  <p onClick={()=>navigate("/RecoverPassword")} className="text-bgWathcList mt-3 hover:text-constrastColor cursor-pointer transition-all duration-200">Esqueceu a senha?</p>
                   <p className="text-bgWathcList mt-3">ou</p>
 
                   <TabsList className="bg-bgAside">
