@@ -1,7 +1,6 @@
 import axios from "axios";
 
 const options = {
-  method: "GET",
   headers: {
     accept: "application/json",
     Authorization:
@@ -17,7 +16,7 @@ fetch("https://api.themoviedb.org/3/authentication", options)
 export const useTMDBApi = () => ({
   getPopularMovies: async (page: string) => {
     const response = await axios.get(
-      `https://api.themoviedb.org/3/movie/popular?language=pt-BR?api_key=794202efde8ce7a78d65e6f431811b5e&page=${page}`,
+      `https://api.themoviedb.org/3/movie/popular?language=pt-BR&api_key=794202efde8ce7a78d65e6f431811b5e&page=${page}`,
       options,
     );
     return {
@@ -64,4 +63,30 @@ export const useTMDBApi = () => ({
       movies: response.data.results,
     };
   },
+
+  getMovieDetails: async (movieId: string) => {
+    try {
+      const response = await axios.get(
+        `https://api.themoviedb.org/3/movie/${movieId}?language=pt-BR&api_key=794202efde8ce7a78d65e6f431811b5e`,
+        options
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao obter detalhes do filme:", error);
+      throw error;
+    }
+  },
+  getMovieCast: async (movieId: string) => {
+    try {
+      const response = await axios.get(
+        `https://api.themoviedb.org/3/movie/${movieId}/credits?language=pt-BR&api_key=794202efde8ce7a78d65e6f431811b5e`,
+        options
+      );
+      return response.data.cast;
+    } catch (error) {
+      console.error("Erro ao obter o elenco do filme:", error);
+      throw error;
+    }
+  },
 });
+

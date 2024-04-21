@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { SideBar } from "../components/sidebar";
 import { Header } from "../components/header";
 import Faq from "../components/ui/faq";
@@ -6,6 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useBackendApi } from "@/api/useBackendApi";
 import { useCountriesApi } from "@/api/useCountriesApi";
+import { LoginContext } from "@/context/AuthContext";
 
 interface countriesProps {
   name: {
@@ -45,8 +46,8 @@ export function Settings() {
     getCountries();
   }, []);
 
-
-  const isLoggedIn = !!localStorage.getItem('authToken');
+  const { user } = useContext(LoginContext);
+  const isLoggedIn = !!user; 
 
   const [pageTitle, setPageTitle] = useState("Configurações");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -88,7 +89,7 @@ export function Settings() {
     const [birthDateChanged, setbirthDateChanged] = useState(false);
     const [GenderChanged, {/* setGenderChanged*/}] = useState(false);
     const [countryChanged, setcountryChanged] = useState(false);
-    const [{/*bioChanged*/}, setBioChanged] = useState(false);
+    const [bioChanged, setBioChanged] = useState(false);
 
 
     const validateEmail = (email: string) => {
@@ -223,7 +224,7 @@ export function Settings() {
   };
 
   const confirmAndSaveChanges = () => {
-    if (nameChanged || emailChanged || passwordChanged || birthDateChanged || GenderChanged || countryChanged) {
+    if (nameChanged || emailChanged || passwordChanged || birthDateChanged || GenderChanged || countryChanged || bioChanged) {
       validateSubmit();
       confirmChanges();
       if (isValid) {
@@ -472,23 +473,27 @@ export function Settings() {
         <div className="py-14 px-20">
           <div className="flex">
             <ul className="options max-h-56 text-darkGreen font-montserrat font-medium px-6 py-3 bg-bgAside rounded-lg border-none">
-              <li
-                className={`py-2 cursor-pointer font-bold ${selectedItem === "Perfil" ? "text-lightGreen underline" : "hover:text-lightGreen"}`}
-                onClick={() => handleItemClick("Perfil")}
-              >
-                Perfil
-              </li>
+              {isLoggedIn && (
+                <>
+                  <li
+                    className={`py-2 cursor-pointer font-bold ${selectedItem === "Perfil" ? "text-lightGreen underline" : "hover:text-lightGreen"}`}
+                    onClick={() => handleItemClick("Perfil")}
+                  >
+                    Perfil
+                  </li>
+                  <li
+                    className={`py-2 cursor-pointer font-bold ${selectedItem === "Privacidade e segurança" ? "text-lightGreen underline" : "hover:text-lightGreen"}`}
+                    onClick={() => handleItemClick("Privacidade e segurança")}
+                  >
+                    Privacidade e segurança
+                  </li>
+                </>
+              )}
               <li
                 className={`py-2 cursor-pointer font-bold ${selectedItem === "Notificações" ? "text-lightGreen underline" : "hover:text-lightGreen"}`}
                 onClick={() => handleItemClick("Notificações")}
               >
                 Notificações
-              </li>
-              <li
-                className={`py-2 cursor-pointer font-bold ${selectedItem === "Privacidade e segurança" ? "text-lightGreen underline" : "hover:text-lightGreen"}`}
-                onClick={() => handleItemClick("Privacidade e segurança")}
-              >
-                Privacidade e segurança
               </li>
               <li
                 className={`py-2 cursor-pointer font-bold ${selectedItem === "Acessibilidade" ? "text-lightGreen underline" : "hover:text-lightGreen"}`}
@@ -507,9 +512,9 @@ export function Settings() {
               <h1 className="text-mainFontColor font-montserrat font-bold text-2xl mb-6">
                 {pageTitle}
               </h1>
-              {isLoggedIn && renderSettings()}
+              {renderSettings()}
 
-              {isLoggedIn &&  selectedItem !== "Ajuda" && (
+              {isLoggedIn && selectedItem !== "Ajuda" && (
                 <div className="flex  mt-6 w-2/3">
                   <button
                     onClick={() => setIsDialogOpen(true)}

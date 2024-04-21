@@ -3,6 +3,9 @@ import { SideBar } from "../components/sidebar";
 import homelander from "../assets/homelander-1-1.jpg";
 import { FormEvent, useContext, useEffect, useState } from "react";
 
+import { Link } from "react-router-dom";
+
+
 import {
   Dialog,
   DialogClose,
@@ -299,11 +302,12 @@ export function Profile() {
                 popularMovies.slice(0, 10).map((movie) => {
                   return (
                     <div key={movie.id}>
+                      <Link to={`/movie/${movie.id}`}>
                       <img
                         className="h-80 max:h-[480px] 2xl:h-80 xl:h-[295px] lg:h-56 mobile:h-60"
                         src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
                         alt=""
-                      />
+                      /></Link>
                     </div>
                   );
                 })
@@ -336,11 +340,12 @@ export function Profile() {
                 topRatedMovies.slice(0, 10).map((movie) => {
                   return (
                     <div key={movie.id}>
+                       <Link to={`/movie/${movie.id}`}>
                       <img
                         className="h-80 max:h-[480px] 2xl:h-80 xl:h-[295px] lg:h-56 mobile:h-60"
                         src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
                         alt=""
-                      />
+                      /></Link>
                     </div>
                   );
                 })

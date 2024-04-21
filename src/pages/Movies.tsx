@@ -6,6 +6,8 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 import { CiSearch } from "react-icons/ci";
 
+import { Link } from "react-router-dom";
+
 import {
   Carousel,
   CarouselContent,
@@ -187,13 +189,15 @@ export function Movies(){
           <div className="h-[1px] bg-slate-400 w-11/12"></div>
 
           <div className="flex justify-center mt-6 gap-3 flex-wrap ">
-            {popularMovies.map(movie =>{
-              return(
-                <div key={movie.id}>
-                  <img className="h-80" src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} alt="" />
-                </div>
-              )
-            })}
+          {popularMovies.map(movie => {
+            return (
+             <div key={movie.id}>
+                 <Link to={`/movie/${movie.id}`}>
+              <img className="h-80" src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} alt="" />
+            </Link>
+    </div>
+  );
+})}
           </div>
           <Pagination className="my-16">
             <PaginationContent className="text-white">

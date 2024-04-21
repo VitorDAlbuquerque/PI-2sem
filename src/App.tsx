@@ -9,6 +9,8 @@ import { PopularWatchLists } from "./pages/PopularWatchLists";
 import { WatchList } from "./pages/WatchList";
 import { Page404Error } from "./pages/Page404Error";
 import { RecoverPassowrd } from "./pages/RecoverPassword";
+import { MovieDetails } from "./pages/MovieDetails";
+
 function App() {
   return (
     <BrowserRouter>
@@ -22,6 +24,7 @@ function App() {
           <Route path="/PopularWatchLists" element={<PopularWatchLists />} />
           <Route path="/Settings" element={<Settings />} />
           <Route path="/RecoverPassword" element={<RecoverPassowrd />} />
+          <Route path="/Movie/:movieId" element={<MovieDetails/>} />
           <Route path="*" element={<Page404Error />} />
         </Routes>
       </AuthProvider>

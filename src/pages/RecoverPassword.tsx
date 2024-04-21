@@ -6,8 +6,11 @@ import { useNavigate } from "react-router-dom";
 import emailjs from '@emailjs/browser'
 import { useBackendApi } from "@/api/useBackendApi";
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export function RecoverPassowrd() {
+
 
   const authContext = useContext(LoginContext);
   const navigate = useNavigate();
@@ -18,10 +21,13 @@ export function RecoverPassowrd() {
     navigate("/");
   }
 
+
+  
   const [email, setEmail] = useState("")
   const [page, setPage] = useState(1)
   const [code, setCode] = useState('')
   const [emailCode, setEmailCode] = useState(randomCode)
+  
 
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -32,13 +38,15 @@ export function RecoverPassowrd() {
   }
 
   async function sendEmail(e: FormEvent) {
-    e.preventDefault()
-    await emailjs.send("service_3csmmgq", "template_42fcfi8", templateParams, "utGvGRrBcVsGkVOMu")
-    .then(() =>{
-      setEmailCode(templateParams.code)
-    })
-    setPage(2)
-  }
+    e.preventDefault();
+    try {
+      await emailjs.send("service_3csmmgq", "template_42fcfi8", templateParams, "utGvGRrBcVsGkVOMu");
+      setEmailCode(templateParams.code);
+      setPage(2);
+    } catch (error) {
+      toast.error("Verifique se o email é válido e tente novamente.");
+    }
+  };
 
     
   function confirmCode(e: FormEvent){
@@ -60,6 +68,7 @@ export function RecoverPassowrd() {
 
   return (
     <div className="min-h-screen ">
+       <ToastContainer position="top-right" autoClose={5000} />
       <div className="bg-kiwi-bg h-screen w-screen bg-cover"></div>
       <div className="absolute top-0 left-0 w-full bg-gradient-to-l from-mainBg from-30% to-mainBgOpacity75">
         <div className="flex items-center pl-10 h-10vh">
