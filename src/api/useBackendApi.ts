@@ -216,6 +216,7 @@ export const useBackendApi = () => ({
       comments: response.data
     }
   },
+  
   newComment: async(token: string, text: string, watchlistId: string)=>{
     const response = await axios.post(`http://localhost:3333/newComment`, {text, watchlistId},
       {
@@ -228,4 +229,6 @@ export const useBackendApi = () => ({
       comments: response.data
     }
   },
+
+  
 });
