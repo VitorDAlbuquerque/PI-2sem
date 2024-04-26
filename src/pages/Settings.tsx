@@ -78,6 +78,7 @@ export function Settings() {
     const [name, setname] = useState("");
     const [email, setemail] = useState("");
     const [password, setpassword] = useState("");
+    const [passwordConfirmation, setPasswordConfirmation] = useState("");
     const [birthDate, setbirthDate] = useState("");
     const [Gender, setGender] = useState("");
     const [country, setcountry] = useState("");
@@ -127,6 +128,7 @@ export function Settings() {
         toast.error("A senha deve ter no mínimo 8 caracteres.");
         return;
       }
+
     
       if (nameChanged && !validateName(name)) {
         toast.error("O nome de usuário deve ter no mínimo 5 caracteres.");
@@ -142,9 +144,22 @@ export function Settings() {
         toast.error("Por favor, selecione um país.");
         return;
       }
+
+      if (passwordChanged) {
+        if (!passwordConfirmation) {
+          toast.error("Por favor, confirme sua nova senha.");
+          return;
+        }
+        if (password !== passwordConfirmation) {
+          toast.error("A senha e a confirmação de senha não correspondem.");
+          return;
+        }
+      }
     
       setIsValid(true);
     };
+
+
     
 
     const [isValid, setIsValid] = useState(false);
@@ -164,6 +179,7 @@ export function Settings() {
       showToastMessageError();
     }
   };
+
 
   const apiBackend = useBackendApi();
   const confirmDeleteAccount = async () => {
@@ -323,7 +339,24 @@ export function Settings() {
                     placeholder="Nova senha"
                     value={password} onChange={(e) =>{setpassword(e.target.value); setpasswordChanged(true);}}
                   />
+                  <li>
+                    <p className="mt-8 mb-3">Confirmar nova senha</p>
+                    <div className="w-full md:w-1/2 ">
+                      <input
+                        className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                        id="grid-confirm-senha"
+                        type="password"
+                        placeholder="Confirmar nova senha"
+                        value={passwordConfirmation} 
+                        onChange={(e) => setPasswordConfirmation(e.target.value)} 
+                      />
+                    </div>
+                  </li>
+               
                 </div>
+
+               
+               
                
               </li>
               <li>
@@ -393,7 +426,7 @@ export function Settings() {
               </li>
               <li>
              
-              <Dialog open={isDeleteDialogOpen} onOpenChange={(open) => handleDialogOpenChange('delete', open)}>
+              <Dialog open={isDeleteDialogOpen} onOpenChange={(open: boolean) => handleDialogOpenChange('delete', open)}>
                   <DialogTrigger className="w-full"></DialogTrigger>
                   <DialogContent className="max-w-96 rounded-lg">
                     <DialogHeader>
@@ -525,7 +558,7 @@ export function Settings() {
                 </div>
               )}
 
-              <Dialog open={isDialogOpen} onOpenChange={(open) => setIsDialogOpen(open)}>
+              <Dialog open={isDialogOpen} onOpenChange={(open: boolean | ((prevState: boolean) => boolean)) => setIsDialogOpen(open)}>
                 <DialogTrigger className="w-full"></DialogTrigger>
                 <DialogContent className="max-w-96 rounded-lg">
                   <DialogHeader>
