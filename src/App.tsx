@@ -11,6 +11,7 @@ import { Page404Error } from "./pages/Page404Error";
 import { RecoverPassowrd } from "./pages/RecoverPassword";
 import { MovieDetails } from "./pages/MovieDetails";
 
+
 function App() {
   return (
     <BrowserRouter>

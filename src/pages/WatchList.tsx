@@ -368,7 +368,7 @@ export function WatchList(){
                                 {movies.map(movie =>{
                                     return(
                                         <div key={movie.id}>
-                                            <img className="h-80" src={`https://image.tmdb.org/t/p/original${movie.movieURLImg}`} alt="" />
+                                            <img className="h-80" src={`https://image.tmdb.org/t/p/original${movie.movieURLImg}`} alt={`Cartaz do filme${movie.movieName}`} />
                                         </div>
                                     )
                                 })}

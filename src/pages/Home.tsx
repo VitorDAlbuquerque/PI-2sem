@@ -178,7 +178,7 @@ export function Home() {
                         className="basis-1/3 h-80 flex justify-center "
                       >  
                         <Link to={`/movie/${movie.id}`}>
-                      <img className="transition-all" src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} alt={movie.title} />
+                      <img className="transition-all" src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} alt={`Cartaz de ${movie.title}`} />
                     </Link>
                       </CarouselItem>
                     );

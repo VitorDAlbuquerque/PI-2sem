@@ -306,7 +306,7 @@ export function Profile() {
                       <img
                         className="h-80 max:h-[480px] 2xl:h-80 xl:h-[295px] lg:h-56 mobile:h-60"
                         src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
-                        alt=""
+                        alt={`Cartaz de ${movie.title}`}
                       /></Link>
                     </div>
                   );
@@ -344,7 +344,7 @@ export function Profile() {
                       <img
                         className="h-80 max:h-[480px] 2xl:h-80 xl:h-[295px] lg:h-56 mobile:h-60"
                         src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
-                        alt=""
+                        alt={`Cartaz de ${movie.title}`}
                       /></Link>
                     </div>
                   );
@@ -450,7 +450,7 @@ export function Profile() {
                   watchLists.map(watchList =>{
                     return(
                       <div key={watchList.id} className="py-6 px-5 flex flex-col flex-wrap bg-mainBg hover:brightness-75 transition-all ease-in-out duration-200 rounded-lg cursor-pointer" onClick={()=>navigate(`/WatchList/${watchList.id}`)}>
-                        <img className="h-48 rounded-lg object-cover" src={`https://image.tmdb.org/t/p/original/${watchList.banner}`} alt="" />
+                        <img className="h-48 rounded-lg object-cover" src={`https://image.tmdb.org/t/p/original/${watchList.banner}`} alt= {`Capa da watchlist${watchList.banner}`} />
                             
                         <div className="relative py-5 text-gray-400">
                           <h1 className="text-constrastColor text-xl mb-3">{watchList.name}</h1>

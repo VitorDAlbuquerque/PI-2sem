@@ -13,10 +13,6 @@ import { toast } from "react-toastify";
 import Comments from "../components/ui/comments";
 
 
-
-
-
-
 interface MovieDetails {
   id: number;
   profile_path: string;
@@ -109,7 +105,7 @@ export function MovieDetails() {
         console.log('Detalhes do filme:', details);
         setMovieDetails(details);
         if (details.videos?.results.length > 0) {
-          
+
         }
       } catch (error) {
         console.error("Erro ao buscar detalhes do filme:", error);

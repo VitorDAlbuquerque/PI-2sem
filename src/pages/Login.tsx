@@ -6,6 +6,10 @@ import { LoginContext } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useBackendApi } from "@/api/useBackendApi";
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 interface countriesProps {
   name: {
     official: string;
@@ -16,6 +20,7 @@ interface countriesProps {
     };
   };
 }
+
 
 export function Login() {
   const [nextTrue, setNextTrue] = useState(false);
@@ -122,10 +127,15 @@ export function Login() {
 
     if (errors.length > 0) {
       console.log(errors);
-      alert(errors.join("\n"));
+      for (let i = 0; i < errors.length; i++) {
+        toast.error(errors[i]);
+      }
       return;
     }
-
+      
+     
+  
+    
     const data = await apiBackend.createNewUser(
       username,
       email,
@@ -355,8 +365,23 @@ export function Login() {
               </TabsContent>
             </Tabs>
           </div>
+          
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="dark"
+            />
+          
         </div>
       </div>
     </div>
+    
   );
 }
