@@ -230,5 +230,23 @@ export const useBackendApi = () => ({
     }
   },
 
+  favoriteMovie: async(token: string, movieId: string, movieName: string, movieIMG: string)=>{
+    const response = await axios.post(`http://localhost:3333/favoriteMovie`, {movieId, movieName, movieIMG},
+      {
+        headers:{
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+    return{
+      favorite: response.data
+    }
+  },
+  listFavoriteByMovie: async(movieId: string)=>{
+    const response = await axios.get(`http://localhost:3333/listFavoriteMovieByMovie/${movieId}`)
+    return{
+      favorite: response.data
+    }
+  },
   
 });

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { SideBar } from "../components/sidebar";
 import { Header } from "../components/header";
 import { useTMDBApi } from "../api/useTMDBApi";
@@ -12,6 +12,9 @@ import { toast } from "react-toastify";
 
 import Comments from "../components/ui/comments";
 
+import { FaRegStar, FaStar } from "react-icons/fa";
+import { useBackendApi } from "@/api/useBackendApi";
+import { LoginContext } from "@/context/AuthContext";
 
 interface MovieDetails {
   id: number;
@@ -48,7 +51,6 @@ interface Movie {
   production_companies: ProductionCompany[];
 }
 
-
 interface MovieComment {
   id: string;
   userId: string;
@@ -58,10 +60,18 @@ interface MovieComment {
   };
 }
 
+interface listFavorites{
+  user:{
+    id: string
+  }
+}
+
 export function MovieDetails() {
 
+  const authContext = useContext(LoginContext);
 
   const { movieId } = useParams<{ movieId: string }>();
+  const apiBackend = useBackendApi()
   const api = useTMDBApi();
   const [movieDetails, setMovieDetails] = useState<Movie | null>(null);
   const [isMobile, setIsMobile] = useState<boolean>(false);
@@ -69,8 +79,9 @@ export function MovieDetails() {
   // const [cast, setCast] = useState<MovieDetails[]>([]);
   const [comments, setComments] = useState<MovieComment[]>([]);
   const [showTrailer, setShowTrailer] = useState<boolean>(false);
+  const [favorites, setFavorites] = useState<listFavorites[]>([]);
+  const [updateFavorites, setUpdateFavorites] = useState(false);
 
-  
   const { trailerId, loading } = useMovieTrailer(movieId || '');
   
   const handleWatchTrailer = () => {
@@ -112,7 +123,19 @@ export function MovieDetails() {
       }
     };
     fetchMovieDetails();
-  }, [api, movieId]);
+
+    async function listFavorites(){
+      if(movieId){
+        const data = await apiBackend.listFavoriteByMovie(movieId)
+        if(data){
+          setFavorites(data.favorite)
+          console.log(data.favorite)
+        }
+      }
+    }
+    listFavorites()
+
+  }, [updateFavorites, movieId]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -126,9 +149,13 @@ export function MovieDetails() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
- 
-
- 
+  async function addFavorite(){
+    const storageData = localStorage.getItem("authToken");
+    if (storageData && movieDetails && movieId) {
+      await apiBackend.favoriteMovie(storageData, movieId, movieDetails?.title, movieDetails.poster_path);
+      setUpdateFavorites(!updateFavorites)
+    }
+  }
 
   const getReleaseDateFormatted = (releaseDate: string) => {
     const date = new Date(releaseDate);
@@ -248,11 +275,35 @@ export function MovieDetails() {
             />
           </div>
           <div className={`flex-grow w-full ${isMobile ? "" : "md:w-3/4"} text-mainFontColor`}>
-            <h1 className={`text-4xl font-bold mb-4 text-lightGreen ${isMobile ? "text-center" : "text-"}`}>
+            <h1 className={`text-4xl font-bold mb-4 flex items-center gap-3 text-lightGreen ${isMobile ? "text-center" : "text-"}`}>
               {movieDetails?.title}{" "}
               {movieDetails?.release_date && (
                 <span className="text-gray-500">({new Date(movieDetails.release_date).getFullYear()})</span>
               )}
+
+              {favorites.length>0?
+                favorites.slice(favorites.length-1, favorites.length).map(favorite =>{
+                  if(favorite.user.id == authContext.user?.id){
+                    return(
+                      <p key={`${movieId}${favorite.user.id}`} onClick={addFavorite} className="text-constrastColor cursor-pointer hover:text-constrastColor transition-all duration-200">
+                        <FaStar/>
+                      </p>
+                    )
+                  }else{
+                    return(
+                      <p key={`${movieId}${favorite.user.id}`} onClick={addFavorite} className="text-gray-500 cursor-pointer hover:text-constrastColor transition-all duration-200">
+                        <FaRegStar/>
+                      </p>
+                    )
+                  }
+                  
+                })
+              :
+              <p onClick={addFavorite} className="text-gray-500 cursor-pointer hover:text-constrastColor transition-all duration-200">
+                <FaRegStar/>
+              </p>
+              }
+              
             </h1>
             <div className="flex items-center">
               <p className="text-slate-400 hover:text-lightGreen cursor-pointer transition-all ease-in-out duration-200 mr-5" onClick={rateMovie}>
