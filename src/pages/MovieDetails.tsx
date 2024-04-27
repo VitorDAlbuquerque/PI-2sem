@@ -6,9 +6,15 @@ import { useParams } from "react-router-dom";
 
 import useMovieTrailer  from "../components/ui/useMovieTrailer";
 
-import Cast from "../components/ui/cast";
+import MovieCast  from "../components/ui/movieCast";
 
-import { toast } from "react-toastify"; 
+import { MdFormatListBulletedAdd } from "react-icons/md";
+import { BiComment } from "react-icons/bi";
+
+
+//import { GiKiwiFruit } from "react-icons/gi";
+
+
 
 import Comments from "../components/ui/comments";
 
@@ -39,9 +45,7 @@ interface Movie {
   release_date: string;
   poster_path: string;
   overview: string;
-  credits: {
-    cast: MovieDetails[];
-  };
+
   genres: MovieGenre[];
   production_countries: { name: string }[];
   status: string;
@@ -76,25 +80,14 @@ export function MovieDetails() {
   const [movieDetails, setMovieDetails] = useState<Movie | null>(null);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [selectedOption, setSelectedOption] = useState<string>("trailer");
-  // const [cast, setCast] = useState<MovieDetails[]>([]);
-  const [comments, setComments] = useState<MovieComment[]>([]);
-  const [showTrailer, setShowTrailer] = useState<boolean>(false);
+  const [comments, {/*setComments*/}] = useState<MovieComment[]>([]);
+  const [showTrailer,  {/*setShowTrailer*/}] = useState<boolean>(false);
   const [favorites, setFavorites] = useState<listFavorites[]>([]);
   const [updateFavorites, setUpdateFavorites] = useState(false);
 
-  const { trailerId, loading } = useMovieTrailer(movieId || '');
+  const { trailerId } = useMovieTrailer(movieId || '');
   
-  const handleWatchTrailer = () => {
-    if (trailerId) {
- 
-      setShowTrailer(true);
-    } else {
 
-      toast.error("Nenhum trailer disponível para este filme.");
-    }
-  };
-
-  
   const commentsSectionRef = useRef<HTMLDivElement>(null);
 
   const rateMovie = () => {
@@ -167,50 +160,28 @@ export function MovieDetails() {
     switch (selectedOption) {
       case "trailer":
       return (
-        <div className="m-10 p-8 text-center">
-          <h1 className="text-2xl font-semibold text-constrastColor mb-8">
-            Assista ao trailer de {movieDetails?.title}
-          </h1>
+        <div className="">
           {showTrailer && ( 
             <div className="flex items-center justify-center">
               <iframe
-                width="560"
-                height="315"
                 src={`https://www.youtube.com/embed/${trailerId}`} 
                 title="Trailer"
-                frameBorder="0"
                 allowFullScreen
+                loading="lazy"
               ></iframe>
             </div>
           )}
-          {showTrailer ? null : (
-            <div className="flex justify-center mt-4">
-              <button
-                className="bg-constrastColor text-darkGreen p-4 m-1 rounded-lg font-semibold max-w-72 font-montserrat hover:brightness-75 transition-all ease-in-out duration-200 shadow-sm shadow-constrastColor"  
-                onClick={handleWatchTrailer} 
-              >
-                Assistir ao Trailer
-              </button>
-            </div>
-          )}
+         
         </div>
       );
 
       case "cast":
-        console.log("Cast:", movieDetails?.credits?.cast);
         return (
-          <div className="m-10 p-8">
-            <p className="text-2xl text-constrastColor font-semibold mb-4 text-center">
+          <div className="m-10 text-center p-8 ">
+            <p className="text-2xl text-constrastColor font-semibold mb-12 text-center">
               Elenco de {movieDetails?.title}
             </p> 
-            <div className="flex flex-wrap justify-center">
-        {movieDetails && movieDetails.credits && movieDetails.credits.cast ? (
-          <Cast cast={movieDetails.credits.cast} />
-        ) : (
-          <p className="text-rose-800">Carregando elenco...</p>
-        )}
-  
-             </div>
+            {movieId && <MovieCast movieId={movieId} />} 
           </div>
         );
       case "moreInfo":
@@ -220,11 +191,11 @@ export function MovieDetails() {
               Mais informações sobre {movieDetails?.title}
             </div>
             <div className="text-lg mb-4 text-center font-semibold">
-              <p className="text-gray-500">"{movieDetails?.tagline}"</p>
+            <p className="text-gray-500">{movieDetails?.tagline ? movieDetails.tagline : "Tagline indisponível"}</p>
             </div>
             <div className="text-lg mb-4 text-center">
               <p className="text-gray-500">
-                Estado: {movieDetails?.status === "Released" ? "Lançado" : "Não lançado"}
+                Disponibilidade: {movieDetails?.status === "Released" ? "Disponível" : "Ainda não disponível"}
               </p>
             </div>
             <div className="text-lg mb-4 text-center">
@@ -265,12 +236,12 @@ export function MovieDetails() {
       <SideBar />
       <div className="bg-mainBg flex-initial w-full min-h-screen font-montserrat">
         <Header />
-
-        <div className={`m-8 p-10 ${isMobile ? "flex flex-col items-center" : "flex flex-row"}`}>
-          <div className={`flex-none mx-8 ${isMobile ? "mb-8" : "w-1/4 md:w-auto md:mr-8"}`}>
+  
+        <div className={`mx-20 my-8 p-10 ${isMobile ? "flex flex-col items-center" : "flex flex-row"}`}>
+          <div className={`flex-none mx-5 mr-8  ${isMobile ? "mb-8" : "w-1/4 md:w-auto md:mr-8"}`}>
             <img
               src={movieDetails?.poster_path ? `https://image.tmdb.org/t/p/w300/${movieDetails.poster_path}` : ""}
-              className={`max-h-max w-auto ${isMobile ? "mb-" : ""}`}
+              className={`max-h-max w-auto`}
               alt="Pôster do filme"
             />
           </div>
@@ -280,7 +251,7 @@ export function MovieDetails() {
               {movieDetails?.release_date && (
                 <span className="text-gray-500">({new Date(movieDetails.release_date).getFullYear()})</span>
               )}
-
+  
               {favorites.length>0?
                 favorites.slice(favorites.length-1, favorites.length).map(favorite =>{
                   if(favorite.user.id == authContext.user?.id){
@@ -310,20 +281,22 @@ export function MovieDetails() {
                 Avaliar filme
               </p>
               <button
-                className="bg-constrastColor text-darkGreen p-3 m-1 text-sm rounded-lg font-semibold max-w-72 font-montserrat hover:brightness-75 transition-all ease-in-out duration-200 shadow-sm shadow-constrastColor"
+                className=""
                 onClick={rateMovie}
               >
-                Avaliar
+                <BiComment className="text-3xl text-lightGreen cursor-pointer transition-all ease-in-out duration-200 "    onClick={rateMovie}/>
+  
               </button>
-
+  
               <p className="text-slate-400 hover:text-lightGreen cursor-pointer transition-all ease-in-out duration-200 ml-24 mr-5">
                 Adicionar filme a watchlist
               </p>
               <button
-                className="bg-constrastColor text-darkGreen p-3 m-1 text-sm px-4 rounded-lg font-semibold font-montserrat hover:brightness-75 transition-all ease-in-out duration-200 shadow-sm shadow-constrastColor"
-                onClick={addToWatchlist}
+               
+             
               >
-                +
+               <MdFormatListBulletedAdd    onClick={addToWatchlist} className="text-3xl text-lightGreen cursor-pointer transition-all ease-in-out duration-200 " />
+  
               </button>
             </div>
             <div className={`text-text-sm mb-2 mt-6 ${isMobile ? "text-center" : "text-"}`}>
@@ -342,11 +315,11 @@ export function MovieDetails() {
               <span className="font-semibold">Gênero:</span>{" "}
               {movieDetails?.genres?.map((genre) => genre.name).join(", ")}
             </div>
-
-            <div className={`text-lg my-6 ${isMobile ? "text-center" : ""}`}>{movieDetails?.overview}</div>
+  
+            <div className={`text-lg my-6 max-w-4xl ${isMobile ? "text-center" : ""}`}>{movieDetails?.overview}</div>
           </div>
         </div>
-
+  
         <div className={`mx-auto text-gray-500 text-xl font-semibold flex ${isMobile ? "justify-center flex-wrap" : "justify-center"}`}>
           <button className={`mx-4 my-2 ${selectedOption === "trailer" ? "text-lightGreen border-b-2 border-lightGreen" : ""}`} onClick={() => setSelectedOption("trailer")}>
             Trailer
@@ -358,10 +331,28 @@ export function MovieDetails() {
             Mais informações
           </button>
         </div>
-
+  
+        {selectedOption === "trailer" && trailerId && (
+          <div className="m-10 p-8 text-center">
+            <h1 className="text-2xl font-semibold text-constrastColor mb-8">
+              Assista ao trailer de {movieDetails?.title}
+            </h1>
+            <div className="flex items-center justify-center">
+              <iframe
+                width="560"
+                height="315"
+                src={`https://www.youtube.com/embed/${trailerId}`} 
+                title="Trailer"
+                frameBorder="0"
+                allowFullScreen
+              ></iframe>
+            </div>
+          </div>
+        )}
+  
         {renderSelectedOption()}
-
-        <div ref={commentsSectionRef}>
+  
+        <div ref={commentsSectionRef} >
           <Comments comments={comments} />
         </div>
       </div>

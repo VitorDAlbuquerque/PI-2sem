@@ -2,6 +2,7 @@ import { FormEvent, useContext, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { LoginContext } from "@/context/AuthContext";
 import { useBackendApi } from "@/api/useBackendApi";
+import { GiKiwiFruit } from "react-icons/gi";
 
 interface Comment {
   id: string;
@@ -40,11 +41,11 @@ function Comments({ comments }: CommentsProps) {
   }
 
   return (
-    <div className="mt-10 bg-bgAside p-10">
-      <h1 className="text-constrastColor font-semibold text-2xl mb-5">COMENTÁRIOS</h1>
+    <div className="mt-10 bg-bgAside p-10 text-center">
+      <h1 className="text-constrastColor font-semibold text-2xl mb-6">COMENTÁRIOS</h1>
 
       {authContext.user ? (
-        <div className="flex items-center mb-12 gap-4">
+        <div className="flex items-center mb-12 gap-4 ">
           <img className="h-12 w-12 rounded-full object-cover" src="https://i.pinimg.com/236x/93/36/08/93360829e98e2db2aa3ef0d4ae381383.jpg" alt="foto da hello kitty pq não consigo importar a do homelander" />
 
           <div className="flex flex-col items-center gap-2">
@@ -57,10 +58,10 @@ function Comments({ comments }: CommentsProps) {
                 <button
                   key={index}
                   type="button"
-                  className={`w-10 h-10 rounded-full flex items-center justify-center text-lg ${rating >= index ? 'text-yellow-400' : 'text-gray-400'}`}
+                  className={`w-10 h-10 rounded-full flex items-center justify-center text-lg ${rating >= index ? 'text-constrastColor' : 'text-gray-400'}`}
                   onClick={() => setRating(index)}
                 >
-                  🥝
+                <GiKiwiFruit />
                 </button>
               ))}
             </div>

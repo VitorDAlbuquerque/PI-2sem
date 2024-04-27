@@ -242,7 +242,7 @@ export function Settings() {
   const confirmAndSaveChanges = () => {
     if (nameChanged || emailChanged || passwordChanged || birthDateChanged || GenderChanged || countryChanged || bioChanged) {
       validateSubmit();
-      confirmChanges();
+      
       if (isValid) {
         saveChanges();
         confirmChanges();
@@ -474,10 +474,10 @@ export function Settings() {
                 onClick={() => handleItemExpand("Para que serve o Kiwi?")}
               />
               <Faq
-                question="Pergunta? 3"
+                question="Por que a avaliação de filmes do site é feita em kiwis?"
                 answer="Resposta."
-                expanded={expandedItem === "Pergunta? 3"}
-                onClick={() => handleItemExpand("Pergunta? 3")}
+                expanded={expandedItem === "Por que a avaliação de filmes do site é feita em kiwis?"}
+                onClick={() => handleItemExpand("Por que a avaliação de filmes do site é feita em kiwis?")}
               />
             </div>
           </div>

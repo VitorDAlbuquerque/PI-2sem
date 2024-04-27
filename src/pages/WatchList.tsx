@@ -5,6 +5,8 @@ import { FormEvent, useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Page404Error } from "./Page404Error";
 
+import { Link } from "react-router-dom";
+
 import homelander from "../assets/homelander-1-1.jpg";
 
 import { MdEdit } from "react-icons/md";
@@ -367,8 +369,8 @@ export function WatchList(){
                             <div className="flex justify-stretch gap-6 flex-wrap ">
                                 {movies.map(movie =>{
                                     return(
-                                        <div key={movie.id}>
-                                            <img className="h-80" src={`https://image.tmdb.org/t/p/original${movie.movieURLImg}`} alt={`Cartaz do filme${movie.movieName}`} />
+                                        <div key={movie.id}> <Link to={`/movie/${movie.id}`}>
+                                            <img className="h-80" src={`https://image.tmdb.org/t/p/original${movie.movieURLImg}`} alt={`Cartaz do filme${movie.movieName}`} /> </Link>
                                         </div>
                                     )
                                 })}
