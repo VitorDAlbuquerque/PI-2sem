@@ -1,3 +1,4 @@
+import MovieCast from "@/components/ui/movieCast";
 import axios from "axios";
 
 export const useBackendApi = () => ({
@@ -248,5 +249,16 @@ export const useBackendApi = () => ({
       favorite: response.data
     }
   },
+  setMovieRating: async (movieId: string, token: string, movieBanner: string, text: string, note:number)=>{
+    const response = await axios.post('http://localhost:3333/NewAssessment',  {movieId, movieBanner, text, note}, {
+      headers:{
+        Authorization: `Bearer ${token}`
+      }
+    }
+  )
+  return {
+    setMovieRating: response.data
+  }
+  }
   
 });

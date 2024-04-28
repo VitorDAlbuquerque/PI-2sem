@@ -53,7 +53,8 @@ interface watchListProps{
 interface moviesProps{
     id: string,
     movieName: string,
-    movieURLImg: string
+    movieURLImg: string,
+    movieId: number
 }
 
 interface topMoviesProps {
@@ -369,7 +370,7 @@ export function WatchList(){
                             <div className="flex justify-stretch gap-6 flex-wrap ">
                                 {movies.map(movie =>{
                                     return(
-                                        <div key={movie.id}> <Link to={`/movie/${movie.id}`}>
+                                        <div key={movie.id}> <Link to={`/movie/${movie.movieId}`}>
                                             <img className="h-80" src={`https://image.tmdb.org/t/p/original${movie.movieURLImg}`} alt={`Cartaz do filme${movie.movieName}`} /> </Link>
                                         </div>
                                     )

@@ -52,13 +52,13 @@ const MovieCast: React.FC<MovieCastProps> = ({ movieId }) => {
   }
 
   return (
-    <div className='flex justify-center'>
-    <div className='max-w-7xl'>
+    <div className='flex justify-center '>
+    <div className='max-w-5xl '>
       <Carousel className=''>
         <CarouselPrevious />
         <CarouselContent className=''>
           {cast.map((member, index) => (
-            <CarouselItem key={index} className='basis-1/5'>
+            <CarouselItem key={index} className='basis-1/4'>
               <div className='flex flex-col justify-center text-center '>
                 {member.profileImg && <img src={member.profileImg} alt={'Imagem de ' + member.name} className='max-w-56 h-auto mx-auto' />}
                 <p className='text-constrastColor text-xl'>{member.name}</p>
