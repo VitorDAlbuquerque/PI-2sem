@@ -100,6 +100,9 @@ export function WatchList(){
     const [newListMovieName, setNewListMovieName] = useState('')
     const [newListMovieURL, setNewListMovieURL] = useState('')
 
+    const [commentText, setCommentText] = useState('')
+
+
     useEffect(()=>{
         async function getWatchListById(){
             if(id){
@@ -194,12 +197,11 @@ export function WatchList(){
     async function newComment(e: FormEvent){
         e.preventDefault();
 
-        const formData = new FormData(e.target as HTMLFormElement);
-        const data = Object.fromEntries(formData);
         const storageData = localStorage.getItem("authToken");
         if (storageData && id) {
-            await apiBackend.newComment(storageData, String(data.text), id)
+            await apiBackend.newComment(storageData, commentText, id)
             setNewLikeUpdate(!newLikeUpdate)
+            setCommentText('')
         }
     }
 
@@ -370,7 +372,7 @@ export function WatchList(){
                             <div className="flex justify-stretch gap-6 flex-wrap ">
                                 {movies.map(movie =>{
                                     return(
-                                        <div key={movie.id}> <Link to={`/movie/${movie.movieId}`}>
+                                        <div key={movie.id} className="cursor-pointer hover:brightness-50 transition-all ease-in-out duration-200"> <Link to={`/movie/${movie.movieId}`}>
                                             <img className="h-80" src={`https://image.tmdb.org/t/p/original${movie.movieURLImg}`} alt={`Cartaz do filme${movie.movieName}`} /> </Link>
                                         </div>
                                     )
@@ -387,7 +389,7 @@ export function WatchList(){
                             <div className="flex items-center mb-12 gap-4">
                                 <img className="h-12 w-12 rounded-full object-cover" src={homelander} alt=""/>
                                 <form onSubmit={newComment} className="w-full flex gap-3">
-                                    <input name="text" className="px-3 h-10 w-2/4 rounded-sm outline-none border-2 border-slate-400 bg-slate-900 text-slate-400 focus:border-constrastColor transition-all duration-200" type="text" placeholder="Adicione um novo comentário..."/>
+                                    <input name="text" value={commentText} onChange={(e)=>setCommentText(e.target.value)} className="px-3 h-10 w-2/4 rounded-sm outline-none border-2 border-slate-400 bg-slate-900 text-slate-400 focus:border-constrastColor transition-all duration-200" type="text" placeholder="Adicione um novo comentário..."/>
                                     <button className="h-10 text-gray-400 px-3 hover:border-constrastColor transition-all duration-200 border-2 border-slate-400 rounded-sm justify-center flex items-center">Comentar</button>
                                 </form>
                             </div>

@@ -1,9 +1,12 @@
-import MovieCast from "@/components/ui/movieCast";
 import axios from "axios";
 
+
+const URLHost = 'http://localhost:3333'
+
 export const useBackendApi = () => ({
+
   auth: async (email: string, password: string) => {
-    const response = await axios.post(`http://localhost:3333/auth`, {
+    const response = await axios.post(`${URLHost}/auth`, {
       email,
       password,
     });
@@ -13,7 +16,7 @@ export const useBackendApi = () => ({
     };
   },
   validateAuth: async (token: string) => {
-    const response = await axios.get("http://localhost:3333/validateAuth", {
+    const response = await axios.get(`${URLHost}/validateAuth`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -37,7 +40,7 @@ export const useBackendApi = () => ({
     gender: string,
     country: string,
   ) => {
-    const response = await axios.post("http://localhost:3333/createNewUser", {
+    const response = await axios.post(`${URLHost}/createNewUser`, {
       name,
       email,
       password,
@@ -55,7 +58,7 @@ export const useBackendApi = () => ({
   deleteUsers: async (token: string) => {
     try {
       await axios.delete(
-        `http://localhost:3333/deleteUsers`,
+        `${URLHost}/deleteUsers`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -82,7 +85,7 @@ export const useBackendApi = () => ({
   ) => {
     try {
       const response = await axios.post(
-        "http://localhost:3333/updateUser",
+        `${URLHost}/updateUser`,
         {
           name,
           email,
@@ -112,7 +115,7 @@ export const useBackendApi = () => ({
     }
   },
   newLike: async(token: string, watchlistId: string) =>{
-    await axios.post("http://localhost:3333/newLike", {watchlistId},
+    await axios.post(`${URLHost}/newLike`, {watchlistId},
     {
       headers:{
         Authorization: `Bearer ${token}`
@@ -121,7 +124,7 @@ export const useBackendApi = () => ({
   },
   editWatchList: async (token: string, idwl: string, name: string, description: string, privacy: boolean) => {
     await axios.put(
-      `http://localhost:3333/updateWatchlist`,
+      `${URLHost}/updateWatchlist`,
       {idwl, name, description, privacy},
       {
         headers: {
@@ -131,25 +134,27 @@ export const useBackendApi = () => ({
     )
   },
   getPopularWatchLists: async()=>{
-    const response = await axios.get("http://localhost:3333/ListPopularWacthList")
+    const response = await axios.get(`${URLHost}/ListPopularWacthList`)
     return{
       watchList: response.data
     }
   },
   getWatchListById: async(id: string)=>{
-    const response = await axios.get(`http://localhost:3333/listWatchListById/${id}`,)
+    const response = await axios.get(`${URLHost}/listWatchListById/${id}`,)
     return{
       watchList: response.data
     }
   },
   getMoviesOnWatchList: async(watchListId: string)=>{
-    const response = await axios.post("http://localhost:3333/MoviesOnLists", {watchListId})
+    const response = await axios.post(`${URLHost}/MoviesOnLists`, {watchListId})
     return{
       moviesOnWatchList: response.data
     }
   },
   addMoviesWatchList: async(token: string, watchListId: string, movieId: number, movieName: string,  movieURLImg: string)=>{
-    const response = await axios.post("http://localhost:3333/addMovie", {movieName, watchListId, movieId, movieURLImg}, {
+    console.log(watchListId)
+    
+    const response = await axios.post(`${URLHost}/addMovie`, {movieName, watchListId, movieId, movieURLImg}, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -159,13 +164,13 @@ export const useBackendApi = () => ({
     }
   },
   getUserById: async(id: string)=>{
-    const response = await axios.get(`http://localhost:3333/userById/${id}`)
+    const response = await axios.get(`${URLHost}/userById/${id}`)
     return{
       user: response.data
     }
   },
   createNewWatchList: async(token: string, name: string, description: string, privacy: boolean, firstMovieId: number, movieName: string, movieURLImg: string, movieBanner: string)=>{
-    const response = await axios.post("http://localhost:3333/createNewWatchList", {name, description, privacy, firstMovieId, movieName, movieURLImg, movieBanner},
+    const response = await axios.post(`${URLHost}/createNewWatchList`, {name, description, privacy, firstMovieId, movieName, movieURLImg, movieBanner},
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -177,13 +182,13 @@ export const useBackendApi = () => ({
     };
   },
   listWatchListByUser: async(id: string)=>{
-    const response = await axios.get(`http://localhost:3333/listWatchListByUser/${id}`)
+    const response = await axios.get(`${URLHost}/listWatchListByUser/${id}`)
     return{
       watchList: response.data
     }
   },
   deleteWatchlist: async(token: string, idwl: string)=>{
-    const response = await axios.delete(`http://localhost:3333/deleteWatchList/${idwl}`,
+    const response = await axios.delete(`${URLHost}/deleteWatchList/${idwl}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -195,7 +200,7 @@ export const useBackendApi = () => ({
   },
   updateUserTheme: async (token: string, theme:string) => {
     await axios.put(
-      `http://localhost:3333/updateUserTheme`,
+      `${URLHost}/updateUserTheme`,
       {theme},
       {
         headers: {
@@ -206,20 +211,20 @@ export const useBackendApi = () => ({
   },
   updatePassword: async (email: string, password:string) => {
     await axios.put(
-      `http://localhost:3333/updatePassword`,
+      `${URLHost}/updatePassword`,
       {email, password},
     )
   },
 
   getComments: async(watchListId: string)=>{
-    const response = await axios.get(`http://localhost:3333/ListComments/${watchListId}`)
+    const response = await axios.get(`${URLHost}/ListComments/${watchListId}`)
     return{
       comments: response.data
     }
   },
   
   newComment: async(token: string, text: string, watchlistId: string)=>{
-    const response = await axios.post(`http://localhost:3333/newComment`, {text, watchlistId},
+    const response = await axios.post(`${URLHost}/newComment`, {text, watchlistId},
       {
         headers:{
           Authorization: `Bearer ${token}`
@@ -232,7 +237,7 @@ export const useBackendApi = () => ({
   },
 
   favoriteMovie: async(token: string, movieId: string, movieName: string, movieIMG: string)=>{
-    const response = await axios.post(`http://localhost:3333/favoriteMovie`, {movieId, movieName, movieIMG},
+    const response = await axios.post(`${URLHost}/favoriteMovie`, {movieId, movieName, movieIMG},
       {
         headers:{
           Authorization: `Bearer ${token}`
@@ -244,21 +249,82 @@ export const useBackendApi = () => ({
     }
   },
   listFavoriteByMovie: async(movieId: string)=>{
-    const response = await axios.get(`http://localhost:3333/listFavoriteMovieByMovie/${movieId}`)
+    const response = await axios.get(`${URLHost}/listFavoriteMovieByMovie/${movieId}`)
     return{
       favorite: response.data
     }
   },
-  setMovieRating: async (movieId: string, token: string, movieBanner: string, text: string, note:number)=>{
-    const response = await axios.post('http://localhost:3333/NewAssessment',  {movieId, movieBanner, text, note}, {
+  setMovieRating: async ( token: string, text: string,  rating: number,  movieBanner: string, movieId: string)=>{
+    const response = await axios.post(`${URLHost}/NewReview`,  {text, rating, movieId, movieBanner }, {
       headers:{
         Authorization: `Bearer ${token}`
       }
+    })
+    return {
+      setMovieRating: response.data
     }
-  )
-  return {
-    setMovieRating: response.data
-  }
-  }
-  
+  },
+  listCommentsMovie: async(movieId: string)=>{
+    const response = await axios.get(`${URLHost}/ListReview/${movieId}`)
+    return{
+      comments: response.data
+    }
+  },
+  listCommentsUserMovie: async(token:string, movieId: string)=>{
+    const response = await axios.get(`${URLHost}/GetReviewByUser/${movieId}`, {
+      headers:{
+        Authorization: `Bearer ${token}`
+      }
+    })
+    return{
+      comments: response.data
+    }
+  },
+  deleteReview: async(token: string, movieId: string)=>{
+    const response = await axios.delete(`${URLHost}/DeleteReview/${movieId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return {
+      review: response.data
+    }
+  },
+
+  listWatchListByUserToken: async(token: string)=>{
+    const response = await axios.get(`${URLHost}/listWatchListByUserToken`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    return{
+      watchList: response.data
+    }
+  },
+
+  updateReview: async(token: string, text: string, rating: number, movieId: string)=>{
+    const response = await axios.put(`${URLHost}/UpdateReview`, {text, rating, movieId}, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    return{
+      review: response.data
+    }
+  },
+
+  listFavoriteMovieByUser: async(userId: string)=>{
+    const response = await axios.get(`${URLHost}/listFavoriteMovieByUser/${userId}`)
+    return{
+      favorite: response.data
+    }
+  },
+
+  listReviewByUser: async(userId: string)=>{
+    const response = await axios.get(`${URLHost}/listReviewByUser/${userId}`)
+    return{
+      review: response.data
+    }
+  },
 });

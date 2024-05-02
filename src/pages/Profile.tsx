@@ -23,17 +23,14 @@ import { FaMessage } from "react-icons/fa6";
 
 import { LoginContext } from "@/context/AuthContext";
 
-import { Skeleton } from "@/components/ui/skeleton";
-
 import { useNavigate, useParams } from "react-router-dom";
 import { useBackendApi } from "@/api/useBackendApi";
 
-interface topMoviesProps {
+interface moviesProps {
   id: number;
-  title: string;
-  overview: string;
-  poster_path: string;
-  backdrop_path: string;
+  movieName: string;
+  movieIMG: string;
+  movieId: string;
 }
 
 interface watchListProps{
@@ -62,17 +59,27 @@ interface profileUserProps{
   theme: string
 }
 
+interface movieApiProps {
+  id: number;
+  adult: boolean;
+  title: string;
+  release_date: string;
+  poster_path: string;
+  overview: string;
+  backdrop_path: string
+}
+
 const wait = () => new Promise((resolve) => setTimeout(resolve, 15));
 
 export function Profile() {
-  const [popularMovies, setPopularMovies] = useState<topMoviesProps[]>([]);
-  const [topRatedMovies, setTopRatedMovies] = useState<topMoviesProps[]>([]);
+  const [favoriteMovies, setFavoriteMovies] = useState<moviesProps[]>([]);
+  const [reviewMovies, setReviewMovies] = useState<moviesProps[]>([]);
   const [openDialogNewList, setOpenDialogNewList] = useState(false);
   const [watchLists, setWatchLists] = useState<watchListProps[]>([]);
 
   const [newListMovieValueText, setNewListMovieValueText] = useState('')
   const [newListMovieValueId, setNewListMovieValueId] = useState(Number)
-  const [resultNewListMovies, setResultNewListMovies] = useState<topMoviesProps[]>([]);
+  const [resultNewListMovies, setResultNewListMovies] = useState<movieApiProps[]>([]);
   const [newListMovieName, setNewListMovieName] = useState('')
   const [newListMovieURL, setNewListMovieURL] = useState('')
 
@@ -106,17 +113,23 @@ export function Profile() {
       }}
     }
 
-    async function getPopularMovies() {
-      const data = await apiTMDB.getPopularMovies("1");
-      if (data) {
-        setPopularMovies(data.movies);
+    async function getFavoriteMovies() {
+      if(id){
+        const data = await apiBackend.listFavoriteMovieByUser(id);
+        if (data) {
+          setFavoriteMovies(data.favorite);
+          console.log(data.favorite)
+        }
       }
+      
     }
 
-    async function getTopRatedMovies() {
-      const data = await apiTMDB.getTopRatedMovies();
-      if (data) {
-        setTopRatedMovies(data.movies);
+    async function getReviews() {
+      if(id){
+        const data = await apiBackend.listReviewByUser(id);
+        if (data) {
+          setReviewMovies(data.review);
+        }
       }
     }
 
@@ -140,8 +153,8 @@ export function Profile() {
     }
     getTheme()
     getUserById()
-    getTopRatedMovies();
-    getPopularMovies();
+    getReviews();
+    getFavoriteMovies();
   }, [profileColor, openDialogNewList, profileUser?.id, id, profileColorDialog, authContext.user]);
 
   function selectColor() {
@@ -186,8 +199,8 @@ export function Profile() {
     }
   }
 
-  async function getMoviesByName(){
-    const data = await apiTMDB.getMoviesByName(newListMovieValueText)
+  async function getMoviesByName(movieName: string){
+    const data = await apiTMDB.getMoviesByName(movieName)
     const divResult = document.getElementById('result')
     if(data){
       setResultNewListMovies(data.movies)
@@ -298,37 +311,44 @@ export function Profile() {
               </h1>
             </div>
             <div className="flex flex-wrap gap-7 mobile:justify-center">
-              {popularMovies.length > 0 ? (
-                popularMovies.slice(0, 10).map((movie) => {
+              {favoriteMovies.length > 0 ? (
+                favoriteMovies.slice(0, 10).map((movie) => {
                   return (
-                    <div key={movie.id}>
-                      <Link to={`/movie/${movie.id}`}>
+                    <div key={movie.movieId} className="cursor-pointer hover:brightness-50 transition-all ease-in-out duration-200">
+                      <Link to={`/movie/${movie.movieId}`}>
                       <img
                         className="h-80 max:h-[480px] 2xl:h-80 xl:h-[295px] lg:h-56 mobile:h-60"
-                        src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
-                        alt={`Cartaz de ${movie.title}`}
+                        src={`https://image.tmdb.org/t/p/original${movie.movieIMG}`}
+                        alt={`Cartaz de ${movie.movieName}`}
                       /></Link>
                     </div>
                   );
                 })
               ) : (
-                <div className="flex flex-wrap gap-4">
-                  <Skeleton className="h-80 w-56 bg-zinc-500 rounded-none " />
-                  <Skeleton className="h-80 w-56 bg-zinc-500 rounded-none " />
-                  <Skeleton className="h-80 w-56 bg-zinc-500 rounded-none " />
-                  <Skeleton className="h-80 w-56 bg-zinc-500 rounded-none " />
-                  <Skeleton className="h-80 w-56 bg-zinc-500 rounded-none " />
-                  <Skeleton className="h-80 w-56 bg-zinc-500 rounded-none " />
-                  <Skeleton className="h-80 w-56 bg-zinc-500 rounded-none " />
-                  <Skeleton className="h-80 w-56 bg-zinc-500 rounded-none " />
-                  <Skeleton className="h-80 w-56 bg-zinc-500 rounded-none " />
-                  <Skeleton className="h-80 w-56 bg-zinc-500 rounded-none " />
+                <div className="flex flex-wrap gap-4 w-full">
+                  {authContext.user?.id == id?
+                    (
+                      <div className="flex min-h-52 w-full items-center justify-center ">
+                        <h1>VOCÊ NÃO POSSUI NENHUM FILME FAVORITO.</h1>
+                      </div> 
+                    )
+                  :
+                    (
+                      <div className="flex min-h-52 w-full items-center justify-center ">
+                        <h1>{profileUser?.name.toUpperCase()} NÃO POSSUI NENHUM FILME FAVORITO.</h1>
+                      </div> 
+                    )
+                  }
                 </div>
               )}
             </div>
-            <div className="flex justify-center mt-5 text-lg ">
-              <p className="hover:underline cursor-pointer">Ver todos</p>
-            </div>
+            {favoriteMovies.length > 4 ?
+              <div className="flex justify-center mt-5 text-lg ">
+                <p className="hover:underline cursor-pointer">Ver todos</p>
+              </div>
+            :
+            null
+            }
 
             <div className="flex items-center mb-5 justify-between mt-20 mobile:justify-center">
               <h1 className="text-constrastColor text-2xl font-semibold">
@@ -336,37 +356,44 @@ export function Profile() {
               </h1>
             </div>
             <div className="flex flex-wrap gap-7 mobile:justify-center">
-              {topRatedMovies.length > 0 ? (
-                topRatedMovies.slice(0, 10).map((movie) => {
+              {reviewMovies.length > 0 ? (
+                reviewMovies.slice(0, 10).map((movie) => {
                   return (
-                    <div key={movie.id}>
-                       <Link to={`/movie/${movie.id}`}>
+                    <div key={movie.movieId} className="cursor-pointer hover:brightness-50 transition-all ease-in-out duration-200">
+                       <Link to={`/movie/${movie.movieId}`}>
                       <img
                         className="h-80 max:h-[480px] 2xl:h-80 xl:h-[295px] lg:h-56 mobile:h-60"
-                        src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
-                        alt={`Cartaz de ${movie.title}`}
+                        src={`https://image.tmdb.org/t/p/original${movie.movieIMG}`}
+                        alt={`Cartaz de ${movie.movieName}`}
                       /></Link>
                     </div>
                   );
                 })
               ) : (
-                <div className="flex flex-wrap gap-4">
-                  <Skeleton className="h-80 w-56 bg-zinc-500 rounded-none " />
-                  <Skeleton className="h-80 w-56 bg-zinc-500 rounded-none " />
-                  <Skeleton className="h-80 w-56 bg-zinc-500 rounded-none " />
-                  <Skeleton className="h-80 w-56 bg-zinc-500 rounded-none " />
-                  <Skeleton className="h-80 w-56 bg-zinc-500 rounded-none " />
-                  <Skeleton className="h-80 w-56 bg-zinc-500 rounded-none " />
-                  <Skeleton className="h-80 w-56 bg-zinc-500 rounded-none " />
-                  <Skeleton className="h-80 w-56 bg-zinc-500 rounded-none " />
-                  <Skeleton className="h-80 w-56 bg-zinc-500 rounded-none " />
-                  <Skeleton className="h-80 w-56 bg-zinc-500 rounded-none " />
+                <div className="flex flex-wrap gap-4 w-full">
+                  {authContext.user?.id == id?
+                    (
+                    <div className="flex min-h-52 w-full items-center justify-center">
+                      <h1>VOCÊ NÃO POSSUI NENHUM FILME AVALIADO.</h1>
+                    </div> 
+                    )
+                  :
+                    (
+                      <div className="flex min-h-52 w-full items-center justify-center ">
+                        <h1>{profileUser?.name.toUpperCase()} NÃO POSSUI NENHUM FILME AVALIADO.</h1>
+                      </div> 
+                    )
+                  }
                 </div>
               )}
             </div>
-            <div className="flex justify-center mt-5 text-lg ">
-              <p className="hover:underline cursor-pointer">Ver todos</p>
-            </div>
+            {reviewMovies.length > 4 ?
+              <div className="flex justify-center mt-5 text-lg ">
+                <p className="hover:underline cursor-pointer">Ver todos</p>
+              </div>
+            :
+            null
+            }
 
             <div className="mt-20">
             {profileUser?.id == authContext.user?.id?
@@ -397,8 +424,8 @@ export function Profile() {
                         <div>
                           <p>Escolha o primeiro filme para sua lista</p>
                           <input value={newListMovieValueText} onChange={(e)=>{
+                            getMoviesByName(e.target.value)
                             setNewListMovieValueText(e.target.value)
-                            getMoviesByName()
                           }}
                         
                           className="group w-full h-10 border-[1px] outline-none border-slate-500 rounded-md px-2" type="text" />

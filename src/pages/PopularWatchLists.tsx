@@ -32,13 +32,13 @@ interface watchListProps{
 export function PopularWatchLists() {
     const apiBackend = useBackendApi();
     const navigate = useNavigate();
-    const [watchLists, setWatchLists] = useState<watchListProps[]>([])
+    const [watchlists, setWatchlists] = useState<watchListProps[]>([])
 
     useEffect(()=>{
         async function getPopularWatchLists(){
             const data = await apiBackend.getPopularWatchLists()
             if(data){
-                setWatchLists(data.watchList)
+                setWatchlists(data.watchList)
             }
         }
         getPopularWatchLists()
@@ -53,7 +53,7 @@ export function PopularWatchLists() {
                     <h1 className="text-constrastColor font-semibold text-2xl">LISTAS POPULARES</h1>
                     <div className="flex flex-wrap gap-2">
 
-                        {watchLists.map(watchList =>{
+                        {watchlists.map(watchList =>{
                             return(
                                 <div key={watchList.id} className="py-6 px-5 flex flex-col flex-wrap bg-mainBg hover:brightness-75 transition-all ease-in-out duration-200 rounded-lg cursor-pointer" onClick={()=>navigate(`/WatchList/${watchList.id}`)}>
                                     <img className="h-48 rounded-lg object-cover" src={`https://image.tmdb.org/t/p/original/${watchList.banner}`} alt={`Capa da watchlist${watchList.banner}`} />

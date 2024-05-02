@@ -43,6 +43,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
       setToken(data.token);
       return true;
     }
+  
     return false;
   };
 

@@ -146,6 +146,7 @@ export function Home() {
               ideias com a comunidade.
             </p>
             {authContext.user ? null : (
+
               <button
                 onClick={() => navigate("Login")}
                 className="bg-constrastColor text-darkGreen p-4 rounded-lg font-semibold max-w-72 font-montserrat hover:brightness-75 transition-all ease-in-out duration-200 shadow-sm shadow-constrastColor "

@@ -67,11 +67,10 @@ export function Login() {
 
   async function auth(e: FormEvent) {
     e.preventDefault();
-
     const formData = new FormData(e.target as HTMLFormElement);
     const data = Object.fromEntries(formData);
-
     authContext.signin(String(data.username), String(data.password));
+   
   }
 
   const [username, setUsername] = useState("");
@@ -126,15 +125,11 @@ export function Login() {
     }
 
     if (errors.length > 0) {
-      console.log(errors);
       for (let i = 0; i < errors.length; i++) {
         toast.error(errors[i]);
       }
       return;
     }
-      
-     
-  
     
     const data = await apiBackend.createNewUser(
       username,

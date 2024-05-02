@@ -145,7 +145,7 @@ export function Movies(){
   return(
     <div className="flex">
       <SideBar/>
-      <div className='bg-mainBg flex-initial w-full min-h-screen'>
+      <div className='bg-mainBg flex-initial w-full min-h-screen'> 
         <Header/>
         <div className="flex items-center flex-col">
          
@@ -191,13 +191,13 @@ export function Movies(){
           <div className="flex justify-center mt-6 gap-3 flex-wrap ">
           {popularMovies.map(movie => {
             return (
-             <div key={movie.id}>
-                 <Link to={`/movie/${movie.id}`}>
-              <img className="h-80" src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} alt= {movie.title}/>
-            </Link>
-    </div>
-  );
-})}
+             <div key={movie.id} className="cursor-pointer hover:brightness-50 transition-all ease-in-out duration-200">
+                <Link to={`/movie/${movie.id}`}>
+                  <img className="h-80" src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} alt= {movie.title}/>
+                </Link>
+              </div>
+            );
+          })}
           </div>
           <Pagination className="my-16">
             <PaginationContent className="text-white">
