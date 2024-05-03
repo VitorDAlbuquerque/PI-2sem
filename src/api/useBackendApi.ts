@@ -152,8 +152,6 @@ export const useBackendApi = () => ({
     }
   },
   addMoviesWatchList: async(token: string, watchListId: string, movieId: number, movieName: string,  movieURLImg: string)=>{
-    console.log(watchListId)
-    
     const response = await axios.post(`${URLHost}/addMovie`, {movieName, watchListId, movieId, movieURLImg}, {
       headers: {
         Authorization: `Bearer ${token}`,

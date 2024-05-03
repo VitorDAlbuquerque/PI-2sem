@@ -36,14 +36,6 @@ import {
 import { useBackendApi } from "@/api/useBackendApi";
 import { LoginContext } from "@/context/AuthContext";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-
 interface Comment {
   movieId: string;
   userId: string;
@@ -280,6 +272,7 @@ export function MovieDetails() {
   async function addMoviesOnWatchlist(){
     const storageData = localStorage.getItem("authToken");
     if(storageData && movieId && movieDetails){
+      console.log(watchlistId)
       await apiBackend.addMoviesWatchList(storageData, watchlistId, movieDetails.id, movieDetails.title, movieDetails.poster_path)
       setUpdateFavorites(!updateFavorites)
     }
@@ -454,23 +447,17 @@ export function MovieDetails() {
                   <div>
                     <p className="text-center mb-3"> Selecione em qual lista você deseja adicionar {movieDetails?.title}:</p>
             
-            <Select>
-              <SelectTrigger className=" w-full">
-                <SelectValue placeholder="Selecione a lista..." />
-              </SelectTrigger>
-              <SelectContent>
-                {watchlist.map(watchlist =>{
-                  return(
-                    <SelectItem key={watchlist.id} value={watchlist.id} 
-                    onClick={()=>{
-                      setWatchlistId(watchlist.id)
-                      console.log('a')
-                    }}>{watchlist.name}</SelectItem>
-                  )
-                })}
-                
-              </SelectContent>
-            </Select>
+
+                    <select value={watchlistId} onChange={(e)=>{
+                      setWatchlistId(e.target.value)
+                      }} className=" w-full h-10 border rounded-md">
+                      <option value="" disabled hidden>Selecione a lista...</option>
+                      {watchlist.map(watchlist =>{
+                          return(
+                            <option key={watchlist.id} value={watchlist.id}>{watchlist.name}</option>
+                          )
+                        })}
+                    </select>
         
      </div>
                             

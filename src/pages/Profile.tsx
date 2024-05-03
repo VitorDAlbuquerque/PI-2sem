@@ -118,7 +118,6 @@ export function Profile() {
         const data = await apiBackend.listFavoriteMovieByUser(id);
         if (data) {
           setFavoriteMovies(data.favorite);
-          console.log(data.favorite)
         }
       }
       
@@ -428,7 +427,10 @@ export function Profile() {
                             setNewListMovieValueText(e.target.value)
                           }}
                         
-                          className="group w-full h-10 border-[1px] outline-none border-slate-500 rounded-md px-2" type="text" />
+                          className="group w-full h-10 border-[1px] outline-none border-slate-500 rounded-md px-2 invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500" type="text" 
+                          required
+                          
+                          />
                           <div id="result" className="bg-white hidden w-[87.5%] border-[1px] outline-none border-slate-500 rounded-md absolute">
                             {resultNewListMovies.slice(0, 5).map(result =>{
                               return(
