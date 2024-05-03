@@ -125,7 +125,6 @@ export function MovieDetails() {
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [selectedOption, setSelectedOption] = useState<string>("trailer");
 
-
   const [showTrailer,  {/*setShowTrailer*/}] = useState<boolean>(false);
   const [favorites, setFavorites] = useState<listFavorites[]>([]);
   const [updateFavorites, setUpdateFavorites] = useState(false);
@@ -275,6 +274,7 @@ export function MovieDetails() {
       console.log(watchlistId)
       await apiBackend.addMoviesWatchList(storageData, watchlistId, movieDetails.id, movieDetails.title, movieDetails.poster_path)
       setUpdateFavorites(!updateFavorites)
+      setNewMovieAtListDialog(false)
     }
   }
 
@@ -535,7 +535,7 @@ export function MovieDetails() {
   
         <div>
         <div className="mt-10 bg-bgAside p-10">
-      <h1 className="text-constrastColor font-semibold text-2xl mb-6">COMENTÁRIOS</h1>
+      <h1 className="text-constrastColor font-semibold text-2xl mb-6">AVALIAÇÕES</h1>
 
       {authContext.user?
       authContext.user?.id != userComment?.userId? (
