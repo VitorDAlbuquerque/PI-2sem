@@ -1,6 +1,3 @@
-import homelander from "../images/homelander-1-1.jpg";
-
-import { FaRegStar } from "react-icons/fa";
 import { GoHome } from "react-icons/go";
 import { LiaSlidersHSolid } from "react-icons/lia";
 import { IoSettingsOutline } from "react-icons/io5";
@@ -8,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { LoginContext } from "@/context/AuthContext";
 import { MdExitToApp } from "react-icons/md";
+
+import { BsListCheck } from "react-icons/bs";
 
 import {
   Dialog,
@@ -18,6 +17,7 @@ import {
   DialogTrigger,
   DialogClose,
 } from "@/components/ui/dialog";
+import { profileImgs } from "@/api/profileImg";
 
 export function SideBar() {
   const path = window.location.pathname;
@@ -36,15 +36,15 @@ export function SideBar() {
       {authContext.user ? (
         <div
           className="w-16 h-16 rounded-full bg-slate-800 cursor-pointer hover:brightness-75 transition-all ease-in-out duration-200 my-10"
-          onClick={() => goTo("/Profile")}
+          onClick={() => goTo(`/Profile/${authContext.user?.id}`)}
         >
           <img
             className={
-              path == "/Profile"
+              path == `/Profile/${authContext.user.id}`
                 ? "h-full w-full rounded-full object-cover border-2 border-constrastColor"
                 : "h-full w-full rounded-full object-cover"
             }
-            src={homelander}
+            src={profileImgs[authContext.user.imgIndex].url}
             alt=""
           />
         </div>
@@ -61,7 +61,7 @@ export function SideBar() {
           <GoHome />
         </p>
         <p
-          onClick={() => goTo("/Movies")}
+          onClick={() => goTo("/Movies?page=1")}
           className={
             path == "/Movies"
               ? "bg-darkGreen p-2 rounded-md"
@@ -70,8 +70,12 @@ export function SideBar() {
         >
           <LiaSlidersHSolid />
         </p>
-        <p className="p-2 hover:brightness-50 transition-all ease-in-out duration-300 cursor-pointer">
-          <FaRegStar />
+        <p className={
+            path == "/PopularWatchLists"
+              ? "bg-darkGreen p-2 rounded-md"
+              : "p-2 hover:brightness-50 transition-all ease-in-out duration-300 cursor-pointer"
+          } onClick={() => goTo("/PopularWatchLists")}>
+          <BsListCheck />
         </p>
         <p
           onClick={() => goTo("/Settings")}

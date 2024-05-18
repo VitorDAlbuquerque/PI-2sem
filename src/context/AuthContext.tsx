@@ -12,6 +12,9 @@ interface UserProps {
   name: String;
   username: boolean;
   password: String;
+  theme: string;
+  bio: string;
+  imgIndex: number
 }
 
 export const LoginContext = createContext<AuthContextProps>(null!);
@@ -41,6 +44,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
       setToken(data.token);
       return true;
     }
+  
     return false;
   };
 

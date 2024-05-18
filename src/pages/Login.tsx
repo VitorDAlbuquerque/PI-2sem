@@ -6,6 +6,10 @@ import { LoginContext } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useBackendApi } from "@/api/useBackendApi";
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 interface countriesProps {
   name: {
     official: string;
@@ -16,6 +20,7 @@ interface countriesProps {
     };
   };
 }
+
 
 export function Login() {
   const [nextTrue, setNextTrue] = useState(false);
@@ -62,13 +67,12 @@ export function Login() {
 
   async function auth(e: FormEvent) {
     e.preventDefault();
-
     const formData = new FormData(e.target as HTMLFormElement);
     const data = Object.fromEntries(formData);
-
     authContext.signin(String(data.username), String(data.password));
+   
   }
-
+  const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -82,7 +86,7 @@ export function Login() {
 
     const errors: string[] = [];
 
-    if (!username) {
+    if (!name) {
       errors.push("O campo de nome de usuário é nulo.");
     }
 
@@ -95,7 +99,7 @@ export function Login() {
       errors.push("A senha deve ter no mínimo 8 caracteres.");
     }
 
-    if ((username || "").length < 5) {
+    if ((name || "").length < 5) {
       errors.push("O nome de usuário deve ter no mínimo 5 caracteres.");
     }
 
@@ -121,12 +125,14 @@ export function Login() {
     }
 
     if (errors.length > 0) {
-      console.log(errors);
-      alert(errors.join("\n"));
+      for (let i = 0; i < errors.length; i++) {
+        toast.error(errors[i]);
+      }
       return;
     }
-
+    
     const data = await apiBackend.createNewUser(
+      name,
       username,
       email,
       password,
@@ -136,7 +142,6 @@ export function Login() {
     );
 
     if (data) {
-      console.log(email, password)
       authContext.signin(email, password);
     }
   };
@@ -158,7 +163,7 @@ export function Login() {
           <div className="flex-1 flex justify-center items-center ">
             <Tabs defaultValue="login">
               <TabsContent value="login">
-                <div className="bg-bgAside h-420px w-96 rounded-lg p-5 flex items-center flex-col">
+                <div className="bg-bgAside w-96 rounded-lg p-5 flex items-center flex-col">
                   <h1 className="text-constrastColor font-montserrat font-semibold text-3xl">
                     Seja bem-vindo
                   </h1>
@@ -189,6 +194,7 @@ export function Login() {
                       Entrar
                     </button>
                   </form>
+                  <p onClick={()=>navigate("/RecoverPassword")} className="text-bgWathcList mt-3 hover:text-constrastColor cursor-pointer transition-all duration-200">Esqueceu a senha?</p>
                   <p className="text-bgWathcList mt-3">ou</p>
 
                   <TabsList className="bg-bgAside">
@@ -214,21 +220,22 @@ export function Login() {
                   </p>
                   <form
                     onSubmit={registerLogic}
-                    className="flex gap-3 w-11/12 mt-5"
+                    className="flex gap-3 w-11/12 mt-3"
                   >
                     <div
                       className="w-full flex flex-col gap-3"
                       id="firstSignup"
                     >
                       <div>
-                        <p className="text-bgWathcList">Nome de usuário:</p>
+                        <p className="text-bgWathcList">Nome:</p>
                         <input
                           className="w-full h-10 rounded-sm outline-none pl-3"
                           type="text"
-                          value={username}
-                          onChange={(e) => setUsername(e.target.value)}
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
                         />
                       </div>
+                      
                       <div>
                         <p className="text-bgWathcList">Email:</p>
                         <input
@@ -267,6 +274,15 @@ export function Login() {
                       id="nextSignup"
                       className="hidden flex-col gap-3 w-full"
                     >
+                      <div>
+                        <p className="text-bgWathcList">Nome de usuário:</p>
+                        <input
+                          className="w-full h-10 rounded-sm outline-none pl-3"
+                          type="text"
+                          value={username}
+                          onChange={(e) => setUsername(e.target.value)}
+                        />
+                      </div>
                       <div>
                         <p className="text-bgWathcList">Data de nascimento:</p>
                         <input
@@ -338,7 +354,7 @@ export function Login() {
                       </p>
                     </div>
                   </form>
-                  <p className="text-bgWathcList mt-3">ou</p>
+                  <p className="text-bgWathcList mt-1">ou</p>
 
                   <TabsList className="bg-bgAside">
                     <p className="text-bgWathcList">
@@ -355,8 +371,23 @@ export function Login() {
               </TabsContent>
             </Tabs>
           </div>
+          
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="dark"
+            />
+          
         </div>
       </div>
     </div>
+    
   );
 }
