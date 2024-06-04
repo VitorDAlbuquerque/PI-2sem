@@ -311,7 +311,7 @@ export function MovieDetails() {
       case "cast":
         return (
           <div className="m-10 text-center p-8 ">
-            <p className="text-2xl text-constrastColor font-semibold mb-12 text-center">
+            <p className="text-2xl text-constrastColor font-semibold mb-12 text-center dark:text-yellow-400">
               Elenco de {movieDetails?.title}
             </p> 
             {movieId && <MovieCast movieId={movieId} />} 
@@ -319,20 +319,20 @@ export function MovieDetails() {
         );
       case "moreInfo":
         return (
-          <div className="m-10 p-8">
-            <div className="text-2xl text-constrastColor font-semibold mb-4 text-center dark:text-yellow-300">
+          <div className="m-10 p-8 ">
+            <div className="text-2xl text-constrastColor font-semibold mb-4 text-center dark:text-yellow-400">
               Mais informações sobre {movieDetails?.title}
             </div>
             <div className="text-lg mb-4 text-center font-semibold">
-            <p className="text-gray-500">{movieDetails?.tagline ? movieDetails.tagline : "Tagline indisponível"}</p>
+            <p className="text-gray-500 dark:text-white">{movieDetails?.tagline ? movieDetails.tagline : "Tagline indisponível"}</p>
             </div>
             <div className="text-lg mb-4 text-center">
-              <p className="text-gray-500">
+              <p className="text-gray-500 dark:text-white">
                 Disponibilidade: {movieDetails?.status === "Released" ? "Disponível" : "Ainda não disponível"}
               </p>
             </div>
             <div className="text-lg mb-4 text-center">
-              <p className="text-gray-500">
+              <p className="text-gray-500 dark:text-white">
                 Idioma original:{" "}
                 {movieDetails?.original_language === "en"
                   ? "Inglês"
@@ -340,7 +340,7 @@ export function MovieDetails() {
               </p>
             </div>
             <div className="text-lg mb-4 text-center">
-              <p className="text-gray-500 ">
+              <p className="text-gray-500 dark:text-white">
                 Orçamento:{" "}
                 {movieDetails?.budget.toLocaleString("pt-BR", {
                   style: "currency",
@@ -349,8 +349,8 @@ export function MovieDetails() {
               </p>
             </div>
             <div className="text-lg mb-4 text-center">
-              <p className="text-gray-500">Empresa de produção:</p>
-              <ul className="text-gray-500">
+              <p className="text-gray-500 dark:text-white">Empresa de produção:</p>
+              <ul className="text-gray-500 dark:text-white">
                 {movieDetails?.production_companies?.map((company) => (
                   <li key={company.id}>{company.name}</li>
                 ))}
@@ -419,7 +419,7 @@ export function MovieDetails() {
               <Dialog open={newMovieAtListDialog} onOpenChange={setNewMovieAtListDialog}>
                 <DialogTrigger>
                   <div className="flex items-center">
-                    <p className="text-slate-400 hover:text-lightGreen dark:text-yellow-300  cursor-pointer transition-all ease-in-out duration-200 ml-24 mr-5">
+                    <p className="text-slate-400 hover:text-lightGreen dark:text-yellow-300  cursor-pointer transition-all ease-in-out duration-200 ml-24 mr-5 " >
                       Adicionar filme a watchlist 
                     </p>
                     <p>
@@ -427,22 +427,24 @@ export function MovieDetails() {
                     </p>
                   </div>
                 </DialogTrigger>
-              <DialogContent  className="max-w-96 rounded-lg text-left">
+              <DialogContent  className="max-w-96 rounded-lg text-left dark:text-white dark:bg-black dark:border-2 dark:border-white 
+">
               <DialogHeader>
                 <DialogTitle>Adicionar {movieDetails?.title} a Watchlist </DialogTitle>
-                <DialogDescription>
+                <DialogDescription className="dark:text-white">
                   Adicione filmes e expanda sua lista!
                 </DialogDescription>
               </DialogHeader>
               <div>
-                <div className="text-sm text-slate-500 flex flex-col gap-4">
+                <div className="text-sm text-slate-500 flex flex-col gap-4 dark:text-white">
                   <div>
                     <p className="text-center mb-3"> Selecione em qual lista você deseja adicionar {movieDetails?.title}:</p>
             
 
                     <select value={watchlistId} onChange={(e)=>{
                       setWatchlistId(e.target.value)
-                      }} className=" w-full h-10 border rounded-md">
+                      }} className=" w-full h-10 border rounded-md dark:text-white dark:bg-black dark:border-2 dark:border-white 
+                      ">
                       <option value="" disabled hidden>Selecione a lista...</option>
                       {watchlist.map(watchlist =>{
                           return(
@@ -457,11 +459,11 @@ export function MovieDetails() {
       <DialogClose onClick={()=>{
            
 }} 
-        className="bg-gray-300 w-20 p-2 rounded-lg hover:brightness-75 transition-all duration-200">
+        className="bg-gray-300 w-20 p-2 rounded-lg hover:brightness-75 transition-all duration-200 dark:bg-black dark:border-2 dark:border-white dark:hover:opacity-85 dark:text-white">
          Cancelar
          </DialogClose>
                                 
-       <button onClick={()=>addMoviesOnWatchlist()} className="border-2 w-20 bg-white border-constrastColor p-2 rounded-lg hover:brightness-90 transition-all  duration-200">
+       <button onClick={()=>addMoviesOnWatchlist()} className="border-2 w-20 bg-white border-constrastColor p-2 rounded-lg hover:brightness-90 transition-all  duration-200 dark:border-yellow-400 dark:bg-black dark:text-white">
           Adicionar
         </button>
         </div>
@@ -536,32 +538,9 @@ export function MovieDetails() {
 
           <form onSubmit={newReview}>
           <div className="flex flex-col gap-2 ">
-            <div className="h-10 text-gray-400 px-3 py-6 bg-slate-900 hover:border-constrastColor transition-all duration-200 border-2 border-slate-400 rounded-sm justify-center flex items-center ">
+            <div className="h-10 text-gray-400 px-3 py-6 bg-slate-900 hover:border-constrastColor transition-all duration-200 border-2 border-slate-400 rounded-sm justify-center flex items-center dark:text-white dark:hover:border-yellow-400">
 
-            <button data-ripple-light="true" 
-            onClick={PopoverInfo} data-popover-target="popover"
-            className="">
-            <BsInfoSquare className="mr-2 cursor-pointer" />
-          </button>
-          {popoverVisible && (
-          <div
-            data-popover="popover"
-            className="absolute p-4  text-sm  break-words whitespace-normal bg-mainFontColor border rounded-lg w-1/3 bg-opacity-95  text-darkGreen shadow-blue-gray-500/10 focus:outline-none -mt-48 dark:text-black"><p>
-            Utilizamos o kiwi como forma de avaliação. Quanto mais kiwis um filme tiver, maior será sua recomendação. </p><p>Os kiwis vão de 1 a 5, onde 1 kiwi representa uma má avaliação e 5 kiwis uma ótima avaliação.</p>
-            <button
-      onClick={PopoverInfo}
-      className="absolute top-0 right-0 mt-1 mr-1 text-gray-400 hover:text-gray-700 focus:outline-none dark:text-white dark:hover:text-white"
-    >
-      <svg className="w-4 m-1 h-3 fill-current" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M1.707 1.707a1 1 0 011.414 0L10 8.586l7.879-7.88a1 1 0 111.414 1.414L11.414 10l7.88 7.879a1 1 0 11-1.414 1.414L10 11.414l-7.879 7.88a1 1 0 01-1.414-1.414L8.586 10 1.707 2.121a1 1 0 010-1.414z"
-        />
-      </svg>
-    </button>
-          </div>
-        )}
+        
           
               <p className="text-mainFontColor dark:text-white ">
                 Quantos kiwis esse filme merece?
@@ -604,7 +583,7 @@ export function MovieDetails() {
                         <p onClick={()=>{
                             navigate(`/Profile/${comment.userId}`)
                             window.scrollTo({top: 0})
-                            }} className="font-semibold hover:text-constrastColor hover:underline cursor-pointer transition-all duration-200 dark:bg-black">{comment.user.name}</p>
+                            }} className="font-semibold hover:text-constrastColor hover:underline cursor-pointer transition-all duration-200 dark:bg-black  dark:hover:text-yellow-400">{comment.user.name}</p>
                         
                         <Popover>
                           <PopoverTrigger><p className="text-3xl "><PiDotsThreeBold/></p></PopoverTrigger>
@@ -643,6 +622,7 @@ export function MovieDetails() {
                         </Popover>
   
                     </div>
+                    
                     <p className="relative left-12 flex gap-2 items-center text-gray-400 max-w-[600px] dark:text-white">{comment.rating}/5 <b className="text-constrastColor dark:text-yellow-400"><GiKiwiFruit/></b></p>
   
                     <p className="relative left-12 text-gray-400 max-w-[600px]">{comment.text}</p>
@@ -655,41 +635,18 @@ export function MovieDetails() {
 
           <form onSubmit={updateReview}>
           <div className="flex flex-col gap-2 ">
-            <div className="h-10 text-gray-400 px-3 py-6 bg-slate-900 hover:border-constrastColor transition-all duration-200 border-2 border-slate-400 rounded-sm justify-center flex items-center">
+            <div className="h-10 text-gray-400 px-3 py-6 bg-slate-900 hover:border-constrastColor transition-all duration-200 border-2 border-slate-400 rounded-sm justify-center flex items-center dark:bg-black dark:text-white dark:hover:border-yellow-400 dark:border-white">
 
-            <button data-ripple-light="true" 
-            onClick={PopoverInfo} data-popover-target="popover"
-            className="">
-            <BsInfoSquare className="mr-2 cursor-pointer" />
-          </button>
-          {popoverVisible && (
-          <div
-            data-popover="popover"
-            className="absolute p-4  text-sm  break-words whitespace-normal bg-mainFontColor border rounded-lg w-1/3 bg-opacity-95  text-darkGreen shadow-blue-gray-500/10 focus:outline-none -mt-48 "><p>
-            Utilizamos o kiwi como forma de avaliação. Quanto mais kiwis um filme tiver, maior será sua recomendação. </p><p>Os kiwis vão de 1 a 5, onde 1 kiwi representa uma má avaliação e 5 kiwis uma ótima avaliação.</p>
-            <button
-      onClick={PopoverInfo}
-      className="absolute top-0 right-0 mt-1 mr-1 text-gray-400 hover:text-gray-700 focus:outline-none"
-    >
-      <svg className="w-4 m-1 h-3 fill-current" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M1.707 1.707a1 1 0 011.414 0L10 8.586l7.879-7.88a1 1 0 111.414 1.414L11.414 10l7.88 7.879a1 1 0 11-1.414 1.414L10 11.414l-7.879 7.88a1 1 0 01-1.414-1.414L8.586 10 1.707 2.121a1 1 0 010-1.414z"
-        />
-      </svg>
-    </button>
-          </div>
-        )}
           
-              <p className="text-mainFontColor dark:text-white">
+          
+              <p className="text-mainFontColor dark:text-white dark:bg-black ">
                 Quantos kiwis esse filme merece?
               </p> 
               {[1, 2, 3, 4, 5].map((index) => (
                 <button
                   key={index}
                   type="button"
-                  className={`w-10 h-10 rounded-full flex items-center justify-center text-lg ${rating >= index ? 'text-constrastColor' : 'text-gray-400'}`}
+                  className={`w-10 h-10 rounded-full flex items-center justify-center text-lg ${rating >= index ? 'text-constrastColor dark:text-yellow-400' : 'text-gray-400'}`}
                   onClick={() => {setRating(index)}}
                 >
                 <GiKiwiFruit />
@@ -699,7 +656,7 @@ export function MovieDetails() {
           
              <input
               name="text"
-              className="px-3 h-10 w-full py-8 rounded-sm outline-none border-2 border-slate-400 bg-slate-900 text-slate-400 focus:border-constrastColor transition-all duration-200"
+              className="px-3 h-10 w-full py-8 rounded-sm outline-none border-2 border-slate-400 bg-slate-900 text-slate-400 focus:border-constrastColor transition-all duration-200 dark:bg-black dark:text-white dark:hover:border-yellow-400 dark:border-white"
               value={textAlterComment}
               onChange={(e)=>setTextAlterComment(e.target.value)}
               type="text"
@@ -707,8 +664,8 @@ export function MovieDetails() {
             />
           </div>
           <div className="flex gap-5">
-            <button className="h-10 text-gray-400 px-3 hover:border-red-400 transition-all duration-200 border-2 border-slate-400 rounded-sm justify-center flex items-center mt-4" onClick={()=>setAlterCommet(false)}>Cancelar</button>
-            <button type="submit" className="h-10 text-gray-400 px-3 hover:border-constrastColor transition-all duration-200 border-2 border-slate-400 rounded-sm justify-center flex items-center mt-4">Avaliar</button>
+            <button className="h-10 text-gray-400 px-3 hover:border-red-400 transition-all duration-200 border-2 border-slate-400 rounded-sm justify-center flex items-center mt-4 dark:bg-black dark:text-white dark:hover:border-yellow-400 dark:border-white" onClick={()=>setAlterCommet(false)}>Cancelar</button>
+            <button type="submit" className="h-10 text-gray-400 px-3 hover:border-constrastColor transition-all duration-200 border-2 border-slate-400 rounded-sm justify-center flex items-center mt-4 dark:bg-black dark:text-white dark:hover:border-yellow-400 dark:border-white">Avaliar</button>
           </div>
             
           </form>
@@ -725,10 +682,10 @@ export function MovieDetails() {
                       <p onClick={()=>{
                           navigate(`/Profile/${comment.userId}`)
                           window.scrollTo({top: 0})
-                          }} className="font-semibold hover:text-constrastColor hover:underline cursor-pointer transition-all duration-200">{comment.user.name}</p>
-                      <p className="flex gap-2 items-center">{comment.rating}/5 <b className="text-constrastColor"><GiKiwiFruit/></b></p>
+                          }} className="font-semibold hover:text-constrastColor hover:underline cursor-pointer transition-all duration-200 dark:bg-black dark:text-white dark:hover:border-yellow-400 dark:border-white">{comment.user.name}</p>
+                      <p className="flex gap-2 items-center">{comment.rating}/5 <b className="text-constrastColor dark:text-yellow-400"><GiKiwiFruit/></b></p>
                   </div>
-                  <p className="relative left-12 text-gray-400 max-w-[600px]">{comment.text}</p>
+                  <p className="relative left-12 text-gray-400 max-w-[600px] dark:text-white">{comment.text}</p>
               </div>
             );
           }

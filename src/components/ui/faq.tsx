@@ -15,43 +15,39 @@ const Faq: React.FC<FaqProps> = ({ question, answer }) => {
   };
 
   return (
-    <div className=" w-2/3 border border-t-0 bg-mainFontColor brightness-95 dark:border-neutral-600 dark:bg-body-dark">
-      <h2 className="accordion-header mb-0" id={question}>
-        <button
-          className="group relative flex w-full items-center border-0 bg- px-5 py-4 text-left text-base text-neutral-800 transition [overflow-anchor:none] hover:z-[2] focus:z-[3] focus:outline-none dark:bg-body-dark dark:text-white  [&:not([data-twe-collapse-collapsed])]:bg- [&:not([data-twe-collapse-collapsed])]:text-primary [&:not([data-twe-collapse-collapsed])]:shadow-border-b dark:[&:not([data-twe-collapse-collapsed])]:bg-surface-dark dark:[&:not([data-twe-collapse-collapsed])]:text-primary dark:[&:not([data-twe-collapse-collapsed])]:shadow-white/10"
-          type="button"
-          data-twe-collapse-init
-          data-twe-collapse-collapsed={expanded ? "false" : "true"}
-          data-twe-target={`#${question}`}
-          aria-expanded={expanded ? "true" : "false"}
-          aria-controls={question}
-          onClick={toggleExpanded}
-        >
-          {question}
-          <span className="-me-1 ms-auto h-5 w-5 shrink-0 rotate-[-180deg] transition-transform duration-200 ease-in-out group-data-[twe-collapse-collapsed]:me-0 group-data-[twe-collapse-collapsed]:rotate-0 motion-reduce:transition-none [&>svg]:h-6 [&>svg]:w-6 ">
-            <svg
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
+    <div className="w-full max-w-4xl mx-auto mb-1">
+      
+      <div className="border border-t-0 bg-mainFontColor hover:opacity-90 brightness-95 dark:border-white dark:border-2 dark:bg-body-dark rounded-lg">
+        <h2 className="accordion-header mb-0">
+          <button
+            className="group relative flex w-full items-center border-0 bg-transparent px-5 py-4 text-left text-base text-neutral-800 transition overflow-anchor-none hover:z-2 focus:z-3 focus:outline-none dark:bg-body-dark dark:text-white dark:bg-black dark:hover:bg-dark-900 dark:hover:text-primary rounded-t-lg"
+            type="button"
+            onClick={toggleExpanded}
+            aria-expanded={expanded ? "true" : "false"}
+            aria-controls={question}
+          >
+            {question}
+            <span
+              className={`-me-1 ms-auto h-5 w-5 shrink-0 transition-transform duration-200 ease-in-out ${
+                expanded ? "rotate-0" : "-rotate-180"
+              } group-data-twe-collapse-collapsed:me-0 group-data-twe-collapse-collapsed:rotate-0 motion-reduce:transition-none dark:translate-y-0 dark:rotate-180 dark:[&>svg]:h-6 dark:[&>svg]:w-6`}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-              />
-            </svg>
-          </span>
-        </button>
-      </h2>
-      <div
-        id={question}
-        className={`${expanded ? "visible" : "hidden"} text-black`}
-        data-twe-collapse-item
-        aria-labelledby={question}
-      >
-        <div className="px-5 py-4">
-          <strong>{question}</strong> {answer}
+              <svg
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+              </svg>
+            </span>
+          </button>
+        </h2>
+        <div
+          id={question}
+          className={`px-5 py-4 ${expanded ? "block" : "hidden"} text-black dark:text-white dark:bg-black dark:border-2 dark:border-white rounded-b-lg`}
+        >
+          <div>{answer}</div>
         </div>
       </div>
     </div>

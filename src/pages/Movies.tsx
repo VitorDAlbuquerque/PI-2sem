@@ -176,10 +176,10 @@ export function Movies(){
                   </CarouselContent>
                 </ToggleGroup>
 
-                <button onClick={()=>dotCarousel(-5)} className="text-gray-300 text-3xl absolute -left-10 hover:bg-mainBgOpacity75 h-full transition-all ease-in-out duration-200 group-hover:block dark:bg-black dark:text-white ">
+                <button onClick={()=>dotCarousel(-5)} className="text-gray-300 text-3xl absolute -left-10 hover:bg-mainBgOpacity75 h-full transition-all ease-in-out duration-200 group-hover:block dark:bg-black dark:text-white dark:hover:bg-black">
                   <IoIosArrowBack />
                 </button>
-                <button onClick={()=>dotCarousel(+4)}  className="text-gray-300 text-3xl absolute -right-10 hover:bg-mainBgOpacity75 h-full transition-all ease-in-out duration-200 group-hover:block dark:bg-black ">
+                <button onClick={()=>dotCarousel(+4)}  className="text-gray-300 text-3xl absolute -right-10 hover:bg-mainBgOpacity75 h-full transition-all ease-in-out duration-200 group-hover:block dark:bg-black dark:text-white">
                   <IoIosArrowForward />
                 </button>
               </Carousel>
@@ -294,7 +294,7 @@ export function Movies(){
                       </PaginationItem>
 
                       <PaginationItem>
-                        <PaginationLink className="text-black cursor-pointer" onClick={()=>{
+                        <PaginationLink className="text-black cursor-pointer " onClick={()=>{
                           {genre?
                             filterByGenre(genre, String(currentPage))
                           :
@@ -324,7 +324,7 @@ export function Movies(){
                       </PaginationItem>
 
                       <PaginationItem>
-                        <PaginationLink className="text-black cursor-pointer" onClick={()=>{
+                        <PaginationLink className="text-black cursor-pointer dark:bg-black dark:text-white" onClick={()=>{
                           {genre?
                             filterByGenre(genre, String(currentPage))
                           :

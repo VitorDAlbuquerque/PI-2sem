@@ -23,11 +23,11 @@ const highContrastButton = () => {
     <Toggle
       pressed={darkMode}
       onPressedChange={toggleDarkMode}
-      className="toggle-button"
+      className="toggle-button p-5 m-1 dark:border-yellow-400 dark:bg-black dark:hover:opacity-90"
       variant="outline"
       size="default"  
     >
-      {darkMode ? 'Modo comum' : 'Modo alto contraste'}
+      {darkMode ? 'Ativar modo comum' : 'Ativar modo alto contraste'}
     </Toggle>
   );
 };
