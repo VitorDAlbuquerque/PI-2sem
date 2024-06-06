@@ -631,14 +631,11 @@ export function MovieDetails() {
             } else {
               return (
               <div key={`${comment.userId}${comment.movieId}`} className="flex items-center mb-12 gap-4 ">
-          <img className="h-12 w-12 rounded-full object-cover" src="https://i.pinimg.com/236x/93/36/08/93360829e98e2db2aa3ef0d4ae381383.jpg" alt="foto da hello kitty pq não consigo importar a do homelander" />
+          <img className="h-12 w-12 rounded-full object-cover" src={profileImgs[comment.user.imgIndex].url} alt="foto da hello kitty pq não consigo importar a do homelander" />
 
           <form onSubmit={updateReview}>
           <div className="flex flex-col gap-2 ">
             <div className="h-10 text-gray-400 px-3 py-6 bg-slate-900 hover:border-constrastColor transition-all duration-200 border-2 border-slate-400 rounded-sm justify-center flex items-center dark:bg-black dark:text-white dark:hover:border-yellow-400 dark:border-white">
-
-          
-          
               <p className="text-mainFontColor dark:text-white dark:bg-black ">
                 Quantos kiwis esse filme merece?
               </p> 

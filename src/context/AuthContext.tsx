@@ -14,7 +14,8 @@ interface UserProps {
   password: String;
   theme: string;
   bio: string;
-  imgIndex: number
+  imgIndex: number,
+  isADM: boolean
 }
 
 export const LoginContext = createContext<AuthContextProps>(null!);

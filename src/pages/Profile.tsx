@@ -5,6 +5,7 @@ import { FormEvent, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {profileImgs} from "@/api/profileImg";
 
+import { MdAdminPanelSettings } from "react-icons/md";
 import {
   Dialog,
   DialogClose,
@@ -14,6 +15,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 
 import { ScrollArea } from "@/components/ui/scroll-area"
 
@@ -27,6 +34,7 @@ import { LoginContext } from "@/context/AuthContext";
 import { useNavigate, useParams } from "react-router-dom";
 import { useBackendApi } from "@/api/useBackendApi";
 
+import { BsThreeDots } from "react-icons/bs";
 interface moviesProps {
   id: number;
   movieName: string;
@@ -61,6 +69,7 @@ interface profileUserProps{
   bio: string,
   theme: string,
   imgIndex: number,
+  isADM: boolean,
   isFollowed:[{
     userFollowingId: string
   }]
@@ -116,6 +125,10 @@ export function Profile() {
   const [sliceFavoriteMovies, setSliceFavoriteMovies] = useState(5);
   const [sliceReviewMovies, setSliceReviewMovies] = useState(5);
 
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [openDialogUpdatePassword, setOpenDialogUpdatePassword] = useState(false);
+
   const apiTMDB = useTMDBApi();
   const apiBackend = useBackendApi();
   const {id} = useParams()
@@ -127,13 +140,14 @@ export function Profile() {
     function getTheme(){
       const labelColor = document.getElementById("profileColor");
       const username = document.getElementById("username");
+      const name = document.getElementById("name");
       const followers = document.getElementById("followers");
 
       if(profileUser && !profileColor){{
         if(labelColor) labelColor.style.backgroundColor = profileUser.theme
         if(username) username.style.color = profileUser.theme
         if(followers) followers.style.color = profileUser.theme
-
+        if(name) name.style.color = profileUser.theme
       }}
     }
 
@@ -196,6 +210,7 @@ export function Profile() {
     const labelColor = document.getElementById("labelColor");
     const profileColor = document.getElementById("profileColor");
     const username = document.getElementById("username");
+    const name = document.getElementById("name");
     const followers = document.getElementById("followers");
     const formColor = document.getElementById("formColor") as HTMLInputElement;
 
@@ -207,6 +222,7 @@ export function Profile() {
     if(profileColor) profileColor.style.backgroundColor = color
     if(username) username.style.color = color
     if(followers) followers.style.color = color
+    if(name) name.style.color = color
   }
 
   async function updateProfileColor(e: FormEvent) {
@@ -278,11 +294,19 @@ export function Profile() {
     }
   }
 
+  async function admUpdatePassword(e: FormEvent) {
+    const storageData = localStorage.getItem("authToken");
+    e.preventDefault();
+    wait().then(() => setOpenDialogUpdatePassword(false));
+    if(storageData && profileUser && confirmPassword == newPassword){
+      await apiBackend.admUpdatePassword(storageData, profileUser.id, newPassword)
+    }
+  }
+
   return (
     <div className="flex">
       <SideBar />
-      <div className="bg-mainBg text-emerald-50 w-full min-h-screen font-montserrat dark:bg-black
-">
+      <div className="bg-mainBg text-emerald-50 w-full min-h-screen font-montserrat dark:bg-black">
         {authContext.user?.id == id?
           <Dialog open={profileColorDialog} onOpenChange={setProfileColorDialog}>
             <DialogTrigger className="w-full">
@@ -294,8 +318,7 @@ export function Profile() {
                 id="profileColor"
               ></div>
             </DialogTrigger>
-            <DialogContent className="max-w-96 rounded-lg dark:text-white dark:bg-black dark:border-2 dark:border-white 
-">
+            <DialogContent className="max-w-96 rounded-lg dark:text-white dark:bg-black dark:border-2 dark:border-white">
               <DialogHeader>
                 <DialogTitle>Alterar cor do perfil</DialogTitle>
                 <DialogDescription className="dark:text-white">
@@ -315,8 +338,7 @@ export function Profile() {
                     name="formColor"
                     id="formColor"
                   />
-                  <button className="bg-white w-full border-2 rounded-lg h-11 mt-4 border-constrastColor hover:brightness-75 transition-all duration-200 dark:border-yellow-400 dark:bg-black
-">
+                  <button className="bg-white w-full border-2 rounded-lg h-11 mt-4 border-constrastColor hover:brightness-75 transition-all duration-200 dark:border-yellow-400 dark:bg-black">
                     Confirmar
                   </button>
                 </form>
@@ -344,8 +366,7 @@ export function Profile() {
                       alt=""
                     />
                   </DialogTrigger>
-                  <DialogContent className="max-w-[740px] rounded-lg text-left dark:border-white dark:bg-black
-">
+                  <DialogContent className="max-w-[740px] rounded-lg text-left dark:border-white dark:bg-black">
                     <DialogHeader>
                       <DialogTitle>Escolha sua imagem</DialogTitle>
                     </DialogHeader>
@@ -380,12 +401,61 @@ export function Profile() {
               
               <div className="flex flex-col gap-1 mt-5 ">
                 <h1
-                  id="username"
-                  className="invert mobile:invert-0 text-4xl"
+                  id="name"
+                  className="invert mobile:invert-0 text-4xl flex items-center gap-3"
                 >
                   {profileUser?.name}
+                  {authContext.user?.isADM && profileUser?.isADM==false?
+                    <Popover>
+                      <PopoverTrigger><p className="cursor-pointer hover:bg-slate-300 rounded-md transition-all duration-200"><BsThreeDots/></p></PopoverTrigger>
+                      <PopoverContent className="p-2 max-w-44 dark:bg-black dark:border-2 dark:border-white">
+                        <Dialog onOpenChange={setOpenDialogUpdatePassword} open={openDialogUpdatePassword}>
+                          <DialogTrigger className="w-full text-left">
+                            <p className="cursor-pointer hover:brightness-90 bg-white px-2 rounded-sm transition-all duration-200">Alterar senha</p>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-96 rounded-lg dark:text-white dark:bg-black dark:border-2 dark:border-white ">
+                            <DialogHeader>
+                              <DialogTitle>Alterar senha de {profileUser.name}</DialogTitle>
+                              <DialogDescription >
+                                Atualize a senha de usuário
+                              </DialogDescription>
+                            </DialogHeader>
+                            <div className="flex flex-col justify-center text-slate-500">
+                              <form onSubmit={admUpdatePassword} className="flex flex-col gap-5">
+                                <div>
+                                  <p >Nova senha</p>
+                                  <input onChange={(e)=>{setNewPassword(e.target.value)}} className="w-full h-10 border-[1px] outline-none border-slate-500 rounded-md px-2 dark:border-white dark:bg-black" type="password" />
+                                </div>
+                                <div>
+                                  <p>Confirme a nova senha</p>
+                                  <input onChange={(e)=>{setConfirmPassword(e.target.value)}} className="w-full h-10 border-[1px] outline-none border-slate-500 rounded-md px-2 dark:border-white dark:bg-black" type="password" />
+                                </div>
+                                <button className=" bg-white w-full border-2 rounded-lg h-11 mt-4 border-constrastColor hover:brightness-75 transition-all duration-5000 dark:border-yellow-400 dark:bg-black">
+                                  Confirmar
+                                </button>
+                                
+                              </form>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                        <div className="cursor-pointer hover:bg-red-200 hover:text-red-500 bg-white px-2 rounded-sm transition-all duration-200">
+                          Banir {profileUser.name}
+                        </div>
+                      </PopoverContent>
+                      
+                    </Popover>
+                  :null
+                  }
+
                 </h1>
-                <p>{profileUser?.username}</p>
+
+                <p className="flex items-center gap-2 invert" id="username">
+                  {profileUser?.username}
+                  {profileUser?.isADM?
+                    <MdAdminPanelSettings/>
+                  : null
+                  } 
+                </p>
                 <Dialog>
                   <DialogTrigger>
                     <p
@@ -401,7 +471,6 @@ export function Profile() {
                   <DialogContent className="max-w-96 rounded-lg text-left max-h-96">
                     <DialogHeader>
                       <DialogTitle>Seguidores</DialogTitle>
-
                     </DialogHeader>
                     <div className="flex flex-col gap-5">
                       <input className="mt-2 h-9 border-2 rounded-md outline-none px-2" type="text" onChange={(e)=>listFollowersByName(e.target.value)} placeholder="Pesquisar"/>
@@ -430,7 +499,9 @@ export function Profile() {
                 </Dialog>
                 <p className="font-light max-w-80 mt-3 min-h-28 ">
                   {profileUser?.bio}
+
                 </p>
+
               </div>
             </div>
             {authContext.user && profileUser?
@@ -438,6 +509,7 @@ export function Profile() {
                 profileUser.isFollowed.filter((follow)=> follow.userFollowingId == authContext.user?.id).length > 0?
                 <div className="h-2/5 absolute right-5 bottom-0">
                   <button className="font-semibold bg-gray-700 py-1 px-4 rounded-md text-gray-400  hover:brightness-75 transition-all duration-200" onClick={newFollow}>Deixar de seguir</button>
+
                 </div>
                 :
                 <div className="h-2/5 absolute right-5 bottom-0">
@@ -446,7 +518,7 @@ export function Profile() {
               :null
             :null
             }
-            
+
           </div>
           <div className="relative -top-28">
             {/*<div>

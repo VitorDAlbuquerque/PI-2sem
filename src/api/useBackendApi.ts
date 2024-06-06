@@ -351,5 +351,22 @@ export const useBackendApi = () => ({
       follow: response.data
     }
   },
+  searchUsers: async(username: string)=>{
+    const response = await axios.post(`${URLHost}/searchUsers`, {username})
+    return{
+      users: response.data
+    }
+  },
+
+  admUpdatePassword: async(token: string, changeId: string, newPassword: string)=>{
+    await axios.put(`${URLHost}/changePassword`, {changeId, newPassword},
+      {
+        headers:{
+          'Authorization': `Bearer ${token}`
+        }
+      }
+    )
+    return;
+  },
 
 });
