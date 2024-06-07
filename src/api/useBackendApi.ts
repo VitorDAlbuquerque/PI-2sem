@@ -369,4 +369,15 @@ export const useBackendApi = () => ({
     return;
   },
 
+  admBan: async(token: string, banId: string)=>{
+    await axios.post(`${URLHost}/banUser`, {banId},
+      {
+        headers:{
+          'Authorization': `Bearer ${token}`
+        }
+      }
+    )
+    return;
+  },
+
 });

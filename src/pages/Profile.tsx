@@ -128,6 +128,7 @@ export function Profile() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [openDialogUpdatePassword, setOpenDialogUpdatePassword] = useState(false);
+  const [openDialogBan, setOpenDialogBan] = useState(false);
 
   const apiTMDB = useTMDBApi();
   const apiBackend = useBackendApi();
@@ -303,6 +304,15 @@ export function Profile() {
     }
   }
 
+  async function admBan(){
+    const storageData = localStorage.getItem("authToken");
+    wait().then(() => setOpenDialogBan(false));
+    if(storageData && profileUser){
+      await apiBackend.admBan(storageData, profileUser.id)
+      navigate('/')
+    }
+  }
+
   return (
     <div className="flex">
       <SideBar />
@@ -438,9 +448,25 @@ export function Profile() {
                             </div>
                           </DialogContent>
                         </Dialog>
-                        <div className="cursor-pointer hover:bg-red-200 hover:text-red-500 bg-white px-2 rounded-sm transition-all duration-200">
-                          Banir {profileUser.name}
-                        </div>
+                        
+                        <Dialog onOpenChange={setOpenDialogBan} open={openDialogBan}>
+                          <DialogTrigger className="w-full text-left">
+                            <div className="cursor-pointer hover:bg-red-200 hover:text-red-500 bg-white px-2 rounded-sm transition-all duration-200">
+                              Banir {profileUser.name}
+                            </div>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-96 rounded-lg dark:text-white dark:bg-black dark:border-2 dark:border-white ">
+                            <DialogHeader>
+                              <DialogTitle>Banir {profileUser.name}</DialogTitle>
+                              <DialogDescription >
+                                Atenção! Este usuário será banido permanentemente!
+                              </DialogDescription>
+                            </DialogHeader>
+                            <div className="flex flex-col justify-center text-slate-500">
+                              <button onClick={admBan} className="w-full dark:bg-black dark:text-yellow-400 border-2 dark:border-yellow-400 border-constrastColor p-2 rounded-lg hover:border-red-400 transition-all duration-200 dark:hover:bg-gray-950 dark:hover:border-yellow-400">Confirmar</button>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
                       </PopoverContent>
                       
                     </Popover>
