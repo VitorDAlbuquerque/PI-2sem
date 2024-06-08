@@ -80,16 +80,16 @@ export function Login() {
   const [dob, setDob] = useState("");
   const [gender, setGender] = useState("");
   const [country, setCountry] = useState("");
+  const [isADM, setIsADM] = useState(false);
 
   const registerLogic = async (e: FormEvent) => {
     e.preventDefault();
 
     const errors: string[] = [];
 
-    if (!name) {
-      errors.push("O campo de nome de usuário é nulo.");
-    }
 
+    if (!isADM) {
+     
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email || "")) {
       errors.push("Por favor, insira um e-mail válido.");
@@ -123,7 +123,11 @@ export function Login() {
     if (!country) {
       errors.push("Por favor, selecione um país.");
     }
-
+  } else {    
+    if (password !== 'CkOvV2024@fatec.zl') {
+     errors.push("Senha incorreta para cadastro de administrador.");
+     }
+  }
     if (errors.length > 0) {
       for (let i = 0; i < errors.length; i++) {
         toast.error(errors[i]);
@@ -139,20 +143,28 @@ export function Login() {
       dob,
       gender,
       country,
+      isADM
     );
+
+  
 
     if (data) {
       authContext.signin(email, password);
     }
   };
 
+  const handleAdminCheckboxChange = () => {
+    setIsADM(!isADM);
+  };
+
+  
   return (
     <div className="min-h-screen ">
       <div className="bg-kiwi-bg h-screen w-screen bg-cover"></div>
-      <div className="absolute top-0 left-0 w-full bg-gradient-to-l from-mainBg from-30% to-mainBgOpacity75">
+      <div className="absolute top-0 left-0 w-full bg-gradient-to-l from-mainBg from-30% to-mainBgOpacity75 dark:bg-black ">
         <div className="flex items-center pl-10 h-10vh">
           <h1
-            className="font-playfair font-semibold select-none text-constrastColor text-4xl cursor-pointer hover:brightness-75 transition-all ease-in-out duration-200"
+            className="font-playfair font-semibold select-none text-constrastColor text-4xl cursor-pointer hover:brightness-75 transition-all ease-in-out duration-200 dark:hover:text-yellow-400 dark:text-white"
             onClick={() => navigate("/")}
           >
             Kiwi
@@ -163,11 +175,11 @@ export function Login() {
           <div className="flex-1 flex justify-center items-center ">
             <Tabs defaultValue="login">
               <TabsContent value="login">
-                <div className="bg-bgAside w-96 rounded-lg p-5 flex items-center flex-col">
-                  <h1 className="text-constrastColor font-montserrat font-semibold text-3xl">
+                <div className="bg-bgAside dark:bg-black w-96 rounded-lg p-5 flex items-center flex-col">
+                  <h1 className="text-constrastColor font-montserrat font-semibold text-3xl dark:text-yellow-400">
                     Seja bem-vindo
                   </h1>
-                  <p className="text-bgWathcList">
+                  <p className="dark:text-white text-bgWathcList">
                     Faça login em sua conta do Kiwi!
                   </p>
                   <form
@@ -175,34 +187,34 @@ export function Login() {
                     className="flex flex-col gap-5 w-11/12 mt-5"
                   >
                     <div>
-                      <p className="text-bgWathcList">Email:</p>
+                      <p className="text-bgWathcList dark:text-white">Email:</p>
                       <input
                         name="username"
-                        className="w-full h-10 rounded-sm outline-none pl-3"
+                        className="w-full h-10 rounded-sm outline-none pl dark:text-black-3"
                         type="text"
                       />
                     </div>
                     <div>
-                      <p className="text-bgWathcList">Senha:</p>
+                      <p className="text-bgWathcList dark:text-white">Senha:</p>
                       <input
                         name="password"
-                        className="w-full h-10 rounded-sm outline-none pl-3"
+                        className="w-full h-10 rounded-sm outline-none pl dark:text-black-3"
                         type="password"
                       />
                     </div>
-                    <button className="bg-constrastColor text-darkGreen font-semibold font-montserrat text-1xl h-10 rounded-sm mt-3 hover:brightness-75 transition-all ease-in-out duration-200">
+                    <button className="bg-constrastColor text-darkGreen font-semibold font-montserrat text-1xl h-10 rounded-sm mt-3 hover:brightness-75 transition-all ease-in-out duration-200 dark:bg-yellow-400 dark:text-black">
                       Entrar
                     </button>
                   </form>
-                  <p onClick={()=>navigate("/RecoverPassword")} className="text-bgWathcList mt-3 hover:text-constrastColor cursor-pointer transition-all duration-200">Esqueceu a senha?</p>
-                  <p className="text-bgWathcList mt-3">ou</p>
+                  <p onClick={()=>navigate("/RecoverPassword")} className="text-bgWathcList mt-3 hover:text-constrastColor cursor-pointer transition-all duration-200 dark:text-white dark:hover:text-yellow-400">Esqueceu a senha?</p>
+                  <p className="text-bgWathcList mt-3 dark:text-white">ou</p>
 
-                  <TabsList className="bg-bgAside">
-                    <p className="text-bgWathcList">
+                  <TabsList className="bg-bgAside dark:bg-black">
+                    <p className="dark:text-white text-bgWathcList ">
                       Ainda não possui uma conta?
                       <TabsTrigger
                         value="signup"
-                        className="underline text-constrastColor"
+                        className="underline text-constrastColor dark:hover:text-yellow-400 dark:text-yellow-400 "
                       >
                         Cadastre-se
                       </TabsTrigger>
@@ -211,11 +223,11 @@ export function Login() {
                 </div>
               </TabsContent>
               <TabsContent value="signup">
-                <div className="bg-bgAside min-h-420px w-96 rounded-lg p-5 flex items-center flex-col">
-                  <h1 className="text-constrastColor font-montserrat font-semibold text-3xl ">
+                <div className="bg-bgAside min-h-420px w-96 rounded-lg p-5 flex items-center flex-col dark:bg-black">
+                  <h1 className="text-constrastColor font-montserrat font-semibold text-3xl dark:text-yellow-400">
                     Cadastre-se
                   </h1>
-                  <p className="text-bgWathcList">
+                  <p className="text-bgWathcList dark:text-white">
                     Faça seu cadastro e aproveite o Kiwi!
                   </p>
                   <form
@@ -227,44 +239,44 @@ export function Login() {
                       id="firstSignup"
                     >
                       <div>
-                        <p className="text-bgWathcList">Nome:</p>
+                        <p className="text-bgWathcList dark:text-white ">Nome:</p>
                         <input
-                          className="w-full h-10 rounded-sm outline-none pl-3"
+                          className=" dark:text-black w-full h-10 rounded-sm outline-none pl-3"
                           type="text"
-                          value={name}
+    dark:text-black                       value={name}
                           onChange={(e) => setName(e.target.value)}
                         />
                       </div>
                       
                       <div>
-                        <p className="text-bgWathcList">Email:</p>
+                        <p className="text-bgWathcList dark:text-white">Email:</p>
                         <input
-                          className="w-full h-10 rounded-sm outline-none pl-3"
+                          className=" dark:text-black w-full h-10 rounded-sm outline-none pl-3"
                           type="text"
-                          value={email}
+    dark:text-black                       value={email}
                           onChange={(e) => setEmail(e.target.value)}
                         />
                       </div>
                       <div>
-                        <p className="text-bgWathcList">Senha:</p>
+                        <p className="text-bgWathcList dark:text-white">Senha:</p>
                         <input
-                          className="w-full h-10 rounded-sm outline-none pl-3"
-                          type="password"
+                          className=" dark:text-black w-full h-10 rounded-sm outline-none pl-3"
+                          type="password" dark:text-black
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
                         />
                       </div>
                       <div>
-                        <p className="text-bgWathcList">Confirme a senha:</p>
+                        <p className="text-bgWathcList dark:text-white">Confirme a senha:</p>
                         <input
-                          className="w-full h-10 rounded-sm outline-none pl-3"
-                          type="password"
+                          className=" dark:text-black w-full h-10 rounded-sm outline-none pl-3"
+                          type="password" dark:text-black
                           value={confirmPassword}
                           onChange={(e) => setConfirmPassword(e.target.value)}
                         />
                       </div>
                       <button
-                        className="bg-constrastColor text-darkGreen font-semibold font-montserrat text-1xl h-10 rounded-sm mt-3 hover:brightness-75 transition-all ease-in-out duration-200"
+                        className="bg-constrastColor text-darkGreen font-semibold font-montserrat text-1xl h-10 rounded-sm mt-3 hover:brightness-75 transition-all ease-in-out duration-200 dark:bg-yellow-400 dark:text-black"
                         onClick={nextSignup}
                       >
                         Avançar
@@ -275,28 +287,28 @@ export function Login() {
                       className="hidden flex-col gap-3 w-full"
                     >
                       <div>
-                        <p className="text-bgWathcList">Nome de usuário:</p>
+                        <p className="text-bgWathcList dark:text-white ">Nome de usuário:</p>
                         <input
-                          className="w-full h-10 rounded-sm outline-none pl-3"
+                          className=" w-full h-10 rounded-sm outline-none pl-3 dark:text-black"
                           type="text"
                           value={username}
                           onChange={(e) => setUsername(e.target.value)}
                         />
                       </div>
                       <div>
-                        <p className="text-bgWathcList">Data de nascimento:</p>
+                        <p className="text-bgWathcList dark:text-white">Data de nascimento:</p>
                         <input
-                          className="w-full h-10 rounded-sm outline-none px-3"
+                          className=" w-full h-10 rounded-sm outline-none px-3 dark:text-black"
                           type="date"
-                          id="dateOfBirth"
+    dark:text-black                       id="dateOfBirth"
                           value={dob}
                           onChange={(e) => setDob(e.target.value)}
                         />
                       </div>
                       <div>
-                        <p className="text-bgWathcList">Qual seu gênero:</p>
+                        <p className="text-bgWathcList dark:text-white">Qual seu gênero:</p>
                         <select
-                          className="w-full h-10 rounded-sm outline-none px-3"
+                          className="w-full h-10 rounded-sm outline-none px-3 dark:text-black"
                           name="gender"
                           id="gender"
                           value={gender}
@@ -317,9 +329,9 @@ export function Login() {
                         </select>
                       </div>
                       <div>
-                        <p className="text-bgWathcList">País:</p>
+                        <p className="text-bgWathcList dark:text-white">País:</p>
                         <select
-                          className="w-full h-10 rounded-sm outline-none px-3"
+                          className="w-full h-10 rounded-sm outline-none px-3 dark:text-black"
                           name="country"
                           id="country"
                           value={country}
@@ -342,26 +354,35 @@ export function Login() {
                             : null}
                         </select>
                       </div>
+                      <div>
+                        <label className=" text-mainFontColor dark:text-white">
+                          <input 
+                          className="mr-2 my-1"
+                          type="checkbox" checked={isADM} onChange={handleAdminCheckboxChange} />
+                          Cadastro de administrador
+                        </label>
+                      </div>
 
-                      <button className="bg-constrastColor text-darkGreen font-semibold font-montserrat text-1xl h-10 rounded-sm mt-3 hover:brightness-75 transition-all ease-in-out duration-200">
+                      <button className="bg-constrastColor text-darkGreen font-semibold font-montserrat text-1xl h-10 rounded-sm mt-3 hover:brightness-75 transition-all ease-in-out duration-200 dark:bg-yellow-400 dark:text-black">
                         Cadastrar-se
                       </button>
                       <p
                         onClick={nextSignup}
-                        className="flex justify-center text-constrastColor cursor-pointer hover:underline"
+                        className=" flex justify-center text-constrastColor cursor-pointer hover:underline dark:text-yellow-400"
                       >
                         voltar
                       </p>
                     </div>
                   </form>
-                  <p className="text-bgWathcList mt-1">ou</p>
+                  <p className="text-bgWathcList dark:text-white mt-1">ou</p>
+              
 
-                  <TabsList className="bg-bgAside">
-                    <p className="text-bgWathcList">
+                  <TabsList className="bg-bgAside dark:bg-black">
+                    <p className="text-bgWathcList dark:text-white ">
                       Já possui uma conta?
                       <TabsTrigger
                         value="login"
-                        className="underline text-constrastColor"
+                        className="underline text-constrastColor dark:text-yellow-400"
                       >
                         Faça login
                       </TabsTrigger>
@@ -369,8 +390,11 @@ export function Login() {
                   </TabsList>
                 </div>
               </TabsContent>
+              
             </Tabs>
+            
           </div>
+        
           
           <ToastContainer
             position="top-right"

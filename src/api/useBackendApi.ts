@@ -40,6 +40,7 @@ export const useBackendApi = () => ({
     birthDate: string,
     gender: string,
     country: string,
+    isADM: boolean,
   ) => {
     const response = await axios.post(`${URLHost}/createNewUser`, {
       name,
@@ -49,6 +50,7 @@ export const useBackendApi = () => ({
       birthDate,
       gender,
       country,
+      isADM,
     });
 
     return {
