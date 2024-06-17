@@ -5,7 +5,6 @@ import { FormEvent, useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Page404Error } from "./Page404Error";
 
-import { Link } from "react-router-dom";
 import { MdEdit } from "react-icons/md";
 
 import { FaRegHeart, FaHeart  } from "react-icons/fa";
@@ -204,6 +203,11 @@ export function WatchList(){
         }
     }
 
+    function goToPage(page: string){
+        navigate(page)
+        window.scrollTo({ top: 0})
+    }
+
     return(
         <div className="flex">
             <SideBar />
@@ -344,11 +348,10 @@ export function WatchList(){
                                 {watchList.authorId == authContext.user?.id?
                                 <Dialog open={deleteListDialog} onOpenChange={setDeleteListDialog}>
                                     <DialogTrigger>
-                                    <p className="text-gray-400 hover:text-red-600 transition-all duration-200 cursor-pointer"><FaTrashCan/></p>
+                                        <p className="text-gray-400 hover:text-red-600 transition-all duration-200 cursor-pointer"><FaTrashCan/></p>
 
                                     </DialogTrigger>
-                                    <DialogContent onClick={onBlurInputList} className="max-w-96 rounded-lg text-left dark:text-white dark:bg-black dark:border-2 dark:border-white 
-">
+                                    <DialogContent onClick={onBlurInputList} className="max-w-96 rounded-lg text-left dark:text-white dark:bg-black dark:border-2 dark:border-white ">
                                         <DialogHeader>
                                             <DialogTitle>Deletar lista?</DialogTitle>
                                             <DialogDescription className="dark:text-white">
@@ -377,8 +380,8 @@ export function WatchList(){
                             <div className="flex justify-stretch gap-6 flex-wrap ">
                                 {movies.map(movie =>{
                                     return(
-                                        <div key={movie.id} className="cursor-pointer hover:brightness-50 transition-all ease-in-out duration-200"> <Link to={`/movie/${movie.movieId}`}>
-                                            <img className="h-80" src={`https://image.tmdb.org/t/p/original${movie.movieURLImg}`} alt={`Cartaz do filme${movie.movieName}`} /> </Link>
+                                        <div key={movie.id} className="cursor-pointer hover:brightness-50 transition-all ease-in-out duration-200"> 
+                                            <img className="h-80" onClick={()=>goToPage(`/movie/${movie.movieId}`)} src={`https://image.tmdb.org/t/p/original${movie.movieURLImg}`} alt={`Cartaz do filme${movie.movieName}`} />
                                         </div>
                                     )
                                 })}

@@ -21,8 +21,6 @@ import Autoplay from "embla-carousel-autoplay";
 import { LoginContext } from "@/context/AuthContext";
 import { Header } from "@/components/header";
 
-import { Link } from "react-router-dom";
-
 interface moviesProps {
   id: number;
   title: string;
@@ -54,6 +52,11 @@ export function Home() {
   const [currentNowPlaying, setCurrentNowPlaying] = useState(0);
 
   const authContext = useContext(LoginContext);
+
+  function goToPage(page: string){
+    navigate(page)
+    window.scrollTo({ top: 0})
+  }
 
   useEffect(() => {
     //CHAMADA API DE FILME
@@ -178,9 +181,7 @@ export function Home() {
                       
                         className="basis-1/3 h-80 flex justify-center "
                       >  
-                        <Link to={`/movie/${movie.id}`}>
-                      <img className="transition-all" src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} alt={`Cartaz de ${movie.title}`} />
-                    </Link>
+                      <img className="transition-all" onClick={()=>goToPage(`/movie/${movie.id}`)} src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} alt={`Cartaz de ${movie.title}`} />
                       </CarouselItem>
                     );
                   } else {
@@ -188,12 +189,13 @@ export function Home() {
                       <CarouselItem
                         key={movie.id}
                         className="basis-1/3 h-80 flex items-center justify-center "
-                      > <Link to={`/movie/${movie.id}`}>
+                      > 
                         <img
                           className="h-64"
+                          onClick={()=>goToPage(`/movie/${movie.id}`)}
                           src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
                           alt={`Cartaz de ${movie.title}`}
-                        /></Link>
+                        />
                       </CarouselItem>
                     );
                   }
@@ -227,9 +229,7 @@ export function Home() {
                     >
                       <div className="cursor-pointer hover:brightness-50 transition-all ease-in-out duration-200">
                         {topRatedMovies.length > 0 ? (
-                          <Link to={`/movie/${movie.id}`}>
-                          <img className="max:h-96 2xl:h-72 xl:h-64 lg:h-64 sm:h-64 xs:h-64 tablet:h-64 mobile:h-64 object-cover" src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} alt={`Cartaz de ${movie.title}`} />
-                        </Link>
+                          <img className="max:h-96 2xl:h-72 xl:h-64 lg:h-64 sm:h-64 xs:h-64 tablet:h-64 mobile:h-52 object-cover" onClick={()=>goToPage(`/movie/${movie.id}`)} src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} alt={`Cartaz de ${movie.title}`} />
                         ) : (
                           <Skeleton className="h-6 w-10" />
                         )}
@@ -276,9 +276,7 @@ export function Home() {
                 nowPlayingMovies.map((movie) => (
                   <CarouselItem key={movie.id} className="max:basis-1/7 xl:basis-1/6 2xl:basis-1/6 lg:basis-1/5 md:basis-1/4 sm:basis-1/4 xs:basis-1/3 tablet:basis-1/3 mobile:basis-1/2">
                     <div className="cursor-pointer hover:brightness-50 transition-all ease-in-out duration-200">
-                      <Link to={`/movie/${movie.id}`}>
-                        <img className="max:h-96 2xl:h-72 xl:h-64 lg:h-64 sm:h-64 xs:h-64 tablet:h-64 mobile:h-64 object-cover" src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} alt={`Cartaz de ${movie.title}`} />
-                      </Link>
+                      <img className="max:h-96 2xl:h-72 xl:h-64 lg:h-64 sm:h-64 xs:h-64 tablet:h-64 mobile:h-52 object-cover" onClick={()=>goToPage(`/movie/${movie.id}`)} src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} alt={`Cartaz de ${movie.title}`} />
                     </div>
                   </CarouselItem>
                 ))

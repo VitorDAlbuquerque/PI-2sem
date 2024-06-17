@@ -161,7 +161,7 @@ export function Login() {
   return (
     <div className="min-h-screen ">
       <div className="bg-kiwi-bg h-screen w-screen bg-cover"></div>
-      <div className="absolute top-0 left-0 w-full bg-gradient-to-l from-mainBg from-30% to-mainBgOpacity75 dark:bg-black ">
+      <div className="absolute top-0 left-0 w-full bg-gradient-to-l from-mainBg from-30% to-mainBgOpacity75 dark:bg-black dark:from-black">
         <div className="flex items-center pl-10 h-10vh">
           <h1
             className="font-playfair font-semibold select-none text-constrastColor text-4xl cursor-pointer hover:brightness-75 transition-all ease-in-out duration-200 dark:hover:text-yellow-400 dark:text-white"
@@ -190,15 +190,15 @@ export function Login() {
                       <p className="text-bgWathcList dark:text-white">Email:</p>
                       <input
                         name="username"
-                        className="w-full h-10 rounded-sm outline-none pl dark:text-black-3"
+                        className="w-full h-10 rounded-sm outline-none px-3 dark:text-black-3"
                         type="text"
                       />
                     </div>
                     <div>
-                      <p className="text-bgWathcList dark:text-white">Senha:</p>
+                      <p className="text-bgWathcList dark:text-white ">Senha:</p>
                       <input
                         name="password"
-                        className="w-full h-10 rounded-sm outline-none pl dark:text-black-3"
+                        className="w-full h-10 rounded-sm outline-none px-3 dark:text-black-3"
                         type="password"
                       />
                     </div>
@@ -243,7 +243,8 @@ export function Login() {
                         <input
                           className=" dark:text-black w-full h-10 rounded-sm outline-none pl-3"
                           type="text"
-    dark:text-black                       value={name}
+                          dark:text-black
+                          value={name}
                           onChange={(e) => setName(e.target.value)}
                         />
                       </div>
@@ -253,7 +254,8 @@ export function Login() {
                         <input
                           className=" dark:text-black w-full h-10 rounded-sm outline-none pl-3"
                           type="text"
-    dark:text-black                       value={email}
+                          dark:text-black
+                          value={email}
                           onChange={(e) => setEmail(e.target.value)}
                         />
                       </div>
@@ -275,8 +277,16 @@ export function Login() {
                           onChange={(e) => setConfirmPassword(e.target.value)}
                         />
                       </div>
+                      <div>
+                        <label className=" text-mainFontColor dark:text-white">
+                          <input 
+                          className="mr-2 my-1"
+                          type="checkbox" checked={isADM} onChange={handleAdminCheckboxChange} />
+                          Cadastro de administrador
+                        </label>
+                      </div>
                       <button
-                        className="bg-constrastColor text-darkGreen font-semibold font-montserrat text-1xl h-10 rounded-sm mt-3 hover:brightness-75 transition-all ease-in-out duration-200 dark:bg-yellow-400 dark:text-black"
+                        className="bg-constrastColor text-darkGreen font-semibold font-montserrat text-1xl h-10 rounded-sm hover:brightness-75 transition-all ease-in-out duration-200 dark:bg-yellow-400 dark:text-black"
                         onClick={nextSignup}
                       >
                         Avançar
@@ -354,14 +364,7 @@ export function Login() {
                             : null}
                         </select>
                       </div>
-                      <div>
-                        <label className=" text-mainFontColor dark:text-white">
-                          <input 
-                          className="mr-2 my-1"
-                          type="checkbox" checked={isADM} onChange={handleAdminCheckboxChange} />
-                          Cadastro de administrador
-                        </label>
-                      </div>
+                      
 
                       <button className="bg-constrastColor text-darkGreen font-semibold font-montserrat text-1xl h-10 rounded-sm mt-3 hover:brightness-75 transition-all ease-in-out duration-200 dark:bg-yellow-400 dark:text-black">
                         Cadastrar-se

@@ -7,11 +7,6 @@ interface Actor {
   profile_path: string;
 }
 
-interface MovieCredits {
-  cast: Actor[];
-  // Outras propriedades dos créditos do filme, se necessário
-}
-
 interface CastProps {
   movieId: number; // ID do filme para o qual você deseja obter os créditos
 }

@@ -2,7 +2,6 @@ import { useTMDBApi } from "@/api/useTMDBApi";
 import { SideBar } from "../components/sidebar";
 import { FormEvent, useContext, useEffect, useState } from "react";
 
-import { Link } from "react-router-dom";
 import {profileImgs} from "@/api/profileImg";
 
 import { MdAdminPanelSettings } from "react-icons/md";
@@ -136,6 +135,11 @@ export function Profile() {
 
   const authContext = useContext(LoginContext);
   const navigate = useNavigate();
+
+  function goToPage(page: string){
+    navigate(page)
+    window.scrollTo({ top: 0})
+  }
 
   useEffect(() => {
     function getTheme(){
@@ -566,12 +570,12 @@ export function Profile() {
                 favoriteMovies.slice(0, sliceFavoriteMovies).map((movie) => {
                   return (
                     <div key={movie.movieId} className="cursor-pointer hover:brightness-50 transition-all ease-in-out duration-200">
-                      <Link to={`/movie/${movie.movieId}`}>
                       <img
                         className="h-80 max:h-[480px] 2xl:h-80 xl:h-[295px] lg:h-56 mobile:h-60"
+                        onClick={()=>goToPage(`/movie/${movie.movieId}`)}
                         src={`https://image.tmdb.org/t/p/original${movie.movieIMG}`}
                         alt={`Cartaz de ${movie.movieName}`}
-                      /></Link>
+                      />
                     </div>
                   );
                 })
@@ -617,12 +621,12 @@ export function Profile() {
                 reviewMovies.slice(0, 10).map((movie) => {
                   return (
                     <div key={movie.movieId} className="cursor-pointer hover:brightness-50 transition-all ease-in-out duration-200">
-                       <Link to={`/movie/${movie.movieId}`}>
                       <img
                         className="h-80 max:h-[480px] 2xl:h-80 xl:h-[295px] lg:h-56 mobile:h-60"
+                        onClick={()=>goToPage(`/movie/${movie.movieId}`)}
                         src={`https://image.tmdb.org/t/p/original${movie.movieIMG}`}
                         alt={`Cartaz de ${movie.movieName}`}
-                      /></Link>
+                      />
                     </div>
                   );
                 })
@@ -695,8 +699,7 @@ export function Profile() {
                           required
                           
                           />
-                          <div id="result" className="bg-white hidden w-[87.5%] border-[1px] outline-none border-slate-500 rounded-md absolute dark:border-white dark:bg-black
-">
+                          <div id="result" className="bg-white hidden w-[87.5%] border-[1px] outline-none border-slate-500 rounded-md absolute dark:border-white dark:bg-black">
                             {resultNewListMovies.slice(0, 5).map(result =>{
                               return(
                                 <p key={result.id} onClick={()=>{
@@ -723,13 +726,11 @@ export function Profile() {
                             setListDescription("")
                             setListPrivacy(false)
                             setMovieBanner("")
-                          }} className="bg-gray-300 w-20 p-2 rounded-lg hover:brightness-75 transition-all duration-200 dark:bg-black dark:border-2 dark:border-white
-                          ">
+                          }} className="bg-gray-300 w-20 p-2 rounded-lg hover:brightness-75 transition-all duration-200 dark:bg-black dark:border-2 dark:border-white">
                             Cancelar
                           </DialogClose>
 
-                          <button className="border-2 w-20 bg-white border-constrastColor p-2 rounded-lg hover:brightness-90 transition-all duration-200 dark:border-yellow-400 dark:bg-black
-">
+                          <button className="border-2 w-20 bg-white border-constrastColor p-2 rounded-lg hover:brightness-90 transition-all duration-200 dark:border-yellow-400 dark:bg-black">
                             Criar
                           </button>
                         </div>
@@ -743,7 +744,28 @@ export function Profile() {
               }
               <div className="flex flex-wrap gap-3">
                 {watchLists.length>0?
-                  watchLists.map(watchList =>{
+                  authContext.user?.id == profileUser?.id?
+                    watchLists.map(watchList =>{
+                        return(
+                          <div key={watchList.id} className="py-6 px-5 flex flex-col flex-wrap bg-mainBg hover:brightness-75 transition-all ease-in-out duration-200 rounded-lg cursor-pointer dark:bg-black" onClick={()=>navigate(`/WatchList/${watchList.id}`)}>
+                            <img className="h-48 rounded-lg object-cover" src={`https://image.tmdb.org/t/p/original/${watchList.banner}`} alt= {`Capa da watchlist${watchList.banner}`} />
+                                
+                            <div className="relative py-5 text-gray-400 dark:text-white">
+                              <h1 className="text-constrastColor text-xl mb-3 dark:text-yellow-400">{watchList.name}</h1>
+                              <div className="flex gap-7 mb-5">
+                                <p className="flex gap-2 items-center"><img className="h-7 w-7 object-cover rounded-full" src={profileImgs[watchList.user.imgIndex].url} alt="" />{watchList.user.name}</p>
+                                <p className="flex items-center gap-2"><b className="text-constrastColor dark:text-yellow-400"><FaHeart/></b> {watchList.isLiked.length}</p>
+                                <p className="flex items-center gap-2"><b className="text-constrastColor dark:text-yellow-400"><FaMessage/></b>{watchList.comment.length}</p>
+                              </div>
+                              <div className="max-w-[350px] break-words text-gray-400 font-light dark:text-white">
+                                <p className="line-clamp-3">{watchList.description}</p>
+                              </div>
+                            </div>
+                        </div>
+                        )
+                      })
+                  :
+                  watchLists.filter((watchlist) => watchlist.privacy==false).map(watchList =>{
                     return(
                       <div key={watchList.id} className="py-6 px-5 flex flex-col flex-wrap bg-mainBg hover:brightness-75 transition-all ease-in-out duration-200 rounded-lg cursor-pointer dark:bg-black" onClick={()=>navigate(`/WatchList/${watchList.id}`)}>
                         <img className="h-48 rounded-lg object-cover" src={`https://image.tmdb.org/t/p/original/${watchList.banner}`} alt= {`Capa da watchlist${watchList.banner}`} />

@@ -52,7 +52,7 @@ export function Header() {
         <div className={`bg-slate-200 border-2 border-slate-600 w-full absolute top-10 rounded-lg  ${text? null : "hidden"} z-50 flex flex-col gap-2`}>
           {users.map(user =>{
             return(
-              <div className="flex gap-2 cursor-pointer hover:brightness-90 transition-all duration-200 bg-slate-200 px-2 py-1 rounded-lg" onClick={()=>navigate(`/Profile/${user.id}`)}>
+              <div key={user.id} className="flex gap-2 cursor-pointer hover:brightness-90 transition-all duration-200 bg-slate-200 px-2 py-1 rounded-lg line-clamp-1" onClick={()=>navigate(`/Profile/${user.id}`)}>
                 <img className="rounded-full h-10 w-10 object-cover" src={profileImgs[user.imgIndex].url} alt={user.name} />
                 <div>
                   <h1 className="font-semibold">{user.name}</h1>

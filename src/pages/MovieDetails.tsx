@@ -11,7 +11,7 @@ import MovieCast  from "../components/ui/movieCast";
 import { MdFormatListBulletedAdd } from "react-icons/md";
 import { BiComment } from "react-icons/bi";
 import { GiKiwiFruit } from "react-icons/gi";
-import { BsInfoSquare } from "react-icons/bs";
+//import { BsInfoSquare } from "react-icons/bs";
 import { FaRegStar, FaStar } from "react-icons/fa";
 
 import {
@@ -215,11 +215,11 @@ export function MovieDetails() {
 
   const [newMovieAtListDialog, setNewMovieAtListDialog] = useState(false)
 
-  const [popoverVisible, setPopoverVisible] = useState(false);
+  /*const [popoverVisible, setPopoverVisible] = useState(false);
 
   const PopoverInfo = () => {
     setPopoverVisible(!popoverVisible);
-  };
+  };*/
 
   useEffect(() => {
     const handleResize = () => {
@@ -271,7 +271,6 @@ export function MovieDetails() {
   async function addMoviesOnWatchlist(){
     const storageData = localStorage.getItem("authToken");
     if(storageData && movieId && movieDetails){
-      console.log(watchlistId)
       await apiBackend.addMoviesWatchList(storageData, watchlistId, movieDetails.id, movieDetails.title, movieDetails.poster_path)
       setUpdateFavorites(!updateFavorites)
       setNewMovieAtListDialog(false)

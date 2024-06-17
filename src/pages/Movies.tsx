@@ -2,11 +2,10 @@ import { useTMDBApi } from "@/api/useTMDBApi";
 import { Header } from "@/components/header";
 import { SideBar } from "@/components/sidebar";
 import { useEffect, useState } from "react";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 import { CiSearch } from "react-icons/ci";
 
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import {
   Carousel,
@@ -46,11 +45,10 @@ interface moviesProps {
 export function Movies(){
 
   const api = useTMDBApi()
-
+  const navigate = useNavigate()
   const [genres, setGenres] = useState<genresProps[]>([])
   const [popularMovies, setPopularMovies] = useState<moviesProps[]>([])
 
-  const [current, setCurrent] = useState(0);
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
 
   const [searchParams, setSearchParams] = useSearchParams()
@@ -73,21 +71,7 @@ export function Movies(){
     if (!carouselApi) {
       return;
     }
-    setCurrent(carouselApi.selectedScrollSnap() + 1);
-    carouselApi.on("select", () => {
-      setCurrent(carouselApi.selectedScrollSnap() + 1);
-    });
-    
   }, [])
-
-  function dotCarousel(i: number) {
-    console.log(current)
-
-    if (!carouselApi) {
-      return;
-    }
-    carouselApi.scrollTo(current + i);
-  }
 
   async function filterByGenre(genreId?: string, pageId?: string){
     setSearchParams(state => {
@@ -142,6 +126,11 @@ export function Movies(){
     }
   }
 
+  function goToPage(page: string){
+    navigate(page)
+    window.scrollTo({ top: 0})
+  }
+
   return(
     <div className="flex ">
       <SideBar/>
@@ -153,18 +142,18 @@ export function Movies(){
             <div className="flex items-center mb-6">
 
               <p className="text-slate-400 text-4xl flex items-center relative left-10"><CiSearch/></p>
-              <input type="text" id="inputSearch" onChange={searchMovie} className="w-[500px] h-12   bg-slate-900 border-2 dark:bg-black dark:border-white dark:text-white text-slate-400 border-slate-400 rounded-md px-10  outline-none focus:border-constrastColor dark:focus:border-yellow-400" placeholder="Procurar filmes"/>
+              <input type="text" id="inputSearch" onChange={searchMovie} className="max-w-[500px] h-12 bg-slate-900 border-2 dark:bg-black dark:border-white dark:text-white text-slate-400 border-slate-400 rounded-md px-10  outline-none focus:border-constrastColor dark:focus:border-yellow-400" placeholder="Procurar filmes"/>
             </div>
           
-            <div className="w-full flex justify-center items-center gap-2 flex-wrap text-slate-400 relative dark:bg-black  ">
-              <Carousel className="w-full max-w-5xl flex items-center" opts={{ dragFree: true }} setApi={setCarouselApi}>
+            <div className="mx-auto max-w-5xl text-slate-400 relative dark:bg-black  ">
+              <Carousel className=" bg-black" opts={{ dragFree: true }} setApi={setCarouselApi}>
                 <ToggleGroup className="w-full max-w-5xl flex items-center " type="single">
-                  <CarouselContent>
+                  <CarouselContent className="">
                     {genres.map(genre =>{
                       return(
-                        <CarouselItem key={genre.id} className="basis-1/7">
+                        <CarouselItem key={genre.id} className="basis-1/5 tablet:basis-1/5 mobile:basis-1/3">
                           <div
-                          className="border-2 border-slate-400 bg-slate-900  dark:bg-black dark:border-white  flex dark:text-white justify-center rounded-md hover:border-constrastColor transition-all duration-300 cursor-pointer min-w-[137px] "
+                          className="border-2 border-slate-400 bg-slate-900  dark:bg-black dark:border-white  flex dark:text-white justify-center rounded-md hover:border-constrastColor transition-all duration-300 cursor-pointer mobile:w-[115px]"
                           onClick={()=>filterByGenre(String(genre.id), String(page))}
                           >
                             <ToggleGroupItem className="h-full w-full rounded-sm p-1 dark:hover:text-white dark:hover:bg-gray-900" value={String(genre.id)}>{genre.name}</ToggleGroupItem>
@@ -175,13 +164,6 @@ export function Movies(){
 
                   </CarouselContent>
                 </ToggleGroup>
-
-                <button onClick={()=>dotCarousel(-5)} className="text-gray-300 text-3xl absolute -left-10 hover:bg-mainBgOpacity75 h-full transition-all ease-in-out duration-200 group-hover:block dark:bg-black dark:text-white dark:hover:bg-black">
-                  <IoIosArrowBack />
-                </button>
-                <button onClick={()=>dotCarousel(+4)}  className="text-gray-300 text-3xl absolute -right-10 hover:bg-mainBgOpacity75 h-full transition-all ease-in-out duration-200 group-hover:block dark:bg-black dark:text-white">
-                  <IoIosArrowForward />
-                </button>
               </Carousel>
             </div>
           </div>
@@ -192,9 +174,7 @@ export function Movies(){
           {popularMovies.map(movie => {
             return (
              <div key={movie.id} className="cursor-pointer hover:brightness-50 transition-all ease-in-out duration-200 ">
-                <Link to={`/movie/${movie.id}`}>
-                  <img className="h-80" src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} alt= {movie.title}/>
-                </Link>
+                <img className="h-80 mobile:h-40" onClick={()=>goToPage(`/movie/${movie.id}`)} src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} alt= {movie.title}/>
               </div>
             );
           })}
