@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-const URLHost = 'http://localhost:3333'
+const URLHost = 'https://kiwi-backend.vercel.app'
 
 export const useBackendApi = () => ({
 

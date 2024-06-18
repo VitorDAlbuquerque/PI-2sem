@@ -32,10 +32,10 @@ export function SideBar() {
   }
 
   return (
-    <div className="bg-bgAside h-screen flex-initial w-6vw text-constrastColor text-4xl flex flex-col items-center justify-center p-12 sticky top-0 bottom-0 tablet:hidden mobile:hidden gap-5 dark:bg-black dark:text-yellow-400">
+    <div className="bg-bgAside h-screen flex-initial w-6vw text-constrastColor text-4xl mobile:text-3xl  flex flex-col items-center justify-center p-12 sticky bottom-0 tablet:hidden mobile:fixed z-20 mobile:bottom-0  mobile:py-7 mobile:px-2 mobile:flex-row mobile:w-full mobile:h-8 mobile:gap-10 gap-5 dark:bg-black dark:text-yellow-400">
       {authContext.user ? (
         <div
-          className="  w-16 h-16 rounded-full bg-slate-800 cursor-pointer hover:brightness-75 transition-all ease-in-out duration-200 my-10"
+          className="w-16 h-16 mobile:w-10 mobile:h-10 rounded-full cursor-pointer hover:brightness-75 transition-all ease-in-out duration-200 my-10 bg-slate-100"
           onClick={() => goTo(`/Profile/${authContext.user?.id}`)}
         >
           <img
@@ -49,12 +49,12 @@ export function SideBar() {
           />
         </div>
       ) : null}
-      <div className="flex justify-center h-96 flex-col gap-10 ">
+      <div className="flex justify-center h-96 flex-col gap-10 mobile:flex-row mobile:h-11 mobile:gap-10">
         <p
           onClick={() => goTo("/")}
           className={
             path == "/"
-              ?  " dark:bg-gray-700  bg-darkGreen p-2 rounded-md"
+              ?  " dark:bg-gray-700  bg-darkGreen px-1 rounded-md flex items-center justify-center"
               : "p-2 hover:brightness-50 transition-all ease-in-out duration-300 cursor-pointer  "
           }
         >
@@ -81,8 +81,8 @@ export function SideBar() {
           onClick={() => goTo("/Settings")}
           className={
             path == "/Settings"
-              ? "dark:bg-gray-700  bg-darkGreen p-2 rounded-md"
-              : "p-2 hover:brightness-50 transition-all ease-in-out duration-300 cursor-pointer"
+              ? "dark:bg-gray-700 mobile:hidden bg-darkGreen p-2 rounded-md"
+              : "p-2 hover:brightness-50 mobile:hidden transition-all ease-in-out duration-300 cursor-pointer"
           }
         >
           <IoSettingsOutline />

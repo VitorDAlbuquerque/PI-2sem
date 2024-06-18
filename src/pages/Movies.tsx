@@ -146,7 +146,7 @@ export function Movies(){
             </div>
           
             <div className="mx-auto max-w-5xl text-slate-400 relative dark:bg-black  ">
-              <Carousel className=" bg-black" opts={{ dragFree: true }} setApi={setCarouselApi}>
+              <Carousel className="mobile:w-96" opts={{ dragFree: true }} setApi={setCarouselApi}>
                 <ToggleGroup className="w-full max-w-5xl flex items-center " type="single">
                   <CarouselContent className="">
                     {genres.map(genre =>{
