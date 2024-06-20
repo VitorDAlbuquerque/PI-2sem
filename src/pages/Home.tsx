@@ -134,9 +134,9 @@ export function Home() {
   }
 
   return (
-    <div className="flex ">
+    <div className="flex">
       <SideBar />
-      <div className="dark:bg-black bg-mainBg flex-initial w-full min-h-screen ">
+      <div className="dark:bg-black bg-mainBg flex-initial w-full min-h-screen pb-11">
         <Header />
 
         <div className="w-full pt-8 flex flex-wrap justify-around gap-5 bg-bgAside dark:bg-black ">

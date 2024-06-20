@@ -384,25 +384,31 @@ export function Profile() {
                     <DialogHeader>
                       <DialogTitle>Escolha sua imagem</DialogTitle>
                     </DialogHeader>
+                    <ScrollArea className="h-96">
+
                     <div className="flex flex-wrap gap-3">
+
                       {profileImgs.map(imgs =>{
                         if(profileUser){
                           if(imgs.id==profileUser.imgIndex+1){
                             return(
                               <div key={`${imgs.id}`}>
-                                <img className="h-32 w-32 rounded-lg object-cover border-4 p-1 border-constrastColor dark:border-yellow-400 " src={imgs.url} alt="" />
+                                <img className="h-32 w-32 mobile:h-28 mobile:w-28 rounded-lg object-cover border-4 p-1 border-constrastColor dark:border-yellow-400 " src={imgs.url} alt="" />
                               </div>
                             )
                           }else {
                             return(
                               <div key={`${imgs.id}`}>
-                                <img onClick={()=>updateImg(imgs.id-1)} className="h-32 w-32 rounded-lg object-cover hover:brightness-75 cursor-pointer transition-all duration-200" src={imgs.url} alt="" />
+                                <img onClick={()=>updateImg(imgs.id-1)} className="h-32 w-32 mobile:h-28 mobile:w-28 rounded-lg object-cover hover:brightness-75 cursor-pointer transition-all duration-200" src={imgs.url} alt="" />
                               </div>
                             )
                           }
                         }
                       })}
+
                     </div>
+                    </ScrollArea>
+
                   </DialogContent>
                 </Dialog>
               :
@@ -550,7 +556,7 @@ export function Profile() {
             }
 
           </div>
-          <div className="relative -top-28">
+          <div className="relative -top-28 mobile:-top-36">
             {/*<div>
               <h1 className='flex justify-center text-constrastColor text-2xl font-semibold mb-10'>TOP 3 FILMES DE {authContext.user?.name.toLocaleUpperCase()}</h1>
               <div className='flex justify-center gap-5 flex-wrap'>
@@ -560,18 +566,18 @@ export function Profile() {
               </div>
             </div>*/}
 
-            <div className="flex items-center mb-5 justify-between mt-20 mobile:justify-center">
+            <div className="flex items-center mb-5 justify-between mobile:justify-center">
               <h1 className="text-constrastColor text-2xl font-semibold dark:text-yellow-400">
                 FILMES FAVORITOS
               </h1>
             </div>
-            <div className="flex flex-wrap gap-7 mobile:justify-center">
+            <div className="flex flex-wrap gap-7 mobile:gap-3">
               {favoriteMovies.length > 0 ? (
                 favoriteMovies.slice(0, sliceFavoriteMovies).map((movie) => {
                   return (
                     <div key={movie.movieId} className="cursor-pointer hover:brightness-50 transition-all ease-in-out duration-200">
                       <img
-                        className="h-80 max:h-[480px] 2xl:h-80 xl:h-[295px] lg:h-56 mobile:h-60"
+                        className="h-80 max:h-[480px] 2xl:h-80 xl:h-[295px] lg:h-56 mobile:h-40"
                         onClick={()=>goToPage(`/movie/${movie.movieId}`)}
                         src={`https://image.tmdb.org/t/p/original${movie.movieIMG}`}
                         alt={`Cartaz de ${movie.movieName}`}
@@ -616,13 +622,13 @@ export function Profile() {
                 FILMES AVALIADOS
               </h1>
             </div>
-            <div className="flex flex-wrap gap-7 mobile:justify-center">
+            <div className="flex flex-wrap gap-7">
               {reviewMovies.length > 0 ? (
                 reviewMovies.slice(0, 10).map((movie) => {
                   return (
                     <div key={movie.movieId} className="cursor-pointer hover:brightness-50 transition-all ease-in-out duration-200">
                       <img
-                        className="h-80 max:h-[480px] 2xl:h-80 xl:h-[295px] lg:h-56 mobile:h-60"
+                        className="h-80 max:h-[480px] 2xl:h-80 xl:h-[295px] lg:h-56 mobile:h-40"
                         onClick={()=>goToPage(`/movie/${movie.movieId}`)}
                         src={`https://image.tmdb.org/t/p/original${movie.movieIMG}`}
                         alt={`Cartaz de ${movie.movieName}`}
