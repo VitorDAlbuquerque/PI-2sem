@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useContext, FormEvent } from "react";
+import { useState, useEffect, useContext, FormEvent } from "react";
 import { SideBar } from "../components/sidebar";
 import { Header } from "../components/header";
 import { useTMDBApi } from "../api/useTMDBApi";
@@ -137,15 +137,11 @@ export function MovieDetails() {
 
   const { trailerId } = useMovieTrailer(movieId || '');
   
-  const commentsSectionRef = useRef<HTMLDivElement>(null);
 
 
-  const rateMovie = () => {
-   
-    if (commentsSectionRef.current) {
-      commentsSectionRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  };
+ 
+ 
+
 
   const [watchlist, setWatchlist] = useState<watchlistProps[]>([]);
 
@@ -309,11 +305,12 @@ export function MovieDetails() {
 
       case "cast":
         return (
-          <div className="m-10 text-center p-8 ">
-            <p className="text-2xl text-constrastColor font-semibold mb-12 text-center dark:text-yellow-400">
+          <div className="m-10 text-center p-8 md:flex md:gap-4">
+            <p className="text-2xl text-constrastColor font-semibold mb-12 text-center dark:text-yellow-400 ">
               Elenco de {movieDetails?.title}
-            </p> 
+            </p> <div className="flex-shrink-0 md:w-40 min-w-[160px] rounded-md shadow-md overflow-hidden">
             {movieId && <MovieCast movieId={movieId} />} 
+            </div>
           </div>
         );
       case "moreInfo":
@@ -364,53 +361,62 @@ export function MovieDetails() {
   };
 
   return (
-    <div className="flex">
+    <div className="flex ">
       <SideBar />
+      {/*ajustar aqui*/}
       <div className="dark:bg-black bg-mainBg flex-initial w-full min-h-screen font-montserrat">
         <Header />
 
         <div className={`mx-20 my-8 p-10 ${isMobile ? "flex flex-col items-center" : "flex flex-row"}`}>
-          <div className={`flex-none mx-5 mr-8  ${isMobile ? "mb-8" : "w-1/4 md:w-auto md:mr-8"}`}>
+          <div className={`flex-none mx-5 mr-8  ${isMobile ? "mb-8" : "w-1/4 md:w-auto md:mr-8 "}`}>
             <img
               src={movieDetails?.poster_path ? `https://image.tmdb.org/t/p/w300/${movieDetails.poster_path}` : ""}
               className={`max-h-max w-auto`}
               alt="Pôster do filme"
             />
           </div>
-          <div className={`flex-grow w-full ${isMobile ? "" : "md:w-3/4"} text-mainFontColor`}>
-            <h1 className={`text-4xl font-bold mb-4 flex items-center gap-3 text-lightGreen dark:text-yellow-300 ${isMobile ? "text-center" : "text-"}`}>
-              {movieDetails?.title}{" "}
-              {movieDetails?.release_date && (
-                <span className="text-gray-500">({new Date(movieDetails.release_date).getFullYear()})</span>
-              )}
+          <div className="flex-grow w-full text-mainFontColor">
+          <div className="flex flex-col md:flex-row md:items-center">
+            <div className="flex flex-col md:flex-row md:items-center md:w-full">
+
+            <h1 className='text-4xl font-bold mb-4 flex items-center gap-3 text-lightGreen dark:text-yellow-300 text-left md:text-center '>
+            {movieDetails?.title}{" "}
+            {authContext.user && favorites.length > 0 && favorites.filter((favorite) => favorite.user.id == authContext.user?.id).length > 0 ? (
+              <p key={`${authContext.user.id}`} onClick={addFavorite} className="text-constrastColor cursor-pointer dark:text-yellow-300 hover:text-constrastColor transition-all duration-200">
+                <FaStar />
+              </p>
+            ) : authContext.user ? (
+              <p key={`${movieId}`} onClick={addFavorite} className="text-gray-500 cursor-pointer hover:text-constrastColor transition-all dark:text-yellow-300 duration-200">
+                <FaRegStar />
+              </p>
+            ) : (
+              <p onClick={addFavorite} className="text-gray-500 cursor-pointer hover:text-constrastColor dark:hover-yellow-300 transition-all duration-200 dark:text-yellow-300">
+                <FaRegStar />
+              </p>
+            )}
+
+            
+          </h1>
+
+          {movieDetails?.release_date && (
+              <span className="text-2xl text-gray-400 font-light mb-4 flex items-center gap-3  text-left md:text-center ">
+                ({new Date(movieDetails.release_date).getFullYear()})
+              </span>
+            )}
               
-              {authContext.user?
-                favorites.length>0?
-                  favorites.filter((favorite)=> favorite.user.id == authContext.user?.id).length > 0?
-                    <p key={`${authContext.user.id}`} onClick={addFavorite} className="text-constrastColor cursor-pointer dark:text-yellow-300 hover:text-constrastColor transition-all duration-200">
-                      <FaStar/>
-                    </p>
-                  :
-                    <p key={`${movieId}`} onClick={addFavorite} className="text-gray-500 cursor-pointer hover:text-constrastColor transition-all dark:text-yellow-300  duration-200">
-                      <FaRegStar/>
-                    </p>
-                :
-                <p onClick={addFavorite} className="text-gray-500 cursor-pointer hover:text-constrastColor dark:hover-yellow-300 transition-all duration-200 dark:text-yellow-300">
-                  <FaRegStar/>
-                </p>
-              :null
-              }
+
               
-            </h1>
-            <div className="flex items-center">
-              <p className="text-slate-400 hover:text-lightGreen dark:text-yellow-300 cursor-pointer transition-all ease-in-out duration-200 mr-5 dark:hover-yellow-300" onClick={rateMovie}>
+               </div>
+               
+               </div>
+             
+         
+            <div className="flex items-center md:items-center ">
+              <p className="text-slate-400 hover:text-lightGreen dark:text-yellow-300 cursor-pointer transition-all ease-in-out duration-200 mr-5 dark:hover-yellow-300 " >
                 Avaliar filme
               </p>
-              <button
-                className=""
-                onClick={rateMovie}
-              >
-                <BiComment className="text-3xl text-lightGreen  dark:text-yellow-300 cursor-pointer transition-all ease-in-out duration-200"    onClick={rateMovie}/>
+              <button>
+                <BiComment className="text-3xl text-lightGreen  dark:text-yellow-300 cursor-pointer transition-all ease-in-out duration-200"  /> 
   
               </button>
 
@@ -418,7 +424,7 @@ export function MovieDetails() {
               <Dialog open={newMovieAtListDialog} onOpenChange={setNewMovieAtListDialog}>
                 <DialogTrigger>
                   <div className="flex items-center">
-                    <p className="text-slate-400 hover:text-lightGreen dark:text-yellow-300  cursor-pointer transition-all ease-in-out duration-200 ml-24 mr-5 " >
+                    <p className="text-slate-400 hover:text-lightGreen dark:text-yellow-300  cursor-pointer transition-all ease-in-out duration-200 mx-5 md:m-0" >
                       Adicionar filme a watchlist 
                     </p>
                     <p>
@@ -523,6 +529,8 @@ export function MovieDetails() {
             </div>
           </div>
         )}
+
+        
   
         {renderSelectedOption()}
   
@@ -692,5 +700,7 @@ export function MovieDetails() {
         </div>
       </div>
     </div>
+    
   );
+ 
 }

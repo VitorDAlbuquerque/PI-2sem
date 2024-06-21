@@ -522,12 +522,12 @@ export function Settings() {
 };
 
   return (
-<div className= 'flex' >
+<div className= 'flex md:flex-row' >
       <SideBar />
-      <div className="bg-mainBg flex-initial w-full min-h-screen dark:bg-black ">
+      <div className="bg-mainBg flex-1 min-h-screen dark:bg-black">
         <Header />
-        <div className="py-14 px-20">
-        <nav className="navbar flex items-center justify-between max-h-48 text-darkGreen font-montserrat font-medium py-3 bg-bgAside rounded-lg border-none dark:text-yellow-400 mx-60 mb-20 px-20 dark:bg-black">
+        <div className="py-14 px-4 md:px-20">
+        <nav className="navbar flex items-center justify-between max-h-48 text-darkGreen font-montserrat font-medium py-3 bg-bgAside rounded-lg border-none dark:text-yellow-400 mx-60 mb-20 px-20 dark:bg-black md:flex-col md:mx-2 ">
   {isLoggedIn && (
     <>
       <a

@@ -8,18 +8,17 @@ interface Actor {
 }
 
 interface CastProps {
-  movieId: number; // ID do filme para o qual você deseja obter os créditos
+  movieId: number; 
 }
 
 const Cast: React.FC<CastProps> = ({ movieId }) => {
-  const [cast, setCast] = useState<Actor[]>([]); // Usando o tipo Actor[] para o estado cast
+  const [cast, setCast] = useState<Actor[]>([]); 
 
   useEffect(() => {
     const fetchMovieCredits = async () => {
       try {
         const response = await fetch(`https://api.themoviedb.org/3/movie/${movieId}?api_key=YOUR_API_KEY&language=en-US&append_to_response=credits`);
         const data = await response.json();
-        // Aqui você pode acessar os créditos do filme na resposta da API e definir o estado do cast
         setCast(data.credits.cast);
       } catch (error) {
         console.error("Erro ao buscar créditos do filme:", error);
