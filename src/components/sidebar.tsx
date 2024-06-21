@@ -38,7 +38,7 @@ export function SideBar() {
   }
 
   return (
-    <div className="bg-bgAside h-screen flex-initial w-6vw text-constrastColor top-0 text-4xl mobile:text-3xl flex flex-col items-center justify-center p-12 sticky bottom-0 mobile:fixed z-20 mobile:bottom-0 mobile:top-auto mobile:py-7 mobile:px-2 mobile:flex-row mobile:w-full mobile:h-8 gap-3 mobile:justify-between dark:bg-black dark:text-yellow-400">
+    <div className="bg-bgAside h-screen flex-initial w-6vw text-constrastColor top-0 text-4xl mobile:text-3xl flex flex-col items-center justify-center p-12 sticky bottom-0 mobile:fixed z-20 mobile:bottom-0 mobile:top-auto mobile:py-7 mobile:px-4 mobile:flex-row mobile:w-full mobile:h-8 gap-5 mobile:justify-center dark:bg-black dark:text-yellow-400">
       {authContext.user ? (
         <div
           className="w-16 h-16 mobile:w-10 mobile:h-10 rounded-full cursor-pointer hover:brightness-75 transition-all ease-in-out duration-200 my-10"
@@ -87,7 +87,7 @@ export function SideBar() {
           onClick={() => goTo("/Settings")}
           className={
             path == "/Settings"
-              ? "dark:bg-gray-700 xs:mobile:hidden bg-darkGreen p-2 rounded-md"
+              ? "dark:bg-gray-700 mobile:hidden bg-darkGreen p-2 rounded-md"
               : "p-2 hover:brightness-50 transition-all mobile:hidden ease-in-out duration-300 cursor-pointer"
           }
         >
