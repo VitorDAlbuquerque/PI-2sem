@@ -11,6 +11,7 @@ module.exports = {
   prefix: "",
   plugins: [
     require("@tailwindcss/line-clamp"),
+    require('daisyui'),
     // ...
   ],
   theme: {
@@ -28,9 +29,7 @@ module.exports = {
     },
 
     screens: {
-      mobile: { min: "0", max: "469px" },
-
-      tablet: { min: "470px", max: "550px" },
+      mobile: { min: "0", max: "551px" },
 
       xs: { min: "551px", max: "745px" },
 
@@ -160,4 +159,5 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate")],
+  darkMode:'class',
 };

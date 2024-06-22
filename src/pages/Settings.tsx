@@ -1,14 +1,208 @@
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import { SideBar } from "../components/sidebar";
 import { Header } from "../components/header";
 import Faq from "../components/ui/faq";
-import ConfirmChanges from "../components/ui/confirmChanges";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useBackendApi } from "@/api/useBackendApi";
+import { useCountriesApi } from "@/api/useCountriesApi";
+import { LoginContext } from "@/context/AuthContext";
+import HighContrastButton from "@/components/ui/highContratButton";
+
+interface countriesProps {
+  name: {
+    official: string;
+  };
+  translations: {
+    por: {
+      common: string;
+    };
+  };
+}
+
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "../components/ui/dialog";
 import "../styles/global.css";
 
-export function Settings() {
-  const [pageTitle, setPageTitle] = useState("Configurações");
+type MenuItem = "Ajuda" | "Perfil"  | "Privacidade e segurança" | "Acessibilidade"  ;
 
-  const handleItemClick = (item: string) => {
+export function Settings() {
+
+  const [countries, setCountries] = useState<countriesProps[]>([]);
+
+  const apiCountries = useCountriesApi();
+  useEffect(() => {
+    async function getCountries() {
+      const data = await apiCountries.getCountries();
+      if (data) {
+        setCountries(data.countries);
+      }
+    }
+    getCountries();
+  }, []);
+
+
+  const { user } = useContext(LoginContext);
+  const isLoggedIn = !!user; 
+
+  const [pageTitle, setPageTitle] = useState("Configurações");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<MenuItem>("Ajuda");
+  const [expandedItem, setExpandedItem] = useState<string>("");
+
+
+  
+  const showToastDeleted = () => {
+    toast.success("Conta deletada com sucesso.", {
+      position: "top-right",
+      autoClose: 9000,
+    });
+  };
+
+  const handleDialogOpenChange = (modalName: string, open: boolean) => {
+    switch (modalName) {
+      case "delete":
+        setIsDeleteDialogOpen(open);
+        break;
+      case "save":
+        setIsDialogOpen(open);
+        break;
+
+      }
+    };
+
+    //Alterar informaççoes
+    const [name, setname] = useState("");
+    const [email, setemail] = useState("");
+    const [password, setpassword] = useState("");
+    const [passwordConfirmation, setPasswordConfirmation] = useState("");
+    const [birthDate, setbirthDate] = useState("");
+    const [Gender, setGender] = useState("");
+    const [country, setcountry] = useState("");
+    const [bio, setBio] = useState("");
+
+    const [nameChanged, setnameChanged] = useState(false);
+    const [emailChanged, setemailChanged] = useState(false);
+    const [passwordChanged, setpasswordChanged] = useState(false);
+    const [birthDateChanged, setbirthDateChanged] = useState(false);
+    const [GenderChanged, {/* setGenderChanged*/}] = useState(false);
+    const [countryChanged, setcountryChanged] = useState(false);
+    const [bioChanged, setBioChanged] = useState(false);
+
+
+    const validateEmail = (email: string) => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    };
+    
+  
+    const validatePassword = (password: string | any[]) => {
+      return password.length >= 8;
+    };
+    
+
+    const validateName = (name: string | any[]) => {
+      return name.length >= 5;
+    };
+
+    const validateGender = (gender: string) => {
+      return !!gender; 
+    };
+    
+   
+    const validateCountry = (country: string) => {
+      return !!country;
+    };
+    
+   
+    const validateSubmit = () => {
+      if (emailChanged && !validateEmail(email)) {
+        toast.error("Por favor, insira um e-mail válido.");
+        return;
+      }
+    
+      if (passwordChanged && !validatePassword(password)) {
+        toast.error("A senha deve ter no mínimo 8 caracteres.");
+        return;
+      }
+
+    
+      if (nameChanged && !validateName(name)) {
+        toast.error("O nome de usuário deve ter no mínimo 5 caracteres.");
+        return;
+      }
+    
+      if (GenderChanged && !validateGender(Gender)) {
+        toast.error("Por favor, selecione um gênero.");
+        return;
+      }
+    
+      if (countryChanged && !validateCountry(country)) {
+        toast.error("Por favor, selecione um país.");
+        return;
+      }
+
+      if (passwordChanged) {
+        if (!passwordConfirmation) {
+          toast.error("Por favor, confirme sua nova senha.");
+          return;
+        }
+        if (password !== passwordConfirmation) {
+          toast.error("A senha e a confirmação de senha não correspondem.");
+          return;
+        }
+      }
+    
+      setIsValid(true);
+    };
+
+
+    
+
+    const [isValid, setIsValid] = useState(false);
+
+
+  const saveChanges = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        console.error('Token não encontrado no localStorage');
+        return;
+      }
+      await apiBackend.editUserInfo(token, name, email, password, birthDate, Gender, country, bio, -1);
+      showToastMessage();
+    } catch (error) {
+      console.error("Erro ao salvar alterações:", error);
+      showToastMessageError();
+    }
+  };
+
+
+  const apiBackend = useBackendApi();
+  const confirmDeleteAccount = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        console.error('Token não encontrado no localStorage');
+        return;
+      }
+      await apiBackend.deleteUsers(token);
+      showToastDeleted();
+      setIsDeleteDialogOpen(false);
+      window.location.href = "/";
+    } catch (error) {
+      console.error("Erro ao excluir conta:", error);
+    }
+  };
+
+  const handleItemClick = (item: MenuItem) => {
     setSelectedItem(item);
     setExpandedItem("");
     if (item === "Ajuda") {
@@ -18,112 +212,266 @@ export function Settings() {
     }
   };
 
-  const [selectedItem, setSelectedItem] = useState("Perfil");
-  const [expandedItem, setExpandedItem] = useState("");
-
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-
-  const [checkboxChecked, setCheckboxChecked] = useState(false);
-
   const handleItemExpand = (item: string) => {
     setExpandedItem(item === expandedItem ? "" : item);
   };
 
-  const handleSaveChanges = () => {
-    console.log("Alterações salvas!");
-    setShowConfirmModal(false);
+  const showToastMessage = () => {
+    toast.success("Alterações efetuadas com sucesso.", {
+      position: "top-right",
+      autoClose: 5000,
+
+
+    });
   };
-  const renderInformation = () => {
+
+  const showToastMessageError = () => {
+    toast.error("As alterações não foram efetuadas.", {
+      position: "top-right",
+      autoClose: 5000,})
+ 
+  };
+
+  const showToastMessageInfo = () => {
+    toast.info("Nenhuma alteração foi feita.", {
+      position: "top-right",
+      autoClose: 5000,
+    });
+  };
+
+  const confirmChanges = () => {
+    setIsDialogOpen(false);
+  };
+
+  const confirmAndSaveChanges = () => {
+    if (nameChanged || emailChanged || passwordChanged || birthDateChanged || GenderChanged || countryChanged || bioChanged) {
+      validateSubmit();
+      
+      if (isValid) {
+        saveChanges();
+        confirmChanges();
+      }
+    } else {
+      showToastMessageInfo();
+      confirmChanges();
+    }
+  };
+  
+
+
+  const renderSettings = () => {
     switch (selectedItem) {
       case "Perfil":
-        return (
-          <div className="text-mainFontColor font-montserrat">
-            <ul className="">
-              <li>
-                <p className="mt-5 mb-3">Alterar nome de usuário</p>
-                <div className="w-full md:w-1/2">
-                  <input
-                    className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    id="grid-username"
-                    type="text"
-                    placeholder="Novo nome de usuário"
-                  />
-                </div>
-              </li>
-              <li className="mt-8 mb-3">
-                <p>Alterar foto de perfil</p>
-                <div className="flex justify-between">
-                  <div className="w-1/4 bg-blue-200 rounded-md shadow-md border-2 border-transparent hover:border-lightGreen cursor-pointer h-32"></div>
-                  <div className="w-1/4 bg-red-200 rounded-md shadow-md border-2 border-transparent hover:border-lightGreen cursor-pointer h-32"></div>
-                  <div className="w-1/4 bg-yellow-200 rounded-md shadow-md border-2 border-transparent hover:border-lightGreen cursor-pointer h-32"></div>
-                  <div className="w-1/4 bg-green-200 rounded-md shadow-md border-2 border-transparent hover:border-lightGreen cursor-pointer h-32"></div>
-                </div>
-              </li>
-            </ul>
+  return (
+    <div className="text-mainFontColor font-montserrat flex flex-col items-center">
+      <ul className="w-auto md:w-1/2">
+        <li>
+          <p className="mt-5 mb-3 text-center">Alterar nome de usuário</p>
+          <div className="">
+            <input
+              className="block w-80 bg-gray-200 dark:bg-black text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 dark:text-white"
+              id="grid-username"
+              type="text"
+              placeholder="Novo nome de usuário"
+              value={name}
+              onChange={(e) => {
+                setname(e.target.value);
+                setnameChanged(true);
+              }}
+            />
           </div>
-        );
+        </li>
 
-      case "Notificações":
-        return (
-          <div className="text-mainFontColor font-montserrat">
-            <div>
-              <input type="checkbox" id="ativarNotificacoes" />
-              <label htmlFor="ativarNotificacoes">
-                {" "}
-                Ativar notificações push
-              </label>
+        <li>
+          <p className="mt-5 mb-3 text-center">Alterar sua bio</p>
+          <textarea
+            value={bio}
+            onChange={(e) => {
+              setBio(e.target.value);
+              setBioChanged(true);
+            }}
+            rows={4}
+            className="block w-80 bg-gray-200 dark:bg-black text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 dark:text-white"
+            placeholder="Escreva sua bio aqui"
+          ></textarea>
+        </li>
+      </ul>
+    </div>
+  );
+
+
+      
+  case "Privacidade e segurança":
+    return (
+      <div className="text-mainFontColor font-montserrat flex justify-center">
+        <ul className="w-3/6 md:w-1/2 lg:w-1/3">
+          <li>
+            <p className="mt-5 mb-3 dark:text-white text-center">Alterar email</p>
+            <div className="w-full">
+              <input
+                className="appearance-none block w-full bg-gray-200 dark:bg-black text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 dark:text-white"
+                id="grid-email"
+                type="email"
+                placeholder="Novo email"
+                value={email}
+                onChange={(e) => {
+                  setemail(e.target.value);
+                  setemailChanged(true);
+                }}
+              />
             </div>
-
-            <div className="pt-5">
-              <input type="checkbox" id="ativarNotificacoes" />
-              <label htmlFor="ativarNotificacoes">
-                {" "}
-                Ativar notificações por email
-              </label>
+          </li>
+          <li>
+            <p className="mt-8 mb-3 text-center">Alterar senha</p>
+            <div className="w-full">
+              <input
+                className="appearance-none block w-full bg-gray-200 dark:bg-black text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 dark:text-white"
+                id="grid-senha"
+                type="password"
+                placeholder="Nova senha"
+                value={password}
+                onChange={(e) => {
+                  setpassword(e.target.value);
+                  setpasswordChanged(true);
+                }}
+              />
             </div>
-          </div>
-        );
-
-      case "Privacidade e segurança":
-        return (
-          <div className="text-mainFontColor font-montserrat ">
-            <ul className="">
-              <li>
-                <p className="mt-8 mb-3 ">Alterar email</p>
-                <div className="w-full md:w-1/2 ">
-                  <input
-                    className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    id="grid-email"
-                    type="email"
-                    placeholder="Novo email"
-                  />
+          </li>
+          <li>
+            <p className="mt-8 mb-3 text-center">Confirmar nova senha</p>
+            <div className="w-full">
+              <input
+                className="appearance-none block w-full bg-gray-200 dark:bg-black text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                id="grid-confirm-senha"
+                type="password"
+                placeholder="Confirmar nova senha"
+                value={passwordConfirmation}
+                onChange={(e) => setPasswordConfirmation(e.target.value)}
+              />
+            </div>
+          </li>
+          <li>
+            <p className="mt-5 mb-3 text-center">Alterar data de nascimento</p>
+            <div className="w-full">
+              <input
+                className="appearance-none block w-full bg-gray-200 dark:bg-black text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 dark:text-white"
+                id="grid-birthDate"
+                type="date"
+                placeholder="Nova data de nascimento"
+                value={birthDate}
+                onChange={(e) => {
+                  setbirthDate(e.target.value);
+                  setbirthDateChanged(true);
+                }}
+              />
+            </div>
+          </li>
+          <li>
+            <p className="mt-5 mb-3 text-center">Alterar gênero</p>
+            <div className="w-full">
+              <select
+                className="appearance-none block w-full bg-gray-200 dark:bg-black text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 dark:text-white"
+                name="gender"
+                id="gender"
+                value={Gender}
+                onChange={(e) => {
+                  setGender(e.target.value);
+                  setbirthDateChanged(true);
+                }}
+              >
+                <option value="" disabled hidden>
+                  Gênero{" "}
+                </option>
+                <option value="Homem">Homem</option>
+                <option value="Mulher">Mulher</option>
+                <option value="Pessoa não binária">Pessoa não binária</option>
+                <option value="Outro">Outro</option>
+                <option value="Prefiro não responder">Prefiro não responder</option>
+              </select>
+            </div>
+          </li>
+          <li>
+            <p className="mt-5 mb-3 text-center">Alterar país</p>
+            <div className="w-full">
+              <select
+                className="appearance-none block w-full bg-gray-200 dark:bg-black text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                name="country"
+                id="country"
+                value={country}
+                onChange={(e) => {
+                  setcountry(e.target.value);
+                  setcountryChanged(true);
+                }}
+              >
+                <option value="" disabled hidden>
+                  País
+                </option>
+                {countries
+                  ? countries.map((country) => {
+                      return (
+                        <option
+                          key={country.name.official}
+                          value={country.translations.por.common}
+                        >
+                          {country.translations.por.common}
+                        </option>
+                      );
+                    })
+                  : null}
+              </select>
+            </div>
+          </li>
+          <li className="flex flex-col items-center mt-8 mb-3">
+            <Dialog
+              open={isDeleteDialogOpen}
+              onOpenChange={(open: boolean) => handleDialogOpenChange("delete", open)}
+            >
+              <DialogTrigger className="w-full"></DialogTrigger>
+              <DialogContent className="max-w-96 rounded-lg dark:bg-black dark:border-2 dark:border-red-500 dark:hover:opacity-85 dark:text-red-500">
+                <DialogHeader>
+                  <DialogTitle>Deletar conta</DialogTitle>
+                  <DialogDescription className="dark:text-white">
+                    Tem certeza de que deseja deletar sua conta? Esta ação é
+                    irreversível.
+                    <p className="font-bold">
+                      Observação: todos seus filmes favoritados e/ou comentados,
+                      listas e qualquer outra criação de sua conta serão deletados,
+                      e seu perfil não será mais acessível para outros usuários.
+                    </p>
+                  </DialogDescription>
+                </DialogHeader>
+                <div>
+                  <div className="flex justify-center">
+                    <button
+                      onClick={confirmDeleteAccount}
+                      className="bg-red-700 text-black p-4 rounded-lg font-semibold max-w-72 font-montserrat hover:brightness-75 transition-all ease-in-out duration-200 shadow-sm shadow-red-800 dark:bg-black dark:border-2 dark:border-red-500 dark:hover:opacity-85 dark:text-red-500"
+                    >
+                      Confirmar exclusão da conta
+                    </button>
+                  </div>
                 </div>
-              </li>
-              <li>
-                <p className="mt-8 mb-3">Alterar senha</p>
-                <div className=" w-full md:w-1/2 ">
-                  <input
-                    className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    id="grid-senha"
-                    type="password"
-                    placeholder="Nova senha"
-                  />
-                </div>
-              </li>
-            </ul>
-          </div>
-        );
+              </DialogContent>
+            </Dialog>
+  
+            <button
+              onClick={() => setIsDeleteDialogOpen(true)}
+              className="mt-8 mb-3 bg-red-700 text-black p-4 rounded-lg font-semibold max-w-72 font-montserrat hover:brightness-75 transition-all ease-in-out duration-200 shadow-sm shadow-red-800 dark:bg-black dark:border-2 dark:border-red-500 dark:hover:opacity-85 dark:text-red-500"
+            >
+              Deletar minha conta do Kiwi
+            </button>
+          </li>
+        </ul>
+      </div>
+    );
+  
 
-      case "Acessibilidade":
-        return (
-          <div className="text-mainFontColor font-montserrat">
-            <h2>Configurações de Acessibilidade</h2>
-            <p>Aqui você pode configurar a acessibilidade do seu perfil.</p>
-          </div>
-        );
-      case "Ajuda":
-        return (
-          <div>
+    case "Ajuda":
+      return (
+        
+        <div className="flex justify-center mt-6">
+          
+          <div className=" max-w-4xl justify-center w-3/6">
+          <h1 className="text-white font-montserrat text-center text-base mb-3">Perguntas gerais</h1>
             <Faq
               question="De onde surgiu o Kiwi?"
               answer="O Kiwi nasceu de um projeto da faculdade. Ele foi desenvolvido para o projeto interdisciplinar do segundo semestre do curso de Desenvolvimento de Software Multiplataforma, da FATEC Zona Leste, de São Paulo. Os membros do grupo são: Camila Aparecida de Castro Soares Paixão, Kauan Santos Oliveira, Ohana Saskia Lopes da Luz, Vitor Dias de Albuquerque e Vitoria Moreno Tomazeli. O site começou a ser desenvolvido em fevereiro de 2024."
@@ -136,90 +484,177 @@ export function Settings() {
               expanded={expandedItem === "Para que serve o Kiwi?"}
               onClick={() => handleItemExpand("Para que serve o Kiwi?")}
             />
-            <Faq
-              question="Pergunta? 3"
-              answer="Resposta."
-              expanded={expandedItem === "Pergunta? 3"}
-              onClick={() => handleItemExpand("Pergunta? 3")}
-            />
-          </div>
-        );
-      default:
-        return null;
-    }
-  };
 
-  const showButtons = selectedItem !== "Ajuda";
+             <h1 className="text-white font-montserrat text-center text-base mb-3 mt-5">Avaliações </h1>
+            <Faq
+              question="Por que a avaliação de filmes do site é feita em kiwis?"
+              answer="Utilizamos o kiwi como forma de avaliação. Quanto mais kiwis um filme tiver, maior será sua recomendação. 
+              Os kiwis vão de 1 a 5, onde 1 kiwi representa uma má avaliação e 5 kiwis uma ótima avaliação."
+              expanded={expandedItem === "Por que a avaliação de filmes do site é feita em kiwis?"}
+              onClick={() => handleItemExpand("Por que a avaliação de filmes do site é feita em kiwis?")}
+            />
+            <Faq
+              question="Como comentar e avaliar um filme?"
+              answer="Para comentar e avaliar um filme, acesse a página do filme, escreva seu comentário na seção de comentários e selecione a quantidade de kiwis que deseja atribuir como avaliação."
+              expanded={expandedItem === "Como comentar e avaliar um filme?"}
+              onClick={() => handleItemExpand("Como comentar e avaliar um filme?")}
+/>
+              <Faq
+                question="Como posso favoritar um filme?"
+                answer="Para favoritar um filme, clique no ícone de estrela na página do filme, ao lado do título. Ele será adicionado à sua lista de favoritos em seu perfil."
+                expanded={expandedItem === "Como posso favoritar um filme?"}
+                onClick={() => handleItemExpand("Como posso favoritar um filme?")}
+              />
+            <h1 className="text-white font-montserrat text-center text-base mb-3 mt-5">Funcionalidades do site</h1>
+            <Faq
+              question="Como criar um perfil no Kiwi?"
+              answer="Para criar um perfil no Kiwi, clique em 'Faça login ou cadastre-se' na página inicial, preencha os campos obrigatórios com suas informações e clique em 'Criar Conta'. Caso já possua uma conta, basta fazer login."
+              expanded={expandedItem === "Como criar um perfil no Kiwi?"}
+              onClick={() => handleItemExpand("Como criar um perfil no Kiwi?")}
+            />
+            <Faq
+              question="Como posso trocar a foto do meu perfil?"
+              answer="Para trocar a foto do perfil, vá até o perfil, clique na sua foto (a primeira foto é escolhida aleatoriamente) e escolha uma nova foto entre as opções disponíveis."
+              expanded={expandedItem === "Como posso trocar a foto do meu perfil?"}
+              onClick={() => handleItemExpand("Como posso trocar a foto do meu perfil?")}
+            />
+            <Faq
+              question="Como editar minhas informações pessoais?"
+              answer="Para editar suas informações pessoais, como nome, email ou senha, acesse as configurações do perfil ou de privacidade e segurança (dependendo da informação a ser alterada) e faça as alterações desejadas."
+              expanded={expandedItem === "Como editar minhas informações pessoais?"}
+              onClick={() => handleItemExpand("Como editar minhas informações pessoais?")}
+            />
+            <h1 className="text-white font-montserrat text-center text-base mb-3 mt-5">Interagindo com outros usuários</h1>
+            <Faq
+              question="Como seguir outros usuários?"
+              answer="Para seguir outros usuários, utilize a barra de busca para encontrar o perfil desejado e clique no botão 'Seguir' ao lado do nome do usuário."
+              expanded={expandedItem === "Como seguir outros usuários?"}
+              onClick={() => handleItemExpand("Como seguir outros usuários?")}
+            />
+            <Faq
+              question="Como ver meus seguidores?"
+              answer="Para ver quem te segue, basta abrir seu perfil e clicar em 'Seguidores'."
+              expanded={expandedItem === "Como ver meus seguidores?"}
+              onClick={() => handleItemExpand("Como ver meus seguidores?")}
+            />
+            <Faq
+              question="Como posso ver os filmes favoritados ou avaliados por outros usuários?"
+              answer="Para ver os filmes favoritados ou avaliados por outros usuários, visite o perfil do usuário e acesse a seção 'Favoritos'."
+              expanded={expandedItem === "Como posso ver os filmes favoritados por outros usuários?"}
+              onClick={() => handleItemExpand("Como posso ver os filmes favoritados por outros usuários?")}
+            />
+
+            <Faq
+              question="Como encontrar listas populares?"
+              answer="Para encontrar listas populares, navegue até a seção 'Listas Populares' disponível na barra de navegação da página e explore as listas mais curtidas e comentadas pelos usuários."
+              expanded={expandedItem === "Como encontrar listas populares?"}
+              onClick={() => handleItemExpand("Como encontrar listas populares?")}
+            />
+                        <h1 className="text-white font-montserrat text-center text-base mb-3 mt-5">Catálogo de filmes</h1>
+            <Faq
+                question="Como buscar filmes no catálogo do Kiwi?"
+                answer="Para buscar filmes no catálogo do Kiwi, utilize o botão disponível na barra de navegação da página. Digite o título do filme ou palavras-chave e explore os resultados. Você também pode escolher categorias de filmes."
+                expanded={expandedItem === "Como buscar filmes no catálogo do Kiwi?"}
+                onClick={() => handleItemExpand("Como buscar filmes no catálogo do Kiwi?")}
+              />
+          </div>
+        </div>
+      );
+
+    case "Acessibilidade":
+      return (
+        <div className="flex justify-center text-center">
+          <div className="text-mainFontColor font-montserrat my-5">
+            <h1 className="">Altere o modo de visualização do site: </h1>
+            <p className="text-base text-gray-600 mb-3">Função especializada para pessoas com deficiências visuais.</p>
+            <HighContrastButton />
+          </div>
+        </div>
+      );
+
+    default:
+      return null;
+  }
+};
 
   return (
-    <div className="flex">
+<div className= 'flex md:flex-row' >
       <SideBar />
-      <div className="bg-mainBg flex-initial w-full min-h-screen ">
+      <div className="bg-mainBg flex-1 min-h-screen dark:bg-black">
         <Header />
-        <div className="py-7 px-10">
+        <div className="py-14 px-4 ">
+        <nav className="navbar flex md:flex-col sm:flex-col lg:flex-col items-center justify-between max-h-48 text-darkGreen font-montserrat font-medium py-3 bg-bgAside rounded-lg border-none dark:text-yellow-400 mx-4 mb-10 px-4 dark:bg-black sm:mx-10 sm:mb-10 sm:px-6 md:mx-20 md:mb-20 md:px-10 xs:flex-col mobile:flex-col ">
+
+  {isLoggedIn && (
+    <>
+      <a
+        className={`nav-item py-2 cursor-pointer font-bold ${selectedItem === "Perfil" ? "text-lightGreen dark:text-yellow-500 underline" : "hover:text-lightGreen dark:hover:text-yellow-500"}`}
+        onClick={() => handleItemClick("Perfil")}
+      >
+        Perfil
+      </a>
+      <a
+        className={`nav-item py-2 cursor-pointer font-bold ${selectedItem === "Privacidade e segurança" ? "text-lightGreen dark:text-yellow-500 underline" : "hover:text-lightGreen dark:hover:text-yellow-500"}`}
+        onClick={() => handleItemClick("Privacidade e segurança")}
+      >
+        Privacidade e segurança
+      </a>
+    </>
+  )}
+  <a
+    className={`nav-item py-2 cursor-pointer font-bold ${selectedItem === "Acessibilidade" ? "text-lightGreen dark:text-yellow-500 underline" : "hover:text-lightGreen dark:hover:text-yellow-500"}`}
+    onClick={() => handleItemClick("Acessibilidade")}
+  >
+    Acessibilidade
+  </a>
+  <a
+    className={`nav-item py-2 cursor-pointer font-bold ${selectedItem === "Ajuda" ? "text-lightGreen underline dark:text-yellow-500" : "hover:text-lightGreen dark:hover:text-yellow-500"}`}
+    onClick={() => handleItemClick("Ajuda")}
+  >
+    Ajuda
+  </a>
+</nav>
+
           <div className="flex">
-            <ul className="options max-h-56 text-darkGreen font-montserrat font-medium px-6 py-3 bg-bgAside rounded-lg border-none">
-              <li
-                className={`py-2 cursor-pointer font-bold ${selectedItem === "Perfil" ? "text-lightGreen underline" : "hover:text-lightGreen"}`}
-                onClick={() => handleItemClick("Perfil")}
-              >
-                Perfil
-              </li>
-              <li
-                className={`py-2 cursor-pointer font-bold ${selectedItem === "Notificações" ? "text-lightGreen underline" : "hover:text-lightGreen"}`}
-                onClick={() => handleItemClick("Notificações")}
-              >
-                Notificações
-              </li>
-              <li
-                className={`py-2 cursor-pointer font-bold ${selectedItem === "Privacidade e segurança" ? "text-lightGreen underline" : "hover:text-lightGreen"}`}
-                onClick={() => handleItemClick("Privacidade e segurança")}
-              >
-                Privacidade e segurança
-              </li>
-              <li
-                className={`py-2 cursor-pointer font-bold ${selectedItem === "Acessibilidade" ? "text-lightGreen underline" : "hover:text-lightGreen"}`}
-                onClick={() => handleItemClick("Acessibilidade")}
-              >
-                Acessibilidade
-              </li>
-              <li
-                className={`py-2 cursor-pointer font-bold ${selectedItem === "Ajuda" ? "text-lightGreen underline" : "hover:text-lightGreen"}`}
-                onClick={() => handleItemClick("Ajuda")}
-              >
-                Ajuda
-              </li>
-            </ul>
-            <div className="flex-1 ml-10">
-              <h1 className="text-mainFontColor font-montserrat font-bold text-2xl mb-6">
+
+            <div className="flex-1 ">
+              <h1 className="text-mainFontColor font-montserrat font-bold text-2xl text-center">
                 {pageTitle}
               </h1>
-              {renderInformation()}
-              {showButtons && (
-                <div className="flex justify-end mt-6">
+              {renderSettings()}
+
+              {isLoggedIn && selectedItem !== "Ajuda" && (
+                <div className="flex  mt-14 w-full justify-center ">
                   <button
-                    onClick={() => setShowConfirmModal(true)}
-                    className="transition ease-in-out delay-150 bg-darkGreen hover:-translate-y-1 hover:scale-110 hover:bg-lightGreen duration-300 p-3 rounded-lg m-5"
+                    onClick={() => setIsDialogOpen(true)}
+                    className="bg-constrastColor text-darkGreen p-4 m-1 rounded-lg font-semibold max-w-72 font-montserrat hover:brightness-75 transition-all ease-in-out duration-200 shadow-sm shadow-constrastColor dark:border-yellow-400 dark:bg-yellow-400 "
                   >
                     Salvar mudanças
                   </button>
-                  <button className="transition ease-in-out delay-150 bg-darkGreen hover:-translate-y-1 hover:scale-110 hover:bg-lightGreen duration-300 p-3 rounded-lg m-5">
-                    Descartar mudanças
-                  </button>
                 </div>
               )}
+
+              <Dialog open={isDialogOpen} onOpenChange={(open: boolean | ((prevState: boolean) => boolean)) => setIsDialogOpen(open)}>
+                <DialogTrigger className="w-full"></DialogTrigger>
+                <DialogContent className="max-w-96 rounded-lg dark:text-white dark:bg-black dark:border-2 dark:border-white ">
+                  <DialogHeader>
+                    <DialogTitle>Confirmar alterações</DialogTitle>
+                    <DialogDescription className="dark:text-white">
+                      Certeza de que deseja alterar as informações? Essa ação não poderá ser revertida.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div>
+                    <button onClick={confirmAndSaveChanges} className=" bg-white w-full border-2 rounded-lg h-11 mt-4 border-constrastColor hover:brightness-75 transition-all duration-5000 dark:border-yellow-400 dark:bg-black">
+                      Confirmar
+                    </button>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
+          <ToastContainer position="top-right" autoClose={5000} />
         </div>
       </div>
-
-      <ConfirmChanges
-        showModal={showConfirmModal}
-        setShowModal={setShowConfirmModal}
-        checkboxChecked={checkboxChecked}
-        setCheckboxChecked={setCheckboxChecked}
-        handleSaveChanges={handleSaveChanges}
-      />
     </div>
   );
 }
